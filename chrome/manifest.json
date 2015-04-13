@@ -13,5 +13,10 @@
   },
   "icons": {
     "16": "icon16.png"
+  },
+  "browser_action": {
+    "default_title": "Citizen Ex",
+    "default_icon": "icon16.png",
+    "default_popup": "popup.html"
   }
 }
