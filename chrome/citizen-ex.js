@@ -46,7 +46,7 @@ Utils.prototype.createLogEntry = function(tab) {
 
 Utils.prototype.trimUrl = function(url) {
   var uri = new URI(url);
-  var path = uri.domain();
+  var path = uri.hostname();
   return path;
 }
 
