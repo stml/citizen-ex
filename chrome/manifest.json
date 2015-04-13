@@ -3,11 +3,11 @@
   "name": "Citizen Ex",
   "version": "0.0",
   "permissions": [
-    "tabs", // to get site’s url and watch for new tabs
-    "storage" // to store the browsing log
+    "tabs",
+    "storage"
   ],
   "background": {
     "scripts": ["citizen-ex.js"],
-    "persistent": false // make it an event page type
+    "persistent": false
   }
 }
