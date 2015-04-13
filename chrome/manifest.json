@@ -10,5 +10,8 @@
   "background": {
     "scripts": ["lib/URI.js", "lib/lodash.js", "citizen-ex.js"],
     "persistent": false
+  },
+  "icons": {
+    "16": "icon16.png"
   }
 }
