@@ -35,7 +35,8 @@ var Utils = function() {};
 
 Utils.prototype.createLogEntry = function(tab) {
   // ignore empty tabs and chrome settings pages
-  if (tab.url === 'chrome://newtab/' || tab.url === 'chrome://extensions/') {
+  var protocol = utils.getUrlProtocol(tab.url);
+  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
     return;
   }
 
@@ -48,6 +49,12 @@ Utils.prototype.trimUrl = function(url) {
   var uri = new URI(url);
   var path = uri.hostname();
   return path;
+}
+
+Utils.prototype.getUrlProtocol = function(url) {
+  var uri = new URI(url);
+  var protocol = uri.protocol();
+  return protocol;
 }
 
 Utils.prototype.log = function(thing) {
