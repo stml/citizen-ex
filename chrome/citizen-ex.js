@@ -35,7 +35,7 @@ var Utils = function() {};
 
 Utils.prototype.createLogEntry = function(tab) {
   // ignore empty tabs and chrome settings pages
-  if (tab.url === 'chrome://newtab/' || tab.url === 'chrome://extensions') {
+  if (tab.url === 'chrome://newtab/' || tab.url === 'chrome://extensions/') {
     return;
   }
 
