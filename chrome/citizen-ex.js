@@ -34,6 +34,11 @@ LogEntry.prototype.getRemoteGeo = function(url) {
 var Utils = function() {};
 
 Utils.prototype.createLogEntry = function(tab) {
+  // ignore empty tabs and chrome settings pages
+  if (tab.url === 'chrome://newtab/' || tab.url === 'chrome://extensions') {
+    return;
+  }
+
   var timestamp = new Date();
   logEntries.push(new LogEntry(tab.url, timestamp));
 }
