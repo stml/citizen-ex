@@ -15,6 +15,7 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownCity = json.city;
     this.ownLat = json.latitude;
     this.ownLng = json.longitude;
+    chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
 };
 
@@ -27,6 +28,7 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     this.city = json.city;
     this.lat = json.latitude;
     this.lng = json.longitude;
+    chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
 
 }
@@ -42,7 +44,6 @@ Utils.prototype.createLogEntry = function(tab) {
 
   var timestamp = new Date();
   logEntries.push(new LogEntry(tab.url, timestamp));
-  chrome.storage.local.set({ 'logEntries': logEntries });
 }
 
 Utils.prototype.trimUrl = function(url) {
