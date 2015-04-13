@@ -41,6 +41,7 @@ Utils.prototype.createLogEntry = function(tab) {
 
   var timestamp = new Date();
   logEntries.push(new LogEntry(tab.url, timestamp));
+  chrome.storage.local.set({ 'logEntries': logEntries });
 }
 
 Utils.prototype.trimUrl = function(url) {
@@ -76,6 +77,9 @@ ChromeUtils.prototype.getTabById = function(tabId, callback) {
 var chromeUtils = new ChromeUtils();
 
 var logEntries = [];
+chrome.storage.local.get('logEntries', function(entries) {
+  logEntries = entries.logEntries;
+});
 
 chrome.tabs.onUpdated.addListener(function(tabId) {
   chromeUtils.getTabById(tabId, utils.createLogEntry);
