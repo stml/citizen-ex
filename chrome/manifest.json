@@ -4,10 +4,11 @@
   "version": "0.0",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "https://freegeoip.net/json/"
   ],
   "background": {
-    "scripts": ["citizen-ex.js"],
+    "scripts": ["lib/URI.js", "lib/lodash.js", "citizen-ex.js"],
     "persistent": false
   }
 }
