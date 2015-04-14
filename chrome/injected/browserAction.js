@@ -3,5 +3,4 @@
 sidebar.getLastLogEntry();
 
 // we toggle the main sidebar pane visibility
-sidebar.set({ activePane: sidebar.panes[0] })
-
+sidebar.toggle();
