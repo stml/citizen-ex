@@ -7,10 +7,16 @@ var currentTab = '' +
   '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>' +
   '<h2>Your digital citizenship</h2>' +
   '<% _.each(citizenship, function(country) { %>' +
-  '  <br><%= country.code %>: <%= country.percentage %>%' +
-  '<% }); %>';
-var about = '<h1>About</h1>';
-var settings = '<h1>Settings</h1>';
+  '  <%= country.code %>: <%= country.percentage %>%<br>' +
+  '<% }); %>' +
+  '<a href="#" name="about">About</a>' +
+  '<a href="#" name="settings">Settings</a>';
+var about = '<h1>About</h1>' +
+  '<a href="#" name="currentTab">Current page</a>' +
+  '<a href="#" name="settings">Settings</a>';
+var settings = '<h1>Settings</h1>' +
+  '<a href="#" name="currentTab">Current page</a>' +
+  '<a href="#" name="about">About</a>';
 
 var Pane = function(name, template) {
   this.name = name;
@@ -65,6 +71,15 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
+  activatePane: function(name) {
+    var pane = _.find(this.panes, function(pane) {
+      console.log(pane.name, name);
+      return pane.name === name;
+    });
+    console.log(pane);
+    this.set({ activePane: pane });
+  },
+
   toggle: function() {
     if (this.has('activePane')) {
       this.close();
@@ -86,6 +101,10 @@ var SidebarPane = Backbone.View.extend({
   tagName: 'div',
 
   className: 'citizen-ex__pane',
+
+  events: {
+    'click a': 'togglePane'
+  },
 
   initialize: function(options) {
     this.name = options.name;
@@ -123,6 +142,12 @@ var SidebarPane = Backbone.View.extend({
   appendToBody: function() {
     var body = $('body');
     this.$el.appendTo(body);
+  },
+
+  togglePane: function(event) {
+    event.preventDefault();
+    var paneName = event.currentTarget.name;
+    this.model.activatePane(paneName);
   }
 
 });
