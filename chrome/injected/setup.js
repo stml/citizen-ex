@@ -18,7 +18,7 @@ var Sidebar = Backbone.Model.extend({
 var SidebarPane = Backbone.View.extend({
   tagName: 'div',
 
-  className: 'pane',
+  className: 'citizen-ex__pane',
 
   initialize: function(options) {
     this.name = options.name;
