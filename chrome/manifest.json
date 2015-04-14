@@ -10,7 +10,7 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["lib/URI.js", "lib/lodash.js", "background.js"],
+    "scripts": ["lib/URI.js", "lib/underscore.js", "background.js"],
     "persistent": false
   },
   "icons": {
