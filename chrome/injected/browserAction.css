@@ -4,6 +4,16 @@
   position: fixed;
   right: 0;
   top: 0;
+  padding: 1em;
   background: white;
   display: none;
+}
+
+.citizen-ex__pane h1, .citizen-ex__pane h2 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.citizen-ex__pane p {
+  width: 100%;
 }
