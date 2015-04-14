@@ -16,7 +16,6 @@ var panes = [
 var Sidebar = Backbone.Model.extend({
   initialize: function(panes) {
     this.panes = panes;
-    this.set({ activePane: this.panes[0] });
   }
 });
 
@@ -33,7 +32,6 @@ var SidebarPane = Backbone.View.extend({
     })
     this.appendToBody();
     this.loadPaneContents();
-    this.render(this.model, this.model.get('activePane'));
   },
 
   render: function(model, pane) {
