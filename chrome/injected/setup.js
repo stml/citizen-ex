@@ -58,7 +58,6 @@ var Sidebar = Backbone.Model.extend({
       });
       countries = _.sortBy(countries, 'percentage');
       this.set({ citizenship: countries.reverse() });
-
     }, this));
   },
 

@@ -1,9 +1,11 @@
-var LogEntry = function(url, timestamp) {
+var LogEntry = function(url, startTimestamp, tabId, windowId) {
   this.url = url;
   this.domain = utils.trimUrl(url);
-  this.timestamp = timestamp;
+  this.timestampRanges = [startTimestamp];
   this.getOwnGeo();
   this.getRemoteGeo(this.domain);
+  this.tabId = tabId;
+  this.windowId = windowId;
 };
 
 LogEntry.prototype.getOwnGeo = function() {
@@ -30,8 +32,14 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     this.lng = json.longitude;
     chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
-
 }
+
+LogEntry.prototype.addEndTimestamp = function(timestamp) {
+  var lastRange = this.timestampRanges[this.timestampRanges.length - 1];
+  if (lastRange.length === 1) {
+    lastRange.push(timestamp);
+  }
+};
 
 var Utils = function() {};
 
@@ -43,14 +51,20 @@ Utils.prototype.createLogEntry = function(tab) {
   }
 
   var timestamp = new Date();
-  logEntries.push(new LogEntry(tab.url, timestamp));
-}
+  logEntries.push(new LogEntry(tab.url, timestamp, tab.id));
+};
+
+Utils.prototype.pauseLatestEntry = function() {
+  var timestamp = new Date();
+  var lastEntry = logEntries[logEntries.length - 1];
+  // now run addEndTimestamp()
+};
 
 Utils.prototype.trimUrl = function(url) {
   var uri = new URI(url);
   var path = uri.hostname();
   return path;
-}
+};
 
 Utils.prototype.getUrlProtocol = function(url) {
   var uri = new URI(url);
@@ -99,10 +113,18 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 // fires when an existing tab is selected
 chrome.tabs.onActivated.addListener(function(activeInfo) {
+  // add end timestamp to latest entry
+  utils.pauseLatestEntry();
+  // and create a new entry
   var tabId = activeInfo.tabId;
   chromeUtils.getTabById(tabId, utils.createLogEntry);
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.executeScript(null, { file: 'injected/browserAction.js' });
+});
+
+chrome.windows.onFocusChanged.addListener(function(windowId) {
+  // add end timestamp to latest entry
+  utils.pauseLatestEntry();
 });
