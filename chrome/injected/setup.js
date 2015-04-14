@@ -22,15 +22,11 @@ var SidebarPane = Backbone.View.extend({
 
   initialize: function(options) {
     this.name = options.name;
-    var pane = _.find(this.model.panes, _.bind(function(pane) {
-      return pane.name === this.name;
-    }, this));
-
     this.listenTo(this.model, 'change:activePane', function(model, pane) {
       this.render(model, pane);
     })
     this.appendToBody();
-    this.render(this.model, pane);
+    this.render(this.model, this.model.get('activePane'));
   },
 
   render: function(model, pane) {
