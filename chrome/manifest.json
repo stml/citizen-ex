@@ -4,8 +4,10 @@
   "version": "0.0",
   "permissions": [
     "tabs",
+    "activeTab",
     "storage",
-    "https://freegeoip.net/json/"
+    "unlimitedStorage",
+    "<all_urls>"
   ],
   "background": {
     "scripts": ["lib/URI.js", "lib/lodash.js", "citizen-ex.js"],
@@ -16,7 +18,16 @@
   },
   "browser_action": {
     "default_title": "Citizen Ex",
-    "default_icon": "icon16.png",
-    "default_popup": "popup.html"
-  }
+    "default_icon": "icon16.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*","https://*/*"],
+      "js": [
+        "lib/underscore.js",
+        "lib/jquery.js",
+        "lib/backbone.js"
+      ]
+    }
+  ]
 }
