@@ -103,6 +103,8 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
   chromeUtils.getTabById(tabId, utils.createLogEntry);
 });
 
+console.log('adding an event listener');
 chrome.browserAction.onClicked.addListener(function(tab) {
+  console.log(tab);
   chrome.tabs.executeScript(null, { file: 'popup.js' });
 });

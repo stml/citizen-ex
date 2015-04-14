@@ -10,7 +10,7 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["lib/URI.js", "lib/lodash.js", "citizen-ex.js"],
+    "scripts": ["lib/URI.js", "lib/lodash.js", "background.js"],
     "persistent": false
   },
   "icons": {
