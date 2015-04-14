@@ -17,3 +17,7 @@
 .citizen-ex__pane p {
   width: 100%;
 }
+
+.citizen-ex__pane a {
+  display: block;
+}
