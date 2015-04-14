@@ -104,5 +104,5 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript(null, { file: 'browserAction.js' });
+  chrome.tabs.executeScript(null, { file: 'injected/browserAction.js' });
 });
