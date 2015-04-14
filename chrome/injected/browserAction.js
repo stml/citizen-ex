@@ -1,7 +1,7 @@
-chrome.storage.local.get('logEntries', function(entries) {
-  var logEntries = entries.logEntries;
-  var lastEntry = logEntries[logEntries.length - 1];
-  var logString = JSON.stringify(lastEntry);
-  sidebar.set({ lastLogEntry: lastEntry });
-  sidebar.set({ activePane: sidebar.panes[0] })
-});
+// we fetch the last record again
+// as some of its request should have come back by now
+sidebar.getLastLogEntry();
+
+// we toggle the main sidebar pane visibility
+sidebar.set({ activePane: sidebar.panes[0] })
+
