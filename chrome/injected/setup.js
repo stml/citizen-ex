@@ -59,10 +59,14 @@ var SidebarPane = Backbone.View.extend({
   initialize: function(options) {
     this.name = options.name;
     this.template = _.template(options.template);
+
     this.listenTo(this.model, 'change:activePane', function(model, pane) {
       this.render(model, pane);
     });
-    this.listenTo(this.model, 'change:lastLogEntry', this.loadPaneContents);
+    this.listenTo(this.model, 'change:lastLogEntry', function(model, logEntry) {
+      this.render(model, this.model.get('activePane'));
+    });
+
     this.appendToBody();
   },
 
@@ -70,8 +74,8 @@ var SidebarPane = Backbone.View.extend({
     if (pane) {
       switch (pane.name) {
         case this.name:
-          this.$el.show();
           this.$el.html(this.template(this.model.toJSON()));
+          this.$el.show();
           break;
         default:
           this.$el.hide();
@@ -85,11 +89,8 @@ var SidebarPane = Backbone.View.extend({
   appendToBody: function() {
     var body = $('body');
     this.$el.appendTo(body);
-  },
-
-  loadPaneContents: function() {
-    this.render(this.model, this.model.get('activePane'));
   }
+
 });
 
 var sidebar = new Sidebar(panes);
