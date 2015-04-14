@@ -4,7 +4,11 @@ var currentTab = '' +
   '<p>Lat: <%= lastLogEntry.ownLat %>, lng: <%= lastLogEntry.ownLng %></p>' +
   '<h2>Currently viewing</h2>' +
   '<p>IP: <%= lastLogEntry.ip %>. This address is located in <%= lastLogEntry.city %>, <%= lastLogEntry.countryCode %>.</p>' +
-  '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>';
+  '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>' +
+  '<h2>Your digital citizenship</h2>' +
+  '<% _.each(citizenship, function(country) { %>' +
+  '  <br><%= country.code %>: <%= country.percentage %>%' +
+  '<% }); %>';
 var about = '<h1>About</h1>';
 var settings = '<h1>Settings</h1>';
 
@@ -20,9 +24,36 @@ var panes = [
 ];
 
 var Sidebar = Backbone.Model.extend({
+  defaults: {
+    'citizenship': []
+  },
+
   initialize: function(panes) {
     this.panes = panes;
     this.getLastLogEntry();
+    this.setUpCitizenship();
+  },
+
+  setUpCitizenship: function() {
+    chrome.storage.local.get('logEntries', _.bind(function(entries) {
+      var logEntries = entries.logEntries;
+      var countryCodes = _.countBy(logEntries, function(entry) {
+        if (entry.countryCode === '' || entry.countryCode === undefined) {
+          return 'Unknown';
+        }
+        return entry.countryCode;
+      });
+      var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
+      var countries = [];
+      _.each(countryCodes, function(value, key) {
+        var percentage = value / sum;
+        percentage = percentage.toFixed(4);
+        countries.push({ code: key, percentage: percentage });
+      });
+      countries = _.sortBy(countries, 'percentage');
+      this.set({ citizenship: countries.reverse() });
+
+    }, this));
   },
 
   getLastLogEntry: function() {
@@ -64,6 +95,9 @@ var SidebarPane = Backbone.View.extend({
       this.render(model, pane);
     });
     this.listenTo(this.model, 'change:lastLogEntry', function(model, logEntry) {
+      this.render(model, this.model.get('activePane'));
+    });
+    this.listenTo(this.model, 'change:citizenship', function(model, citizenship) {
       this.render(model, this.model.get('activePane'));
     });
 
