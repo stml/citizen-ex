@@ -1,5 +1,10 @@
-var currentTab = "<h1>This page</h1>" +
-  "<%= lastLogEntry.ownLat =>";
+var currentTab = '' +
+  '<h2>Your location</h2>' +
+  '<p>Your IP address: <%= lastLogEntry.ownIp %>. You’re in <%= lastLogEntry.ownCity %>, <%= lastLogEntry.ownCountryCode %>.</p>' +
+  '<p>Lat: <%= lastLogEntry.ownLat %>, lng: <%= lastLogEntry.ownLng %></p>' +
+  '<h2>Currently viewing</h2>' +
+  '<p>IP: <%= lastLogEntry.ip %>. This address is located in <%= lastLogEntry.city %>, <%= lastLogEntry.countryCode %>.</p>' +
+  '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>';
 var about = '<h1>About</h1>';
 var settings = '<h1>Settings</h1>';
 
