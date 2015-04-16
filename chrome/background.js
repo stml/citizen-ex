@@ -30,8 +30,7 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     this.lng = json.longitude;
     chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
-
-}
+};
 
 var Utils = function() {};
 
@@ -44,19 +43,19 @@ Utils.prototype.createLogEntry = function(tab) {
 
   var timestamp = new Date();
   logEntries.push(new LogEntry(tab.url, timestamp));
-}
+};
 
 Utils.prototype.trimUrl = function(url) {
   var uri = new URI(url);
   var path = uri.hostname();
   return path;
-}
+};
 
 Utils.prototype.getUrlProtocol = function(url) {
   var uri = new URI(url);
   var protocol = uri.protocol();
   return protocol;
-}
+};
 
 Utils.prototype.log = function(thing) {
   console.log(thing);
