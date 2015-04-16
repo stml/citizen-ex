@@ -31,4 +31,5 @@
 
 .citizen-ex__pane a {
   display: block;
+  color: blue !important;
 }
