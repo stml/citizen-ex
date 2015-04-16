@@ -35,12 +35,9 @@ var panes = [
 ];
 
 var Sidebar = Backbone.Model.extend({
-  defaults: {
-    'citizenship': []
-  },
-
   initialize: function(panes) {
     this.panes = panes;
+    this.resetValues();
     this.getLastLogEntry();
     this.setUpCitizenship();
   },
@@ -105,7 +102,13 @@ var Sidebar = Backbone.Model.extend({
     this.unset('activePane');
   },
 
+  resetValues: function() {
+    this.set({ citizenship: [] });
+    this.set({ lastLogEntry: '' });
+  },
+
   eraseData: function() {
+    this.resetValues();
     chrome.storage.local.clear();
   }
 });
