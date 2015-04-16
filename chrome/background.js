@@ -110,3 +110,9 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.executeScript(null, { file: 'injected/browserAction.js' });
 });
+
+chrome.storage.onChanged.addListener(function(data) {
+  if (data.logEntries.newValue.length === 0) {
+    logEntries = [];
+  }
+});
