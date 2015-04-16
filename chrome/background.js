@@ -9,17 +9,18 @@ var LogEntry = function(url, timestamp) {
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  utils.get('https://freegeoip.net/json', _.bind(function(response) {
-    var json = JSON.parse(response);
-    this.ownIp = json.ip;
-    this.ownCountryCode = json.country_code;
-    this.ownRegionCode = json.region_code;
-    this.ownCity = json.city;
-    this.ownLat = json.latitude;
-    this.ownLng = json.longitude;
-    console.log('Got own geo, updating the relevant LogEntry');
+  var ownLocation = geoCache.getOwnLocation();
+  if (ownLocation) {
+    this.ownIp = ownLocation.ownIp;
+    this.ownCountryCode = ownLocation.ownCountryCode;
+    this.ownRegionCode = ownLocation.ownRegionCode;
+    this.ownCity = ownLocation.ownCity;
+    this.ownLat = ownLocation.ownLat;
+    this.ownLng = ownLocation.ownLng;
     chrome.storage.local.set({ 'logEntries': logEntries });
-  }, this));
+  } else {
+    console.log('No own geo data available yet');
+  }
 };
 
 LogEntry.prototype.getRemoteGeo = function(url) {
@@ -127,7 +128,30 @@ chrome.storage.local.get('logEntries', function(entries) {
 var GeoCache = function() {
   console.log('Creating a new cache');
   this.entries = [];
+  this.addOwnLocation();
 };
+
+GeoCache.prototype.addOwnLocation = function() {
+  var ownGeoData = {
+    ownGeoData: true
+  };
+
+  utils.get('https://freegeoip.net/json', _.bind(function(response) {
+    var json = JSON.parse(response);
+    ownGeoData.ownIp = json.ip;
+    ownGeoData.ownCountryCode = json.country_code;
+    ownGeoData.ownRegionCode = json.region_code;
+    ownGeoData.ownCity = json.city;
+    ownGeoData.ownLat = json.latitude;
+    ownGeoData.ownLng = json.longitude;
+    geoCache.addEntry(ownGeoData);
+    console.log('Got own geo, caching it');
+  }, ownGeoData));
+};
+
+GeoCache.prototype.getOwnLocation = function() {
+  return this.hasEntry('ownGeoData', true);
+}
 
 GeoCache.prototype.hasEntry = function(property, value) {
   var cacheEntry = _.find(this.entries, function(entry) {
@@ -167,6 +191,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 chrome.storage.onChanged.addListener(function(data) {
   if (data.logEntries.newValue.length === 0) {
     logEntries = [];
+    geoCache = new GeoCache();
     console.log('Erased browsing data');
   }
 });
