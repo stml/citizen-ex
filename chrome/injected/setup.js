@@ -45,8 +45,11 @@ var Sidebar = Backbone.Model.extend({
   setUpCitizenship: function() {
     chrome.storage.local.get('logEntries', _.bind(function(entries) {
       var logEntries = entries.logEntries;
-      var countryCodes = _.countBy(logEntries, function(entry) {
-        if (entry.countryCode === '' || entry.countryCode === undefined) {
+      var validEntries = _.reject(logEntries, function(entry) {
+        return entry.countryCode === undefined;
+      });
+      var countryCodes = _.countBy(validEntries, function(entry) {
+        if (entry.countryCode === '') {
           return 'Unknown';
         }
         return entry.countryCode;
