@@ -57,8 +57,8 @@ var Sidebar = Backbone.Model.extend({
       var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
       var countries = [];
       _.each(countryCodes, function(value, key) {
-        var percentage = value / sum;
-        percentage = percentage.toFixed(4);
+        var percentage = (value / sum) * 100;
+        percentage = percentage.toFixed(2);
         countries.push({ code: key, percentage: percentage });
       });
       countries = _.sortBy(countries, 'percentage');
