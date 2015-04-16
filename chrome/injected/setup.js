@@ -134,6 +134,7 @@ var SidebarPane = Backbone.View.extend({
       this.render(model, pane);
     });
     this.listenTo(this.model, 'change:lastLogEntry', function(model, logEntry) {
+      this.model.setUpCitizenship();
       this.render(model, this.model.get('activePane'));
     });
     this.listenTo(this.model, 'change:citizenship', function(model, citizenship) {
