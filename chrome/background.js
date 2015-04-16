@@ -15,6 +15,7 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownCity = json.city;
     this.ownLat = json.latitude;
     this.ownLng = json.longitude;
+    console.log('Got own geo, updating the relevant LogEntry');
     chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
 };
@@ -28,7 +29,7 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     this.city = json.city;
     this.lat = json.latitude;
     this.lng = json.longitude;
-    console.log('Got remote geo');
+    console.log('Got remote geo, updating the relevant LogEntry');
     chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
 };
@@ -90,6 +91,7 @@ var logEntries = [];
 chrome.storage.local.get('logEntries', function(entries) {
   if (entries && entries.logEntries) {
     logEntries = entries.logEntries;
+    console.log('Fetched the stored log entries');
   }
 });
 
@@ -114,5 +116,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 chrome.storage.onChanged.addListener(function(data) {
   if (data.logEntries.newValue.length === 0) {
     logEntries = [];
+    console.log('Erased browsing data');
   }
 });
