@@ -1,3 +1,5 @@
+// Define the LogEntry class
+
 var LogEntry = function(url, timestamp) {
   this.url = url;
   this.domain = utils.trimUrl(url);
@@ -33,6 +35,9 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     chrome.storage.local.set({ 'logEntries': logEntries });
   }, this));
 };
+
+
+// Define and set up utilities
 
 var Utils = function() {};
 
@@ -78,6 +83,9 @@ Utils.prototype.get = function(url, callback) {
 
 var utils = new Utils();
 
+
+// Define and set up Chrome utils
+
 var ChromeUtils = function() {};
 
 ChromeUtils.prototype.getTabById = function(tabId, callback) {
@@ -87,6 +95,9 @@ ChromeUtils.prototype.getTabById = function(tabId, callback) {
 
 var chromeUtils = new ChromeUtils();
 
+
+// Fetch the stored log entries on load, so we can keep adding to them
+
 var logEntries = [];
 chrome.storage.local.get('logEntries', function(entries) {
   if (entries && entries.logEntries) {
@@ -94,6 +105,9 @@ chrome.storage.local.get('logEntries', function(entries) {
     console.log('Fetched the stored log entries');
   }
 });
+
+
+// Respond to events
 
 chrome.tabs.onUpdated.addListener(function(tabId) {
   chromeUtils.getTabById(tabId, utils.createLogEntry);
