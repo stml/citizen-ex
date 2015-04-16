@@ -87,8 +87,10 @@ Utils.prototype.get = function(url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      callback(xhr.responseText);
+    if (xhr.readyState == 4 && xhr.status == 200) {
+     callback(xhr.responseText);
+    } else if (xhr.readyState == 4) {
+      console.log('Error getting response data from ' + url);
     }
   }
   xhr.send();
