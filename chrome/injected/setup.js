@@ -112,7 +112,7 @@ var Sidebar = Backbone.Model.extend({
 
   eraseData: function() {
     this.resetValues();
-    chrome.storage.local.clear();
+    chrome.storage.local.set({ logEntries: [] });
   }
 });
 
