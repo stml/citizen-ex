@@ -23,17 +23,30 @@ LogEntry.prototype.getOwnGeo = function() {
 };
 
 LogEntry.prototype.getRemoteGeo = function(url) {
-  utils.get('https://freegeoip.net/json/' + url, _.bind(function(response) {
-    var json = JSON.parse(response);
-    this.ip = json.ip;
-    this.countryCode = json.country_code;
-    this.regionCode = json.region_code;
-    this.city = json.city;
-    this.lat = json.latitude;
-    this.lng = json.longitude;
-    console.log('Got remote geo, updating the relevant LogEntry');
+  var cachedEntry = geoCache.hasEntry(this.domain);
+  if (cachedEntry) {
+    this.ip = cachedEntry.ip;
+    this.countryCode = cachedEntry.countryCode;
+    this.regionCode = cachedEntry.regionCode;
+    this.city = cachedEntry.city;
+    this.lat = cachedEntry.lat;
+    this.lng = cachedEntry.lng;
+    console.log('Retrieving entry details from cache');
     chrome.storage.local.set({ 'logEntries': logEntries });
-  }, this));
+  } else {
+    utils.get('https://freegeoip.net/json/' + url, _.bind(function(response) {
+      var json = JSON.parse(response);
+      this.ip = json.ip;
+      this.countryCode = json.country_code;
+      this.regionCode = json.region_code;
+      this.city = json.city;
+      this.lat = json.latitude;
+      this.lng = json.longitude;
+      console.log('Got remote geo, updating the relevant LogEntry');
+      geoCache.addEntry(this);
+      chrome.storage.local.set({ 'logEntries': logEntries });
+    }, this));
+  }
 };
 
 
@@ -105,6 +118,28 @@ chrome.storage.local.get('logEntries', function(entries) {
     console.log('Fetched the stored log entries');
   }
 });
+
+
+// Set up geo-cache
+
+var GeoCache = function() {
+  console.log('Creating a new cache');
+  this.entries = [];
+};
+
+GeoCache.prototype.hasEntry = function(property, value) {
+  var cacheEntry = _.find(this.entries, function(entry) {
+    return entry[property] === value;
+  });
+  return cacheEntry;
+};
+
+GeoCache.prototype.addEntry = function(object) {
+  console.log('Caching a new entry');
+  this.entries.push(object);
+};
+
+var geoCache = new GeoCache();
 
 
 // Respond to events
