@@ -86,7 +86,9 @@ var chromeUtils = new ChromeUtils();
 
 var logEntries = [];
 chrome.storage.local.get('logEntries', function(entries) {
-  logEntries = entries.logEntries;
+  if (entries && entries.logEntries) {
+    logEntries = entries.logEntries;
+  }
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId) {

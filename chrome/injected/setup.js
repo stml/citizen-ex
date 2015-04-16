@@ -1,14 +1,18 @@
 var currentTab = '' +
-  '<h2>Your location</h2>' +
-  '<p>Your IP address: <%= lastLogEntry.ownIp %>. You’re in <%= lastLogEntry.ownCity %>, <%= lastLogEntry.ownCountryCode %>.</p>' +
-  '<p>Lat: <%= lastLogEntry.ownLat %>, lng: <%= lastLogEntry.ownLng %></p>' +
-  '<h2>Currently viewing</h2>' +
-  '<p>IP: <%= lastLogEntry.ip %>. This address is located in <%= lastLogEntry.city %>, <%= lastLogEntry.countryCode %>.</p>' +
-  '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>' +
-  '<h2>Your digital citizenship</h2>' +
-  '<% _.each(citizenship, function(country) { %>' +
-  '  <%= country.code %>: <%= country.percentage %>%<br>' +
-  '<% }); %>' +
+  '<% if (lastLogEntry) { %>' +
+    '<h2>Your location</h2>' +
+    '<p>Your IP address: <%= lastLogEntry.ownIp %>. You’re in <%= lastLogEntry.ownCity %>, <%= lastLogEntry.ownCountryCode %>.</p>' +
+    '<p>Lat: <%= lastLogEntry.ownLat %>, lng: <%= lastLogEntry.ownLng %></p>' +
+    '<h2>Currently viewing</h2>' +
+    '<p>IP: <%= lastLogEntry.ip %>. This address is located in <%= lastLogEntry.city %>, <%= lastLogEntry.countryCode %>.</p>' +
+    '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>' +
+    '<h2>Your digital citizenship</h2>' +
+    '<% _.each(citizenship, function(country) { %>' +
+    '  <%= country.code %>: <%= country.percentage %>%<br>' +
+    '<% }); %>' +
+  '<% } else { %>' +
+    '<p>No data available yet.</p>' +
+  '<% }; %>' +
   '<a href="#" name="about">About</a>' +
   '<a href="#" name="settings">Settings</a>';
 var about = '<h1>About</h1>' +
@@ -65,6 +69,12 @@ var Sidebar = Backbone.Model.extend({
   getLastLogEntry: function() {
     chrome.storage.local.get('logEntries', _.bind(function(entries) {
       var logEntries = entries.logEntries;
+
+      if (!logEntries) {
+        this.set({ lastLogEntry: '' });
+        return;
+      }
+
       var lastEntry = logEntries[logEntries.length - 1];
       var logString = JSON.stringify(lastEntry);
       this.set({ lastLogEntry: lastEntry });
