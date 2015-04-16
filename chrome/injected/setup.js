@@ -19,6 +19,7 @@ var about = '<h1>About</h1>' +
   '<a href="#" name="currentTab">Current page</a>' +
   '<a href="#" name="settings">Settings</a>';
 var settings = '<h1>Settings</h1>' +
+  '<a href="#" class="erase">Erase all data (cannot undo this action)</a>' +
   '<a href="#" name="currentTab">Current page</a>' +
   '<a href="#" name="about">About</a>';
 
@@ -104,6 +105,10 @@ var Sidebar = Backbone.Model.extend({
 
   close: function() {
     this.unset('activePane');
+  },
+
+  eraseData: function() {
+    chrome.storage.local.clear();
   }
 });
 
@@ -113,6 +118,7 @@ var SidebarPane = Backbone.View.extend({
   className: 'citizen-ex__pane',
 
   events: {
+    'click .erase': 'eraseData',
     'click a': 'togglePane'
   },
 
@@ -158,6 +164,11 @@ var SidebarPane = Backbone.View.extend({
     event.preventDefault();
     var paneName = event.currentTarget.name;
     this.model.activatePane(paneName);
+  },
+
+  eraseData: function(event) {
+    event.preventDefault();
+    this.model.eraseData();
   }
 
 });
