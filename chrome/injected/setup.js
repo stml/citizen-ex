@@ -84,10 +84,8 @@ var Sidebar = Backbone.Model.extend({
 
   activatePane: function(name) {
     var pane = _.find(this.panes, function(pane) {
-      console.log(pane.name, name);
       return pane.name === name;
     });
-    console.log(pane);
     this.set({ activePane: pane });
   },
 
