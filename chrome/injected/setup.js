@@ -82,6 +82,12 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
+  getOwnGeoData: function() {
+    chrome.storage.local.get('ownGeoData', _.bind(function(ownGeoData) {
+      this.set({ ownGeoData: ownGeoData });
+    }, this));
+  },
+
   activatePane: function(name) {
     var pane = _.find(this.panes, function(pane) {
       return pane.name === name;
@@ -108,6 +114,7 @@ var Sidebar = Backbone.Model.extend({
   resetValues: function() {
     this.set({ citizenship: [] });
     this.set({ lastLogEntry: '' });
+    this.set({ ownGeoData: '' });
   },
 
   eraseData: function() {
@@ -138,6 +145,9 @@ var SidebarPane = Backbone.View.extend({
       this.render(model, this.model.get('activePane'));
     });
     this.listenTo(this.model, 'change:citizenship', function(model, citizenship) {
+      this.render(model, this.model.get('activePane'));
+    });
+    this.listenTo(this.model, 'change:ownGeoData', function(model, ownGeoData) {
       this.render(model, this.model.get('activePane'));
     });
 

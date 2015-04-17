@@ -155,7 +155,12 @@ GeoCache.prototype.addOwnLocation = function() {
     ownGeoData.ownCity = json.city;
     ownGeoData.ownLat = json.latitude;
     ownGeoData.ownLng = json.longitude;
+
     geoCache.addEntry(ownGeoData);
+
+    // store this so that it’s available to the template
+    chrome.storage.local.set({ ownGeoData: ownGeoData });
+
     console.log('Got own geo, caching it');
   }, ownGeoData));
 };
