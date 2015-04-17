@@ -119,6 +119,7 @@ var Sidebar = Backbone.Model.extend({
 
   eraseData: function() {
     this.resetValues();
+    chrome.storage.local.set({ ownGeoData: {} });
     chrome.storage.local.set({ logEntries: [] });
   }
 });
