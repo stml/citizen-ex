@@ -25,9 +25,9 @@ LogEntry.prototype.getOwnGeo = function() {
   }
 };
 
-LogEntry.prototype.getRemoteGeo = function(url) {
-  var cachedEntry = geoCache.hasEntry(this.domain);
-  if (cachedEntry) {
+LogEntry.prototype.getRemoteGeo = function(domain) {
+  var cachedEntry = geoCache.hasEntry(domain);
+  if (cachedEntry && cachedEntry.ip) {
     this.ip = cachedEntry.ip;
     this.countryCode = cachedEntry.countryCode;
     this.regionCode = cachedEntry.regionCode;
@@ -37,7 +37,7 @@ LogEntry.prototype.getRemoteGeo = function(url) {
     console.log('Retrieving entry details from cache');
     chrome.storage.local.set({ 'logEntries': logEntries });
   } else {
-    utils.get('https://freegeoip.net/json/' + url, _.bind(function(response) {
+    utils.get('https://freegeoip.net/json/' + domain, _.bind(function(response) {
       var json = JSON.parse(response);
       this.ip = json.ip;
       this.countryCode = json.country_code;
@@ -46,6 +46,7 @@ LogEntry.prototype.getRemoteGeo = function(url) {
       this.lat = json.latitude;
       this.lng = json.longitude;
       console.log('Got remote geo, updating the relevant LogEntry');
+      geoCache.removeEntry(cachedEntry);
       geoCache.addEntry(this);
       chrome.storage.local.set({ 'logEntries': logEntries });
     }, this));
@@ -179,6 +180,14 @@ GeoCache.prototype.hasEntry = function(property, value) {
 GeoCache.prototype.addEntry = function(object) {
   console.log('Caching a new entry');
   this.entries.push(object);
+};
+
+GeoCache.prototype.removeEntry = function(object) {
+  console.log('Removing an entry from cache');
+  var index = this.entries.indexOf(object);
+  if (index > -1) {
+    this.entries.splice(index, 1);
+  }
 };
 
 var geoCache = new GeoCache();

@@ -9,7 +9,7 @@ var currentTab = '' +
       '<p>No country data available yet.</p>' +
     '<% }; %>' +
     '<h2>Your location</h2>' +
-    '<% if (ownGeoData) { %>' +
+    '<% if (ownGeoData.ownIp) { %>' +
       '<p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>' +
       '<p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>' +
     '<% } else { %>' +
@@ -50,6 +50,7 @@ var Sidebar = Backbone.Model.extend({
   initialize: function(panes) {
     this.panes = panes;
     this.resetValues();
+    this.getOwnGeoData();
     this.getLogEntryForTab();
     this.setUpCitizenship();
   },
@@ -101,8 +102,8 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getOwnGeoData: function() {
-    chrome.storage.local.get('ownGeoData', _.bind(function(ownGeoData) {
-      this.set({ ownGeoData: ownGeoData });
+    chrome.storage.local.get('ownGeoData', _.bind(function(object) {
+      this.set({ ownGeoData: object.ownGeoData });
     }, this));
   },
 
