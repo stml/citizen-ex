@@ -1,9 +1,11 @@
 // Define the LogEntry class
 
-var LogEntry = function(url, timestamp) {
+var LogEntry = function(url, timestamp, tabId, windowId) {
   this.url = url;
   this.domain = utils.trimUrl(url);
   this.timestamp = timestamp;
+  this.tabId = tabId;
+  this.windowId = windowId;
   this.getOwnGeo();
   this.getRemoteGeo(this.domain);
 };
@@ -62,8 +64,17 @@ Utils.prototype.createLogEntry = function(tab) {
     return;
   }
 
+  var previousEntry = _.find(logEntries, function(entry) {
+    return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
+  });
+  if (previousEntry) {
+    // for now, return — we don’t need to do anything else
+    console.log('Entry exists, skipping creation');
+    return;
+  }
+
   var timestamp = new Date();
-  logEntries.push(new LogEntry(tab.url, timestamp));
+  logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
   chrome.storage.local.set({ 'logEntries': logEntries });
   console.log('Created a new LogEntry');
 };
