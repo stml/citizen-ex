@@ -11,22 +11,33 @@ var LogEntry = function(url, timestamp, tabId, windowId) {
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  var ownLocation = geoCache.getOwnLocation();
-  if (ownLocation) {
-    this.ownIp = ownLocation.ownIp;
-    this.ownCountryCode = ownLocation.ownCountryCode;
-    this.ownRegionCode = ownLocation.ownRegionCode;
-    this.ownCity = ownLocation.ownCity;
-    this.ownLat = ownLocation.ownLat;
-    this.ownLng = ownLocation.ownLng;
-    chrome.storage.local.set({ 'logEntries': logEntries });
-  } else {
-    console.log('No own geo data available yet');
-  }
+  chrome.storage.local.get('ownGeoData', function(result) {
+    // we try to retrieve the stored location
+    var ownGeoData = result.ownGeoData;
+    var ownLocation = geoCache.getOwnLocation();
+
+    // but if we have a new one we should use that
+    if (ownLocation) {
+      ownGeoData = ownLocation;
+    }
+
+    if (ownGeoData.ownIp) {
+      this.ownIp = ownGeoData.ownIp;
+      this.ownCountryCode = ownGeoData.ownCountryCode;
+      this.ownRegionCode = ownGeoData.ownRegionCode;
+      this.ownCity = ownGeoData.ownCity;
+      this.ownLat = ownGeoData.ownLat;
+      this.ownLng = ownGeoData.ownLng;
+      console.log('Using cached own geo');
+      chrome.storage.local.set({ 'logEntries': logEntries });
+    } else {
+      console.log('No own geo data available yet');
+    }
+  })
 };
 
 LogEntry.prototype.getRemoteGeo = function(domain) {
-  var cachedEntry = geoCache.hasEntry(domain);
+  var cachedEntry = geoCache.hasEntry('domain', domain);
   if (cachedEntry && cachedEntry.ip) {
     this.ip = cachedEntry.ip;
     this.countryCode = cachedEntry.countryCode;
