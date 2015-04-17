@@ -211,3 +211,10 @@ chrome.storage.onChanged.addListener(function(data) {
     console.log('Erased browsing data');
   }
 });
+
+// we have to use Chrome’s messaging system because the page can’t find out its own tabId
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.activeTab) {
+    sendResponse(sender.tab);
+  }
+});

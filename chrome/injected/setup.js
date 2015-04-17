@@ -1,15 +1,27 @@
 var currentTab = '' +
-  '<% if (lastLogEntry) { %>' +
+  '<% if (entry) { %>' +
     '<h2>Your digital citizenship</h2>' +
-    '<% _.each(citizenship, function(country) { %>' +
-    '  <%= country.code %>: <%= country.percentage %>%<br><br>' +
-    '<% }); %>' +
+    '<% if (citizenship.length > 0) { %>' +
+      '<% _.each(citizenship, function(country) { %>' +
+      '  <%= country.code %>: <%= country.percentage %>%<br><br>' +
+      '<% }); %>' +
+    '<% } else { %>' +
+      '<p>No country data available yet.</p>' +
+    '<% }; %>' +
     '<h2>Your location</h2>' +
-    '<p>Your IP address: <%= lastLogEntry.ownIp %>. You’re in <%= lastLogEntry.ownCity %>, <%= lastLogEntry.ownCountryCode %>.</p>' +
-    '<p>Lat: <%= lastLogEntry.ownLat %>, lng: <%= lastLogEntry.ownLng %></p>' +
+    '<% if (ownGeoData) { %>' +
+      '<p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>' +
+      '<p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>' +
+    '<% } else { %>' +
+      '<p>No geo data available yet.</p>' +
+    '<% }; %>' +
     '<h2>Currently viewing</h2>' +
-    '<p>IP: <%= lastLogEntry.ip %>. This address is located in <%= lastLogEntry.city %>, <%= lastLogEntry.countryCode %>.</p>' +
-    '<p>Lat: <%= lastLogEntry.lat %>, lng: <%= lastLogEntry.lng %></p>' +
+    '<% if (entry.ip) { %>' +
+      '<p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>' +
+      '<p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>' +
+    '<% } else { %>' +
+      '<p>No geo data available yet.</p>' +
+    '<% }; %>' +
   '<% } else { %>' +
     '<p>No data available yet.</p>' +
   '<% }; %>' +
@@ -38,7 +50,7 @@ var Sidebar = Backbone.Model.extend({
   initialize: function(panes) {
     this.panes = panes;
     this.resetValues();
-    this.getLastLogEntry();
+    this.getLogEntryForTab();
     this.setUpCitizenship();
   },
 
@@ -67,18 +79,24 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
-  getLastLogEntry: function() {
-    chrome.storage.local.get('logEntries', _.bind(function(entries) {
-      var logEntries = entries.logEntries;
+  getLogEntryForTab: function() {
+    chrome.runtime.sendMessage({ activeTab: true }, _.bind(function(response) {
+      var tab = response;
+      chrome.storage.local.get('logEntries', _.bind(function(entries) {
+        var logEntries = entries.logEntries;
 
-      if (!logEntries) {
-        this.set({ lastLogEntry: '' });
-        return;
-      }
+        if (!logEntries) {
+          this.set({ entry: '' });
+          return;
+        }
 
-      var lastEntry = logEntries[logEntries.length - 1];
-      var logString = JSON.stringify(lastEntry);
-      this.set({ lastLogEntry: lastEntry });
+        var entry = _.find(logEntries, function(logEntry) {
+          return logEntry.url === tab.url && logEntry.tabId === tab.id && logEntry.windowId === tab.windowId;
+        });
+        this.set({ entry: entry });
+
+      }, this));
+
     }, this));
   },
 
@@ -113,8 +131,8 @@ var Sidebar = Backbone.Model.extend({
 
   resetValues: function() {
     this.set({ citizenship: [] });
-    this.set({ lastLogEntry: '' });
     this.set({ ownGeoData: '' });
+    this.set({ entry: '' });
   },
 
   eraseData: function() {
@@ -141,7 +159,7 @@ var SidebarPane = Backbone.View.extend({
     this.listenTo(this.model, 'change:activePane', function(model, pane) {
       this.render(model, pane);
     });
-    this.listenTo(this.model, 'change:lastLogEntry', function(model, logEntry) {
+    this.listenTo(this.model, 'change:entry', function(model, logEntry) {
       this.model.setUpCitizenship();
       this.render(model, this.model.get('activePane'));
     });
