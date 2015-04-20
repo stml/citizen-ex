@@ -28,6 +28,7 @@
         "lib/underscore.js",
         "lib/jquery.js",
         "lib/backbone.js",
+        "lib/moment.js",
         "injected/setup.js"
       ]
     }
