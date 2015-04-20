@@ -179,14 +179,14 @@ var SidebarPane = Backbone.View.extend({
       switch (pane.name) {
         case this.name:
           this.$el.html(this.template(this.model.toJSON()));
-          this.$el.show();
+          this.$el.slideDown();
           break;
         default:
-          this.$el.hide();
+          this.$el.slideUp();
           break;
       }
     } else {
-      this.$el.hide();
+      this.$el.slideUp();
     }
   },
 
