@@ -183,6 +183,7 @@ var Sidebar = Backbone.Model.extend({
     this.set({ entry: '' });
     this.unset('logEntries');
     this.unset('tabs');
+    this.unset('tabEntries');
   },
 
   eraseData: function() {
