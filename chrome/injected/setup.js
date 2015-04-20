@@ -51,6 +51,7 @@ var Sidebar = Backbone.Model.extend({
     this.panes = panes;
     this.resetValues();
     this.getOwnGeoData();
+    this.getAllLogEntries();
     this.getLogEntryForTab();
     this.setUpCitizenship();
   },
@@ -80,23 +81,43 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
+  getAllLogEntries: function() {
+    chrome.storage.local.get('logEntries', _.bind(function(entries) {
+      var logEntries = entries.logEntries;
+
+      if (!logEntries) {
+        this.set({ logEntries: '' });
+      } else {
+        this.set({ logEntries: logEntries });
+      }
+    }, this));
+  },
+
+  getLogEntry: function(url, tabId, windowId) {
+    var logEntries = this.get('logEntries');
+
+    if (!logEntries) {
+      return null;
+    }
+
+    var entry = _.find(logEntries, function(logEntry) {
+      return logEntry.url === url && logEntry.tabId === tabId && logEntry.windowId === windowId;
+    });
+    return entry;
+  },
+
   getLogEntryForTab: function() {
     chrome.runtime.sendMessage({ activeTab: true }, _.bind(function(response) {
       var tab = response;
-      chrome.storage.local.get('logEntries', _.bind(function(entries) {
-        var logEntries = entries.logEntries;
+      var entry = this.getLogEntry(tab.url, tab.id, tab.windowId);
 
-        if (!logEntries) {
-          this.set({ entry: '' });
-          return;
-        }
-
-        var entry = _.find(logEntries, function(logEntry) {
-          return logEntry.url === tab.url && logEntry.tabId === tab.id && logEntry.windowId === tab.windowId;
-        });
+      if (!entry) {
+        this.set({ entry: '' });
+        return;
+      } else {
         this.set({ entry: entry });
+      }
 
-      }, this));
 
     }, this));
   },
@@ -105,6 +126,32 @@ var Sidebar = Backbone.Model.extend({
     chrome.storage.local.get('ownGeoData', _.bind(function(object) {
       this.set({ ownGeoData: object.ownGeoData });
     }, this));
+  },
+
+  requestOpenTabs: function() {
+    chrome.runtime.sendMessage({ allTabs: true });
+  },
+
+  updateTabs: function(tabs) {
+    this.set({ tabs: tabs });
+    this.getTabEntries();
+  },
+
+  getTabEntries: function() {
+    var tabs = this.get('tabs');
+
+    if (tabs) {
+      var entries = [];
+      _.each(tabs, _.bind(function(tab) {
+        var logEntry = this.getLogEntry(tab.url, tab.id, tab.windowId);
+        if (logEntry) {
+          entries.push(logEntry);
+        }
+      }, this));
+      this.set({ tabEntries: entries });
+    } else {
+      this.set({ tabEntries: [] });
+    }
   },
 
   activatePane: function(name) {
@@ -134,6 +181,8 @@ var Sidebar = Backbone.Model.extend({
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
     this.set({ entry: '' });
+    this.unset('logEntries');
+    this.unset('tabs');
   },
 
   eraseData: function() {
@@ -213,3 +262,4 @@ var sidebar = new Sidebar(panes);
 _.each(panes, function(pane) {
   new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
 });
+

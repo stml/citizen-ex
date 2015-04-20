@@ -252,5 +252,12 @@ chrome.storage.onChanged.addListener(function(data) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.activeTab) {
     sendResponse(sender.tab);
+  } else if (request.allTabs) {
+    var windowId = sender.tab.windowId;
+    var senderObject = sender;
+
+    chrome.tabs.query({ windowId: windowId }, function(tabs) {
+      chrome.tabs.sendMessage(senderObject.tab.id, { tabs: tabs });
+    });
   }
 });
