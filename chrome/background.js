@@ -3,11 +3,16 @@
 var LogEntry = function(url, timestamp, tabId, windowId) {
   this.url = url;
   this.domain = utils.trimUrl(url);
-  this.timestamp = timestamp;
+  this.timestamps = [timestamp];
   this.tabId = tabId;
   this.windowId = windowId;
   this.getOwnGeo();
   this.getRemoteGeo(this.domain);
+};
+
+LogEntry.prototype.addTimestamp = function() {
+  var timestamp = new Date();
+  this.timestamps.push(timestamp);
 };
 
 LogEntry.prototype.getOwnGeo = function() {
@@ -92,8 +97,8 @@ Utils.prototype.createLogEntry = function(tab) {
     return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
   });
   if (previousEntry) {
-    // for now, return — we don’t need to do anything else
-    console.log('Entry exists, skipping creation');
+    console.log('Entry exists, skipping creation and adding a timestamp');
+    previousEntry.addTimestamp();
     return;
   }
 
