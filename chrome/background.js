@@ -21,7 +21,7 @@ LogEntry.prototype.fromJSON = function(json) {
 };
 
 LogEntry.prototype.toJSON = function() {
-  return JSON.stringify(this);
+  return JSON.prune(this);
 };
 
 LogEntry.prototype.addTimestamp = function() {
@@ -29,8 +29,15 @@ LogEntry.prototype.addTimestamp = function() {
   this.timestamps.push(timestamp);
 };
 
+LogEntry.prototype.storeEntries = function(entries) {
+  var logEntries = _.map(entries, function(entry) {
+    return entry.toJSON();
+  });
+  chrome.storage.local.set({ 'logEntries': logEntries });
+};
+
 LogEntry.prototype.getOwnGeo = function() {
-  chrome.storage.local.get('ownGeoData', function(result) {
+  chrome.storage.local.get('ownGeoData', _.bind(function(result) {
     // we try to retrieve the stored location
     var ownGeoData = result.ownGeoData;
     var ownLocation = geoCache.getOwnLocation();
@@ -52,11 +59,11 @@ LogEntry.prototype.getOwnGeo = function() {
       this.ownLat = ownGeoData.ownLat;
       this.ownLng = ownGeoData.ownLng;
       console.log('Using cached own geo');
-      chrome.storage.local.set({ 'logEntries': logEntries });
+      this.storeEntries(logEntries);
     } else {
       console.log('No own geo data available yet');
     }
-  })
+  }, this));
 };
 
 LogEntry.prototype.getRemoteGeo = function(domain) {
@@ -73,7 +80,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     this.lat = cachedEntry.lat;
     this.lng = cachedEntry.lng;
     console.log('Retrieving entry details from cache');
-    chrome.storage.local.set({ 'logEntries': logEntries });
+    this.storeEntries(logEntries);
   } else {
     utils.get('https://freegeoip.net/json/' + domain, _.bind(function(response) {
       var json = JSON.parse(response);
@@ -90,7 +97,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       console.log('Got remote geo, updating the relevant LogEntry');
       geoCache.removeEntry(cachedEntry);
       geoCache.addEntry(this);
-      chrome.storage.local.set({ 'logEntries': logEntries });
+      this.storeEntries(logEntries);
     }, this));
   }
 };
@@ -118,7 +125,9 @@ Utils.prototype.createLogEntry = function(tab) {
 
   var timestamp = new Date();
   logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
-  chrome.storage.local.set({ 'logEntries': logEntries });
+
+  var logEntry = new LogEntry();
+  logEntry.storeEntries(logEntries);
   console.log('Created a new LogEntry');
 };
 
@@ -174,7 +183,7 @@ chrome.storage.local.get('logEntries', function(entries) {
     var entries = entries.logEntries;
     logEntries = _.map(entries, function(entry) {
       var logEntry = new LogEntry();
-      logEntry = logEntry.fromJSON(entry);
+      logEntry.fromJSON(entry);
       return logEntry;
     });
 
