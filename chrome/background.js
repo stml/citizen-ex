@@ -1,13 +1,27 @@
 // Define the LogEntry class
 
 var LogEntry = function(url, timestamp, tabId, windowId) {
-  this.url = url;
-  this.domain = utils.trimUrl(url);
-  this.timestamps = [timestamp];
-  this.tabId = tabId;
-  this.windowId = windowId;
-  this.getOwnGeo();
-  this.getRemoteGeo(this.domain);
+  if (url) {
+    this.url = url;
+    this.domain = utils.trimUrl(url);
+    this.timestamps = [timestamp];
+    this.tabId = tabId;
+    this.windowId = windowId;
+    this.getOwnGeo();
+    this.getRemoteGeo(this.domain);
+  }
+};
+
+LogEntry.prototype.fromJSON = function(json) {
+  var that = this;
+  _.each(json, function(value, key) {
+    that[key] = value;
+  });
+  return this;
+};
+
+LogEntry.prototype.toJSON = function() {
+  return JSON.stringify(this);
 };
 
 LogEntry.prototype.addTimestamp = function() {
@@ -157,7 +171,13 @@ var chromeUtils = new ChromeUtils();
 var logEntries = [];
 chrome.storage.local.get('logEntries', function(entries) {
   if (entries && entries.logEntries) {
-    logEntries = entries.logEntries;
+    var entries = entries.logEntries;
+    logEntries = _.map(entries, function(entry) {
+      var logEntry = new LogEntry();
+      logEntry = logEntry.fromJSON(entry);
+      return logEntry;
+    });
+
     console.log('Fetched the stored log entries');
   }
 });
