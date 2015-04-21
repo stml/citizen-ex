@@ -275,7 +275,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.storage.onChanged.addListener(function(data) {
-  if (data.logEntries && data.logEntries.newValue.length === 0) {
+  if (data.logEntries && data.logEntries.newValue && data.logEntries.newValue.length === 0) {
     logEntries = [];
     geoCache = new GeoCache();
     console.log('Erased browsing data');
