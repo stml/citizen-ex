@@ -53,6 +53,7 @@ var Sidebar = Backbone.Model.extend({
     this.getOwnGeoData();
     this.getAllLogEntries();
     this.getLogEntryForTab();
+    this.getTabEntries();
     this.setUpCitizenship();
   },
 
