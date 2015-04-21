@@ -57,28 +57,26 @@ var Sidebar = Backbone.Model.extend({
   },
 
   setUpCitizenship: function() {
-    chrome.storage.local.get('logEntries', _.bind(function(entries) {
-      var logEntries = entries.logEntries;
-      var validEntries = _.reject(logEntries, function(entry) {
-        return entry.countryCode === undefined;
-      });
-      var countryCodes = _.countBy(validEntries, function(entry) {
-        if (entry.countryCode === '') {
-          return 'Unknown';
-        }
-        return entry.countryCode;
-      });
-      var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
-      var countries = [];
-      _.each(countryCodes, function(value, key) {
-        var percentage = (value / sum) * 100;
-        percentage = percentage.toFixed(2);
-        countries.push({ code: key, percentage: percentage });
-      });
-      countries = _.sortBy(countries, 'percentage');
-      this.set({ citizenship: countries.reverse() });
+    var logEntries = this.get('logEntries');
 
-    }, this));
+    var validEntries = _.reject(logEntries, function(entry) {
+      return entry.countryCode === undefined;
+    });
+    var countryCodes = _.countBy(validEntries, function(entry) {
+      if (entry.countryCode === '') {
+        return 'Unknown';
+      }
+      return entry.countryCode;
+    });
+    var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
+    var countries = [];
+    _.each(countryCodes, function(value, key) {
+      var percentage = (value / sum) * 100;
+      percentage = percentage.toFixed(2);
+      countries.push({ code: key, percentage: percentage });
+    });
+    countries = _.sortBy(countries, 'percentage');
+    this.set({ citizenship: countries.reverse() });
   },
 
   getAllLogEntries: function() {
