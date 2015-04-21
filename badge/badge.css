@@ -2,9 +2,11 @@ body {
 	background: #888;
 	}
 p {
-	margin-bottom: 12px;
+	margin-bottom: 25px;
 	}
 .badge {
 	width: 350px;
 	height: 350px;
+	margin-bottom: 25px;
+	margin-right: 25px;
 	}
