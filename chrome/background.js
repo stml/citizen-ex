@@ -166,6 +166,13 @@ Utils.prototype.get = function(url, callback) {
   xhr.send();
 };
 
+Utils.prototype.reset = function() {
+  logEntries = [];
+  countryLog.reset();
+  geoCache = new GeoCache();
+  console.log('Erased browsing data');
+};
+
 var utils = new Utils();
 
 
@@ -264,6 +271,7 @@ var geoCache = new GeoCache();
 
 var CountryLog = function() {
   this.reset();
+  this.recoverFromStorage();
 };
 
 CountryLog.prototype.addVisit = function(country) {
@@ -272,10 +280,24 @@ CountryLog.prototype.addVisit = function(country) {
   } else {
     this.visits[country] = 1;
   }
+  this.updateStorage();
 };
 
 CountryLog.prototype.reset = function() {
   this.visits = {};
+};
+
+CountryLog.prototype.updateStorage = function() {
+  chrome.storage.local.set({ 'countryLog': this.visits });
+};
+
+CountryLog.prototype.recoverFromStorage = function() {
+  chrome.storage.local.get('countryLog', _.bind(function(countryLog) {
+    if (_.isEmpty(countryLog)) {
+      return;
+    }
+    this.visits = countryLog;
+  }, this));
 };
 
 var countryLog = new CountryLog();
@@ -302,11 +324,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.storage.onChanged.addListener(function(data) {
-  if (data.logEntries && data.logEntries.newValue && data.logEntries.newValue.length === 0) {
-    logEntries = [];
-    countryLog.reset();
-    geoCache = new GeoCache();
-    console.log('Erased browsing data');
+  if (data.logEntries) {
+    if (_.has(data.logEntries, 'newValue')) {
+      return;
+    }
+
+    // if there are no values then it means we want to clear all history
+    utils.reset();
   }
 });
 
