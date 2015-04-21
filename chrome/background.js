@@ -24,6 +24,10 @@ LogEntry.prototype.toJSON = function() {
   return JSON.prune(this);
 };
 
+LogEntry.prototype.latestTimestamp = function() {
+  return _.max(this.timestamps);
+};
+
 LogEntry.prototype.addTimestamp = function() {
   var timestamp = new Date();
   this.timestamps.push(timestamp);
