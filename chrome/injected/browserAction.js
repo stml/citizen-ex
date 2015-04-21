@@ -7,7 +7,6 @@ sidebar.toggle();
 sidebar.requestOpenTabs();
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-
   if (request.tabs) {
     sidebar.updateTabs(request.tabs);
   }

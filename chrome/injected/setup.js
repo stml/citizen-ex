@@ -1,3 +1,19 @@
+var LogEntry = function() {};
+
+LogEntry.prototype.fromJSON = function(json) {
+  var that = this;
+  _.each(json, function(value, key) {
+    that[key] = value;
+  });
+  return this;
+};
+
+LogEntry.prototype.latestTimestamp = function() {
+  return _.max(this.timestamps, function(timestamp) {
+    return Date.parse(timestamp).value;
+  });
+};
+
 var currentTab = '' +
   '<% if (entry) { %>' +
     '<h2>Your digital citizenship</h2>' +
@@ -53,7 +69,6 @@ var Sidebar = Backbone.Model.extend({
     this.getOwnGeoData();
     this.getAllLogEntries();
     this.getLogEntryForTab();
-    this.getTabEntries();
     this.setUpCitizenship();
   },
 
@@ -82,7 +97,10 @@ var Sidebar = Backbone.Model.extend({
 
   getAllLogEntries: function() {
     chrome.runtime.sendMessage({ allLogEntries: true }, _.bind(function(entries) {
-      var logEntries = entries;
+      var logEntries = _.map(entries, function(entry) {
+        var logEntry = new LogEntry();
+        return logEntry.fromJSON(JSON.parse(entry));
+      });
 
       if (!logEntries) {
         this.set({ logEntries: '' });
@@ -151,6 +169,15 @@ var Sidebar = Backbone.Model.extend({
     } else {
       this.set({ tabEntries: [] });
     }
+  },
+
+  getTabEntriesForDays: function(n) {
+    var tabEntries = this.get('tabEntries');
+    var cutOffDate = moment().subtract(n, 'days').valueOf();
+    var latestEntries = _.filter(tabEntries, function(entry) {
+      return entry.latestTimestamp() <= cutOffDate;
+    });
+    return latestEntries;
   },
 
   activatePane: function(name) {
