@@ -208,8 +208,7 @@ chrome.storage.local.get('logEntries', function(entries) {
 // Set up geo-cache
 
 var GeoCache = function() {
-  console.log('Creating a new cache');
-  this.entries = [];
+  this.reset();
   this.addOwnLocation();
 };
 
@@ -231,7 +230,8 @@ GeoCache.prototype.addOwnLocation = function() {
     ownGeoData.ownLat = json.latitude;
     ownGeoData.ownLng = json.longitude;
 
-    geoCache.addEntry(ownGeoData);
+    geoCache.removeOwnLocation();
+    geoCache.addOwnLocation(ownGeoData);
 
     // store this so that it’s available to the template
     chrome.storage.local.set({ ownGeoData: ownGeoData });
@@ -242,7 +242,19 @@ GeoCache.prototype.addOwnLocation = function() {
 
 GeoCache.prototype.getOwnLocation = function() {
   return this.hasEntry('ownGeoData', true);
-}
+};
+
+GeoCache.prototype.addOwnLocation = function() {
+  this.addEntry(ownGeoData);
+};
+
+GeoCache.prototype.removeOwnLocation = function() {
+  var ownLocation = this.getOwnLocation();
+  if (ownLocation) {
+    console.log('Removing old own location entry');
+    this.removeEntry(ownLocation);
+  }
+};
 
 GeoCache.prototype.hasEntry = function(property, value) {
   var cacheEntry = _.find(this.entries, function(entry) {
@@ -254,6 +266,7 @@ GeoCache.prototype.hasEntry = function(property, value) {
 GeoCache.prototype.addEntry = function(object) {
   console.log('Caching a new entry');
   this.entries.push(object);
+  this.updateStorage();
 };
 
 GeoCache.prototype.removeEntry = function(object) {
@@ -262,6 +275,27 @@ GeoCache.prototype.removeEntry = function(object) {
   if (index > -1) {
     this.entries.splice(index, 1);
   }
+  this.updateStorage();
+};
+
+GeoCache.prototype.reset = function() {
+  console.log('Resetting geo cache');
+  this.entries = [];
+  this.recoverFromStorage();
+};
+
+GeoCache.prototype.recoverFromStorage = function() {
+  console.log('Getting geo cache from storage');
+  chrome.storage.local.get('geoCache', _.bind(function(geoCache) {
+    if (_.isEmpty(geoCache) || geoCache === undefined) {
+      return;
+    }
+    this.entries = geoCache.geoCache;
+  }, this));
+};
+
+GeoCache.prototype.updateStorage = function() {
+  chrome.storage.local.set({ 'geoCache': this.entries });
 };
 
 var geoCache = new GeoCache();
