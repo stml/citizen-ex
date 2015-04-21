@@ -83,6 +83,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     this.city = cachedEntry.city;
     this.lat = cachedEntry.lat;
     this.lng = cachedEntry.lng;
+    countryLog.addVisit(this.countryCode);
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
   } else {
@@ -101,6 +102,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       console.log('Got remote geo, updating the relevant LogEntry');
       geoCache.removeEntry(cachedEntry);
       geoCache.addEntry(this);
+      countryLog.addVisit(this.countryCode);
       this.storeEntries(logEntries);
     }, this));
   }
@@ -258,6 +260,27 @@ GeoCache.prototype.removeEntry = function(object) {
 var geoCache = new GeoCache();
 
 
+// Create and instantiate a country log
+
+var CountryLog = function() {
+  this.reset();
+};
+
+CountryLog.prototype.addVisit = function(country) {
+  if (_.has(this.visits, country)) {
+    this.visits[country]++;
+  } else {
+    this.visits[country] = 1;
+  }
+};
+
+CountryLog.prototype.reset = function() {
+  this.visits = {};
+};
+
+var countryLog = new CountryLog();
+
+
 // Respond to events
 
 chrome.tabs.onUpdated.addListener(function(tabId) {
@@ -281,6 +304,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 chrome.storage.onChanged.addListener(function(data) {
   if (data.logEntries && data.logEntries.newValue && data.logEntries.newValue.length === 0) {
     logEntries = [];
+    countryLog.reset();
     geoCache = new GeoCache();
     console.log('Erased browsing data');
   }
