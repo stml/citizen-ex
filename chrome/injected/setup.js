@@ -73,26 +73,20 @@ var Sidebar = Backbone.Model.extend({
   },
 
   setUpCitizenship: function() {
-    var logEntries = this.get('logEntries');
+    chrome.runtime.sendMessage({ countryLog: true }, _.bind(function(countryLog) {
+      var validEntries = _.pick(countryLog.visits, _.identity);
 
-    var validEntries = _.reject(logEntries, function(entry) {
-      return entry.countryCode === undefined;
-    });
-    var countryCodes = _.countBy(validEntries, function(entry) {
-      if (entry.countryCode === '') {
-        return 'Unknown';
-      }
-      return entry.countryCode;
-    });
-    var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
-    var countries = [];
-    _.each(countryCodes, function(value, key) {
-      var percentage = (value / sum) * 100;
-      percentage = percentage.toFixed(2);
-      countries.push({ code: key, percentage: percentage });
-    });
-    countries = _.sortBy(countries, 'percentage');
-    this.set({ citizenship: countries.reverse() });
+      var sum = _.reduce(validEntries, function(memo, num) { return memo + num; }, 0);
+      var countries = [];
+      _.each(validEntries, function(value, key) {
+        var percentage = (value / sum) * 100;
+        percentage = percentage.toFixed(2);
+        countries.push({ code: key, percentage: percentage });
+      });
+      countries = _.sortBy(countries, 'percentage');
+
+      this.set({ citizenship: countries.reverse() });
+    }, this));
   },
 
   getAllLogEntries: function() {

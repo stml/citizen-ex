@@ -318,10 +318,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var windowId = sender.tab.windowId;
     var senderObject = sender;
 
+    // this has to use message sending back and forth
+    // simple value sending to a callback fails
     chrome.tabs.query({ windowId: windowId }, function(tabs) {
       chrome.tabs.sendMessage(senderObject.tab.id, { tabs: tabs });
     });
   } else if (request.allLogEntries) {
     sendResponse(logEntries);
+  } else if (request.countryLog) {
+    console.log(countryLog);
+    sendResponse(countryLog);
   }
 });
