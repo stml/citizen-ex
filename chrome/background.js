@@ -270,8 +270,8 @@ var geoCache = new GeoCache();
 // Create and instantiate a country log
 
 var CountryLog = function() {
+  console.log('Creating a new CountryLog');
   this.reset();
-  this.recoverFromStorage();
 };
 
 CountryLog.prototype.addVisit = function(country) {
@@ -285,6 +285,7 @@ CountryLog.prototype.addVisit = function(country) {
 
 CountryLog.prototype.reset = function() {
   this.visits = {};
+  this.recoverFromStorage();
 };
 
 CountryLog.prototype.updateStorage = function() {
@@ -293,10 +294,10 @@ CountryLog.prototype.updateStorage = function() {
 
 CountryLog.prototype.recoverFromStorage = function() {
   chrome.storage.local.get('countryLog', _.bind(function(countryLog) {
-    if (_.isEmpty(countryLog)) {
+    if (_.isEmpty(countryLog) || countryLog === undefined) {
       return;
     }
-    this.visits = countryLog;
+    this.visits = countryLog.countryLog;
   }, this));
 };
 
@@ -350,7 +351,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   } else if (request.allLogEntries) {
     sendResponse(logEntries);
   } else if (request.countryLog) {
-    console.log(countryLog);
     sendResponse(countryLog);
   }
 });
