@@ -183,7 +183,7 @@ chrome.storage.local.get('logEntries', function(entries) {
     var entries = entries.logEntries;
     logEntries = _.map(entries, function(entry) {
       var logEntry = new LogEntry();
-      logEntry.fromJSON(entry);
+      logEntry.fromJSON(JSON.parse(entry));
       return logEntry;
     });
 
