@@ -82,8 +82,8 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getAllLogEntries: function() {
-    chrome.storage.local.get('logEntries', _.bind(function(entries) {
-      var logEntries = entries.logEntries;
+    chrome.runtime.sendMessage({ allLogEntries: true }, _.bind(function(entries) {
+      var logEntries = entries;
 
       if (!logEntries) {
         this.set({ logEntries: '' });

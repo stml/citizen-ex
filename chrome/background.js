@@ -293,5 +293,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     chrome.tabs.query({ windowId: windowId }, function(tabs) {
       chrome.tabs.sendMessage(senderObject.tab.id, { tabs: tabs });
     });
+  } else if (request.allLogEntries) {
+    sendResponse(logEntries);
   }
 });
