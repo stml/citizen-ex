@@ -2,7 +2,7 @@
 
 	<div id="cex_header">
 		<h1>Citizen Ex</h1>
-		<a href="#" name="settings">Settings</a>
+		<a href="#" name="settings">More Info</a>
 	</div>
 
 	<div id="cex_main">
@@ -11,10 +11,15 @@
 	
 	  	<div id="cex_badge">
 	  
-	  		<h2>Your badge</h2>
 				<% if (citizenship.length > 0) { %>
 				
 				<canvas id="cex_badge_canvas"></canvas>
+				
+				<h2>This is your Algorithmic Citizenship</h2>
+				<p>You are 
+				<% _.each(citizenship, function(country) { %>
+				  <%= country.percentage %>% <%= country.code %>,
+				<% }); %>.</p>
 				
 				<script type="text/javascript">
 				var percents = [
