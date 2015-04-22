@@ -29,6 +29,7 @@
         "lib/jquery.js",
         "lib/backbone.js",
         "lib/moment.js",
+        "lib/mapbox.js",
         "injected/setup.js"
       ]
     }

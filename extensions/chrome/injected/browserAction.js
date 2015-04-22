@@ -11,3 +11,5 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     sidebar.updateTabs(request.tabs);
   }
 });
+
+cex_load_map();
