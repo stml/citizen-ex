@@ -20,6 +20,9 @@
     "default_title": "Citizen Ex",
     "default_icon": "icon16.png"
   },
+  "web_accessible_resources": [
+    "flags/*.svg"
+  	],
   "content_scripts": [
     {
       "matches": ["http://*/*","https://*/*"],

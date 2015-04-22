@@ -36,6 +36,11 @@
 	border-right: 2px solid #000;
 	height: 400px;
 	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_canvas {
+	width: 350px;
+	height: 350px;
+	}
+	
 .citizen-ex__pane #cex_hud #cex_map {
 	margin-left: 375px;
 	}
