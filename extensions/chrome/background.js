@@ -43,15 +43,21 @@ LogEntry.prototype.storeEntries = function(entries) {
 LogEntry.prototype.getOwnGeo = function() {
   chrome.storage.local.get('ownGeoData', _.bind(function(result) {
     // we try to retrieve the stored location
+    var emptyResult = _.isEmpty(result);
+
+    if (emptyResult) {
+      return;
+    }
+
     var ownGeoData = result.ownGeoData;
     var ownLocation = geoCache.getOwnLocation();
 
     // but if we have a new one we should use that
-    if (ownLocation) {
+    if (ownLocation.ownIp) {
       ownGeoData = ownLocation;
     }
 
-    if (ownGeoData.ownIp) {
+    if (!empty_result && ownGeoData.ownIp) {
       this.ownIp = ownGeoData.ownIp;
       this.ownCountryCode = ownGeoData.ownCountryCode;
       this.ownCountryName = ownGeoData.ownCountryName;
@@ -244,7 +250,7 @@ GeoCache.prototype.getOwnLocation = function() {
   return this.hasEntry('ownGeoData', true);
 };
 
-GeoCache.prototype.addOwnLocation = function() {
+GeoCache.prototype.addOwnLocation = function(ownGeoData) {
   this.addEntry(ownGeoData);
 };
 
@@ -258,7 +264,11 @@ GeoCache.prototype.removeOwnLocation = function() {
 
 GeoCache.prototype.hasEntry = function(property, value) {
   var cacheEntry = _.find(this.entries, function(entry) {
-    return entry[property] === value;
+    if (entry) {
+      return entry[property] === value;
+    } else {
+      return false;
+    }
   });
   return cacheEntry;
 };
@@ -359,8 +369,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.storage.onChanged.addListener(function(data) {
-  if (data.logEntries) {
-    if (_.has(data.logEntries, 'newValue')) {
+  if (data.logEntries || data.geoCache) {
+    if (_.has(data.logEntries, 'newValue') || _.has(data.geoCache, 'newValue')) {
       return;
     }
 

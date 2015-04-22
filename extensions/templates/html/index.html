@@ -8,7 +8,7 @@
       <p>No country data available yet.</p>
     <% }; %>
     <h2>Your location</h2>
-    <% if (ownGeoData.ownIp) { %>
+    <% if (ownGeoData && ownGeoData.ownIp) { %>
       <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
       <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>
     <% } else { %>
