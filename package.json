@@ -1,0 +1,19 @@
+{
+  "name": "citizen-ex",
+  "version": "1.0.0",
+  "description": "Citizen Ex extensions",
+  "dependencies": {
+    "gulp": "^3.8.11",
+    "gulp-rename": "^1.2.2",
+    "gulp-concat": "^2.5.2",
+    "gulp-include-file": "^0.1.0"
+  },
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stml/citizen-ex.git"
+  },
+  "author": "James Bridle and Nat Buckley",
+  "homepage": "https://github.com/stml/citizen-ex"
+}
