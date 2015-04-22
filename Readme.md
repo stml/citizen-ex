@@ -28,7 +28,7 @@ From the project’s root directory run the following:
 $ gulp
 ```
 
-This will watch for any changes.
+This will watch for any changes. Currently it only overwrites the `extensions/chrome/injected/setup.js` file, as it includes HTML snippets.
 
 ## Project structure
 
