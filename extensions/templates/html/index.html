@@ -1,27 +1,61 @@
-<% if (entry) { %>
-  <h2>Your digital citizenship</h2>
-  <% if (citizenship.length > 0) { %>
-    <% _.each(citizenship, function(country) { %>
-      <%= country.code %>: <%= country.percentage %>%<br><br>
-      <% }); %>
-    <% } else { %>
-      <p>No country data available yet.</p>
-    <% }; %>
-    <h2>Your location</h2>
-    <% if (ownGeoData && ownGeoData.ownIp) { %>
-      <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
-      <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>
-    <% } else { %>
-      <p>No geo data available yet.</p>
-    <% }; %>
-    <h2>Currently viewing</h2>
-    <% if (entry.ip) { %>
-      <p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
-      <p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>
-    <% } else { %>
-      <p>No geo data available yet.</p>
-    <% }; %>
-  <% } else { %>
-    <p>No data available yet.</p>
-  <% }; %>
-  <a href="#" name="settings">Settings</a>
+<div id="cex_hud">
+
+	<div id="cex_header">
+		<h1>Citizen Ex</h1>
+		<a href="#" name="settings">Settings</a>
+	</div>
+
+	<div id="cex_main">
+
+	<% if (entry) { %>
+	
+	  	<div id="cex_badge">
+	  
+	  		<h2>Your badge</h2>
+				<% if (citizenship.length > 0) { %>
+				<% _.each(citizenship, function(country) { %>
+				  <%= country.code %>: <%= country.percentage %>%<br><br>
+				  <% }); %>
+				<% } else { %>
+				  <p>No country data available yet.</p>
+				<% }; %>
+				
+		</div>
+		
+		<div id="cex_map">
+		
+		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
+		<div id="cex_map_window"></div>
+	    
+	    <div id="cex_mapdata">
+	    <% if (ownGeoData && ownGeoData.ownIp) { %>
+	      <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
+	      <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>
+	    <% } else { %>
+	      <p>No geo data available yet.</p>
+	    <% }; %>
+	    <h2>Currently viewing</h2>
+	    <% if (entry.ip) { %>
+	      <p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
+	      <p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>
+	      </div>
+	      
+	    <% } else { %>
+	      <p>No geo data available yet.</p>
+	    <% }; %>
+	    
+<!-- 	  	<script type="text/javascript">cex_load_map();</script> -->
+	    
+	    </div>
+	    
+	  <% } else { %>
+	  
+	  		<div id="cex_nodata">
+				<p>No data available yet.</p>
+			</div>
+	  <% }; %>
+	  
+	</div><!-- #cex_main -->
+
+</div><!-- #cex_hud -->

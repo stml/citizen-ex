@@ -9,6 +9,8 @@ gulp.task('chromeTemplates', function () {
     './extensions/templates/js/sidebar.js',
     './extensions/templates/js/sidebar_pane.js',
     './extensions/templates/js/initialize.js',
+    './extensions/templates/js/jquery-1.11.2.min',
+    './extensions/templates/js/map.js',
   ])
     .pipe(include_file())
     .pipe(concat('setup.js'))

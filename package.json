@@ -9,6 +9,7 @@
     "gulp-include-file": "^0.1.0"
   },
   "devDependencies": {
+    "gulp": "^3.8.11"
   },
   "repository": {
     "type": "git",
