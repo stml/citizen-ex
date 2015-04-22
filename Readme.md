@@ -6,7 +6,7 @@ In Development.
 
 If you haven’t yet, install [Node](https://nodejs.org/). A bunch of packages are used to make file management easier, so stuff doesn’t have to be copied and pasted between the extensions.
 
-Once you have node, in the project’s root directory run the following to install the required packages:
+Once you have Node, in the project’s root directory run the following to install packages:
 
 ```
 $ npm install
@@ -30,4 +30,26 @@ $ gulp
 
 This will watch for any changes.
 
+## Project structure
 
+The `extensions` directory is where all the extension-related code lives. Each extension has its own subdirectory, but they share some code from the `templates` dir.
+
+Templates directory has some shared JavaScript files and HTML templates to be inserted into the page.
+
+### log_entry.js
+
+This file defines the LogEntry class for use in the extension.
+
+### sidebar.js
+
+In this file you can find the Backbone model storing data used in the extension, and utility functions that you can use from the view. I will be renaming it to something more appropriate.
+
+### siedebar_pane.js
+
+Includes all code relating to the Backbone view. The model and the view communicate whenever changes or events occur so that any updates can be reflected immediately.
+
+## Chrome
+
+### The background script
+
+I will shortly update the information about the structure of the background script.
