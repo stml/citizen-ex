@@ -65,7 +65,7 @@ Backbone model is designed to store logic and data. In the extension we have a S
 
 The sidebar model is defined, and then we create one instance of it:
 
-```
+```js
 var sidebar = new Sidebar();
 ```
 
@@ -73,14 +73,14 @@ var sidebar = new Sidebar();
 
 If you want to store something on the model, you can do it like so:
 
-```
+```js
 sidebar.set({ catName: 'Felix', height: 50  }); // setting multiple things at once is possible
 // or
 sidebar.set('catName', 'Felix'); // one value only
 ```
 To retrieve a piece of information:
 
-```
+```js
 sidebar.get('catName'); // returns 'Felix'
 ```
 
@@ -110,7 +110,7 @@ The view is defined and then I create one instance of it for every “pane” (t
 
 We want to be able to do stuff on click etc. Events are handled inside the view declaration using the `events` object:
 
-```
+```js
 events: {
   'click .erase': 'eraseData',
   'click a': 'togglePane'
@@ -119,7 +119,7 @@ events: {
 
 When the `.erase` link is clicked, the view runs this function:
 
-```
+```js
 eraseData: function(event) {
   event.preventDefault();
   this.model.eraseData();
@@ -135,7 +135,7 @@ Model can constantly update its own data, for exaple when we initialise it we at
 
 This subscription is set up when the view is first created, inside the `initialize` function:
 
-```
+```js
 this.listenTo(this.model, 'change', this.render);
 ```
 
@@ -143,7 +143,7 @@ We tell this view to listen to *any* changes on the model, and when they occur i
 
 In our case the setup is slightly different. We have a few different listeners set up, because some need extra stuff. Consider the following code:
 
-```
+```js
 this.listenTo(this.model, 'change:entry', function(model, logEntry) {
   this.model.setUpCitizenship();
   this.render(model, this.model.get('activePane'));
@@ -156,7 +156,7 @@ We listen to changes on `entry` property (representing info about the current ta
 
 The following happens any time change occurs. It’s general — we throw away the entire view and render it out again with fresh data.
 
-```
+```js
 render: function(model, pane) {
   // check if this view instance is for the current pane
   if (pane) {
