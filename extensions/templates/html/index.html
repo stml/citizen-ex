@@ -1,0 +1,27 @@
+<% if (entry) { %>
+  <h2>Your digital citizenship</h2>
+  <% if (citizenship.length > 0) { %>
+    <% _.each(citizenship, function(country) { %>
+      <%= country.code %>: <%= country.percentage %>%<br><br>
+      <% }); %>
+    <% } else { %>
+      <p>No country data available yet.</p>
+    <% }; %>
+    <h2>Your location</h2>
+    <% if (ownGeoData.ownIp) { %>
+      <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
+      <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>
+    <% } else { %>
+      <p>No geo data available yet.</p>
+    <% }; %>
+    <h2>Currently viewing</h2>
+    <% if (entry.ip) { %>
+      <p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
+      <p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>
+    <% } else { %>
+      <p>No geo data available yet.</p>
+    <% }; %>
+  <% } else { %>
+    <p>No data available yet.</p>
+  <% }; %>
+  <a href="#" name="settings">Settings</a>
