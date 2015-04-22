@@ -14,54 +14,6 @@ LogEntry.prototype.latestTimestamp = function() {
   });
 };
 
-var currentTab = '' +
-  '<% if (entry) { %>' +
-    '<h2>Your digital citizenship</h2>' +
-    '<% if (citizenship.length > 0) { %>' +
-      '<% _.each(citizenship, function(country) { %>' +
-      '  <%= country.code %>: <%= country.percentage %>%<br><br>' +
-      '<% }); %>' +
-    '<% } else { %>' +
-      '<p>No country data available yet.</p>' +
-    '<% }; %>' +
-    '<h2>Your location</h2>' +
-    '<% if (ownGeoData.ownIp) { %>' +
-      '<p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>' +
-      '<p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>' +
-    '<% } else { %>' +
-      '<p>No geo data available yet.</p>' +
-    '<% }; %>' +
-    '<h2>Currently viewing</h2>' +
-    '<% if (entry.ip) { %>' +
-      '<p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>' +
-      '<p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>' +
-    '<% } else { %>' +
-      '<p>No geo data available yet.</p>' +
-    '<% }; %>' +
-  '<% } else { %>' +
-    '<p>No data available yet.</p>' +
-  '<% }; %>' +
-  '<a href="#" name="about">About</a>' +
-  '<a href="#" name="settings">Settings</a>';
-var about = '<h1>About</h1>' +
-  '<a href="#" name="currentTab">Current page</a>' +
-  '<a href="#" name="settings">Settings</a>';
-var settings = '<h1>Settings</h1>' +
-  '<a href="#" class="erase">Erase all data (cannot undo this action)</a>' +
-  '<a href="#" name="currentTab">Current page</a>' +
-  '<a href="#" name="about">About</a>';
-
-var Pane = function(name, template) {
-  this.name = name;
-  this.template = template;
-};
-
-var panes = [
-  new Pane('currentTab', currentTab),
-  new Pane('about', about),
-  new Pane('settings', settings)
-];
-
 var Sidebar = Backbone.Model.extend({
   initialize: function(panes) {
     this.panes = panes;
@@ -246,6 +198,8 @@ var Sidebar = Backbone.Model.extend({
   }
 });
 
+
+
 var SidebarPane = Backbone.View.extend({
   tagName: 'div',
 
@@ -311,9 +265,26 @@ var SidebarPane = Backbone.View.extend({
 
 });
 
+
+var currentTab = "<% if (entry) { %>\n  <h2>Your digital citizenship</h2>\n  <% if (citizenship.length > 0) { %>\n    <% _.each(citizenship, function(country) { %>\n      <%= country.code %>: <%= country.percentage %>%<br><br>\n      <% }); %>\n    <% } else { %>\n      <p>No country data available yet.</p>\n    <% }; %>\n    <h2>Your location</h2>\n    <% if (ownGeoData.ownIp) { %>\n      <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>\n      <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>\n    <% } else { %>\n      <p>No geo data available yet.</p>\n    <% }; %>\n    <h2>Currently viewing</h2>\n    <% if (entry.ip) { %>\n      <p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>\n      <p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>\n    <% } else { %>\n      <p>No geo data available yet.</p>\n    <% }; %>\n  <% } else { %>\n    <p>No data available yet.</p>\n  <% }; %>\n  <a href=\"#\" name=\"settings\">Settings</a>\n";
+var about = "<h1>About</h1>\n<a href=\"#\" name=\"currentTab\">Current page</a>\n<a href=\"#\" name=\"settings\">Settings</a>\n";
+var settings = "<h1>Settings</h1>\n<a href=\"#\" class=\"erase\">Erase all data (cannot undo this action)</a>\n<a href=\"#\" name=\"currentTab\">Current page</a>\n<a href=\"#\" name=\"about\">About</a>\n\n\n";
+
+var Pane = function(name, template) {
+  this.name = name;
+  this.template = template;
+};
+
+var panes = [
+  new Pane('currentTab', currentTab),
+  new Pane('about', about),
+  new Pane('settings', settings)
+];
+
 var sidebar = new Sidebar(panes);
 
 _.each(panes, function(pane) {
   new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
 });
+
 
