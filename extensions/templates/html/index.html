@@ -21,6 +21,22 @@
 				  <%= country.percentage %>% <%= country.code %>,
 				<% }); %>.</p>
 				
+					    <div id="cex_mapdata">
+	    <% if (ownGeoData && ownGeoData.ownIp) { %>
+	      <p>Your IP: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
+	      <p>Your Lat: <%= ownGeoData.ownLat %>, Lng: <%= ownGeoData.ownLng %></p>
+	    <% } else { %>
+	      <p>No local geo data available yet.</p>
+	    <% }; %>
+	    <% if (entry.ip) { %>
+	      <p>Website IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
+	      <p>Website Lat: <%= entry.lat %>, Lng: <%= entry.lng %></p>
+	      </div>
+	      
+	    <% } else { %>
+	      <p>No remote geo data available yet.</p>
+	    <% }; %>
+				
 				<script type="text/javascript">
 				var percents = [
 				<% _.each(citizenship, function(country) { %>
@@ -50,10 +66,8 @@
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
 					img.onload = function() {
-						console.log(img.height,img.width);
 						img.height = 200;
 						img.width = 200;
-						console.log(img.height,img.width);
 						var pattern = badge.createPattern(img, 'repeat');
 						badge.fillStyle = pattern;
 						badge.beginPath();
@@ -85,30 +99,27 @@
 				
 		</div>
 		
-		<div id="cex_map">
+		<div id="cex_map" class="dark">
 		
-		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
 		<div id="cex_map_window"></div>
 	    
-	    <div id="cex_mapdata">
-	    <% if (ownGeoData && ownGeoData.ownIp) { %>
-	      <p>Your IP address: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
-	      <p>Lat: <%= ownGeoData.ownLat %>, lng: <%= ownGeoData.ownLng %></p>
-	    <% } else { %>
-	      <p>No geo data available yet.</p>
+	    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
+	  	<script type="text/javascript">
+	  	L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
+		var map = L.mapbox.map('cex_map', 'stml.l6086pbg');
+		<% if (ownGeoData && ownGeoData.ownIp) { %>
+			var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(map);
+			origMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();
+		<% } else { %>
 	    <% }; %>
-	    <h2>Currently viewing</h2>
-	    <% if (entry.ip) { %>
-	      <p>IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
-	      <p>Lat: <%= entry.lat %>, lng: <%= entry.lng %></p>
-	      </div>
-	      
+		<% if (entry.ip) { %>
+			var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>]).addTo(map);
+			destMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();
 	    <% } else { %>
-	      <p>No geo data available yet.</p>
-	    <% }; %>
 	    
-<!-- 	  	<script type="text/javascript">cex_load_map();</script> -->
+	    <% }; %>
+	  	</script>
 	    
 	    </div>
 	    
