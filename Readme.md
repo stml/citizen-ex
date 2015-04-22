@@ -36,6 +36,11 @@ The `extensions` directory is where all the extension-related code lives. Each e
 
 Templates directory has some shared JavaScript files and HTML templates to be inserted into the page.
 
+The main areas of interest are:
+- `extensions/templates/html`: HTML snippets injected into the page
+- `extensions/templates/js/sidebar.js`: Backbone model which stores data and provides useful functions
+- `extensions/templates/js/sidebar_pane.js`: Backbone view which listens to model changes and knows how to render itself
+
 ### log_entry.js
 
 This file defines the LogEntry class for use in the extension.
