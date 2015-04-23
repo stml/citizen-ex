@@ -122,20 +122,22 @@
 				attribution: '<a href="http://mapbox.com/about/maps">&copy; Mapbox &copy; OpenStreetMap</a>'}).addTo(map);
 			map.attributionControl.setPrefix("");
 			L.Icon.Default.imagePath = chrome.extension.getURL('leaflet-images');
-			map.setView([0,0],4);
+			map.setView([0,0],2);
+			var markergroup = new L.featureGroup();
 			<% if (ownGeoData && ownGeoData.ownIp) { %>
 				var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(map);
 				origMarker.bindPopup("You: <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %> (<%= ownGeoData.ownIp %>)");
+				markergroup.addLayer(origMarker);
 			<% } else { %>
 		    <% }; %>
 			<% if (entry.ip) { %>
 				var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>]).addTo(map);
 				destMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)");
+				markergroup.addLayer(destMarker);
 		    <% } else { %>
 		    
 		    <% }; %>
-		    var group = new L.featureGroup([origMarker, destMarker]);
-		    map.fitBounds(group.getBounds());
+		    map.fitBounds(markergroup.getBounds());
 		    map.zoomOut();
 		    }
 	    
