@@ -35,12 +35,14 @@ function drawCanvas() {
 function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 	var img = new Image();
 	img.onload = function() {
-		console.log(img.height,img.width);
-		img.height = 200;
-		img.width = 200;
-		console.log(img.height,img.width);
-		var pattern = badge.createPattern(img, 'repeat');
-		badge.fillStyle = pattern;
+		var svgCanvas = document.createElement("canvas");
+    	svgCanvas.width = 200;
+    	svgCanvas.height = 200;
+    	var svgCtx = svgCanvas.getContext("2d");
+    	svgCtx.drawImage(this, 0, 0, 200, 200);
+    	var pattern = badge.createPattern(svgCanvas, 'repeat');
+    	badge.fillStyle = pattern;
+
 		badge.beginPath();
 		badge.moveTo(x0, y0);
 		var xy = circleCoords(x0,y0,r,circlepointer);

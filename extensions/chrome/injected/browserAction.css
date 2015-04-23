@@ -31,7 +31,7 @@
 	}
 	
 .citizen-ex__pane #cex_hud #cex_badge {
-	width: 300px;
+	width: 250px;
 	float: left;
 	padding: 25px;
 	}
@@ -49,6 +49,11 @@
 	width: 100%;
 	height: 450px;
 	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window img {
+    -webkit-filter: grayscale(1); /* Webkit */
+    filter: gray; /* IE6-9 */
+    filter: grayscale(1); /* W3C */
+  	}
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata {
 /* 	display: none; */
 	}

@@ -21,21 +21,22 @@
 				  <%= country.percentage %>% <%= country.code %>,
 				<% }); %>.</p>
 				
-					    <div id="cex_mapdata">
-	    <% if (ownGeoData && ownGeoData.ownIp) { %>
-	      <p>Your IP: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
-	      <p>Your Lat: <%= ownGeoData.ownLat %>, Lng: <%= ownGeoData.ownLng %></p>
-	    <% } else { %>
-	      <p>No local geo data available yet.</p>
-	    <% }; %>
-	    <% if (entry.ip) { %>
-	      <p>Website IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
-	      <p>Website Lat: <%= entry.lat %>, Lng: <%= entry.lng %></p>
-	      </div>
-	      
-	    <% } else { %>
-	      <p>No remote geo data available yet.</p>
-	    <% }; %>
+				<div id="cex_mapdata">
+				    <% if (ownGeoData && ownGeoData.ownIp) { %>
+				      <p>Your IP: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
+				      <p>Your Lat: <%= ownGeoData.ownLat %>, Lng: <%= ownGeoData.ownLng %></p>
+				    <% } else { %>
+				      <p>No local geo data available yet.</p>
+				    <% }; %>
+				    <% if (entry.ip) { %>
+				      <p>Website IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
+				      <p>Website Lat: <%= entry.lat %>, Lng: <%= entry.lng %></p>
+				      </div>
+				      
+				    <% } else { %>
+				      <p>No remote geo data available yet.</p>
+				    <% }; %>
+				</div><!-- cex_mapdata -->
 				
 				<script type="text/javascript">
 				var percents = [
@@ -66,10 +67,17 @@
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
 					img.onload = function() {
-						img.height = 200;
-						img.width = 200;
-						var pattern = badge.createPattern(img, 'repeat');
-						badge.fillStyle = pattern;
+						var flagscaledheight = badge.canvas.clientHeight;
+						var flagscaledwidth = flagscaledheight*(img.width/img.height);
+						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
+						console.log(flagscaledheight,flagscaledwidth,flagmargin);
+						var svgCanvas = document.createElement("canvas");
+				    	svgCanvas.height = flagscaledheight;
+				    	svgCanvas.width = flagscaledwidth;
+				    	var svgCtx = svgCanvas.getContext("2d");
+				    	svgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);
+				    	var pattern = badge.createPattern(svgCanvas, 'repeat');
+				    	badge.fillStyle = pattern;
 						badge.beginPath();
 						badge.moveTo(x0, y0);
 						var xy = circleCoords(x0,y0,r,circlepointer);
@@ -92,22 +100,22 @@
 					return [x,y];	
 					}
 				</script>  
-				  
-				<% } else { %>
-				  <p>No country data available yet.</p>
-				<% }; %>
 				
-		</div>
+		</div><!-- cex_badge -->
+								  
+				<% } else { %>
+				  <p>No Citizenship data available yet. Keep browsing!</p>
+				<% }; %>
 		
-		<div id="cex_map" class="dark">
+		<div id="cex_map">
 		
-		<div id="cex_map_window"></div>
+		<div id="cex_map_window" class="dark"></div>
 	    
 	    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
 	  	<script type="text/javascript">
 	  	L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
-		var map = L.mapbox.map('cex_map', 'stml.l6086pbg');
+		var map = L.mapbox.map('cex_map_window', 'stml.l6086pbg');
 		<% if (ownGeoData && ownGeoData.ownIp) { %>
 			var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(map);
 			origMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();
