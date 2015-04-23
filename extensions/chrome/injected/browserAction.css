@@ -1,3 +1,32 @@
+.citizen-ex__pane * {
+	background: transparent;	
+	background-image: none;
+	border: none;
+	border-collapse: collapse;
+	color: #000;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-stretch: normal;
+	font-variant: normal;
+	letter-spacing: normal;
+	line-height: 1;
+	list-style: none;
+	margin: 0;
+	opacity: 1;
+	outline: none;
+	padding: 0;
+	position: static;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0;
+	text-shadow: none;
+	text-transform: none;
+	visibility: visible;
+	white-space: normal;
+	}
+
 .citizen-ex__pane {
 	width: 100%;
 	position: fixed;

@@ -70,7 +70,6 @@
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
-						console.log(flagscaledheight,flagscaledwidth,flagmargin);
 						var svgCanvas = document.createElement("canvas");
 				    	svgCanvas.height = flagscaledheight;
 				    	svgCanvas.width = flagscaledwidth;
@@ -111,11 +110,13 @@
 		
 		<div id="cex_map_window" class="dark"></div>
 	    
-	    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
 	  	<script type="text/javascript">
-	  	L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
-		var map = L.mapbox.map('cex_map_window', 'stml.l6086pbg');
+		var map = L.map('cex_map_window');
+		map.invalidateSize();
+		map.fitWorld();
+		L.tileLayer('http://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
+			attribution: '<a href="http://mapbox.com/about/maps">&copy; Mapbox &copy; OpenStreetMap</a>'}).addTo(map);
+		map.attributionControl.setPrefix("");
 		<% if (ownGeoData && ownGeoData.ownIp) { %>
 			var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(map);
 			origMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();
