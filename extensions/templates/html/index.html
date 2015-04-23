@@ -117,6 +117,7 @@
 		L.tileLayer('http://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
 			attribution: '<a href="http://mapbox.com/about/maps">&copy; Mapbox &copy; OpenStreetMap</a>'}).addTo(map);
 		map.attributionControl.setPrefix("");
+		L.Icon.Default.imagePath = chrome.extension.getURL('leaflet-images');
 		<% if (ownGeoData && ownGeoData.ownIp) { %>
 			var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(map);
 			origMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();

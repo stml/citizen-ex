@@ -21,7 +21,8 @@
     "default_icon": "icon16.png"
   },
   "web_accessible_resources": [
-    "flags/*.svg"
+    "flags/*.svg",
+    "leaflet-images/*"
   	],
   "content_scripts": [
     {
