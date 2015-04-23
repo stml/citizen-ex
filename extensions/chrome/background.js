@@ -266,6 +266,10 @@ GeoCache.prototype.getOwnLocation = function() {
 };
 
 GeoCache.prototype.addOwnLocation = function(ownGeoData) {
+  if (!ownGeoData) {
+    return;
+  }
+  this.removeOwnLocation();
   this.addEntry(ownGeoData);
 };
 
