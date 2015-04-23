@@ -46,32 +46,34 @@ LogEntry.prototype.getOwnGeo = function() {
     var emptyResult = _.isEmpty(result);
 
     if (emptyResult) {
-      return;
-    }
-
-    var ownGeoData = result.ownGeoData;
-    var ownLocation = geoCache.getOwnLocation();
-
-    // but if we have a new one we should use that
-    if (ownLocation.ownIp) {
-      ownGeoData = ownLocation;
-    }
-
-    if (!empty_result && ownGeoData.ownIp) {
-      this.ownIp = ownGeoData.ownIp;
-      this.ownCountryCode = ownGeoData.ownCountryCode;
-      this.ownCountryName = ownGeoData.ownCountryName;
-      this.ownRegionCode = ownGeoData.ownRegionCode;
-      this.ownRegionName = ownGeoData.ownRegionName;
-      this.ownTimezone = ownGeoData.ownTimezone;
-      this.ownZipcode = ownGeoData.ownZipcode;
-      this.ownCity = ownGeoData.ownCity;
-      this.ownLat = ownGeoData.ownLat;
-      this.ownLng = ownGeoData.ownLng;
-      console.log('Using cached own geo');
-      this.storeEntries(logEntries);
+      // if there isn’t one we need to fetch it
+      geoCache.addOwnLocation(this);
     } else {
-      console.log('No own geo data available yet');
+      var ownGeoData = result.ownGeoData;
+      var ownLocation = geoCache.getOwnLocation();
+
+      // but if we have a new one we should use that
+      if (ownLocation.ownIp) {
+        ownGeoData = ownLocation;
+      }
+
+      if (ownGeoData.ownIp) {
+        this.ownIp = ownGeoData.ownIp;
+        this.ownCountryCode = ownGeoData.ownCountryCode;
+        this.ownCountryName = ownGeoData.ownCountryName;
+        this.ownRegionCode = ownGeoData.ownRegionCode;
+        this.ownRegionName = ownGeoData.ownRegionName;
+        this.ownTimezone = ownGeoData.ownTimezone;
+        this.ownZipcode = ownGeoData.ownZipcode;
+        this.ownCity = ownGeoData.ownCity;
+        this.ownLat = ownGeoData.ownLat;
+        this.ownLng = ownGeoData.ownLng;
+        console.log('Using cached own geo');
+        this.storeEntries(logEntries);
+      } else {
+        console.log('No own geo data available yet');
+      }
+
     }
   }, this));
 };
@@ -158,6 +160,15 @@ Utils.prototype.createLogEntry = function(tab) {
   console.log('Created a new LogEntry');
 };
 
+Utils.prototype.findLogEntry = function(url, tabId, windowId) {
+  console.log(url, tabId, windowId);
+  var selected = _.find(logEntries, function(entry) {
+    return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
+  });
+  console.log(selected);
+  return selected;
+};
+
 Utils.prototype.trimUrl = function(url) {
   var uri = new URI(url);
   var path = uri.hostname();
@@ -233,31 +244,40 @@ var GeoCache = function() {
   this.addOwnLocation();
 };
 
-GeoCache.prototype.addOwnLocation = function() {
+GeoCache.prototype.addOwnLocation = function(entry) {
   var ownGeoData = {
     ownGeoData: true
   };
 
-  utils.get('https://freegeoip.net/json', _.bind(function(response) {
-    var json = JSON.parse(response);
-    ownGeoData.ownIp = json.ip;
-    ownGeoData.ownCountryCode = json.country_code;
-    ownGeoData.ownCountryName = json.country_name;
-    ownGeoData.ownRegionCode = json.region_code;
-    ownGeoData.ownRegionName = json.region_name;
-    ownGeoData.ownTimezone = json.time_zone;
-    ownGeoData.ownZipcode = json.zip_code;
-    ownGeoData.ownCity = json.city;
-    ownGeoData.ownLat = json.latitude;
-    ownGeoData.ownLng = json.longitude;
+  var entry = entry;
+  var url = 'https://freegeoip.net/json'
 
-    geoCache.removeOwnLocation();
-    geoCache.addOwnLocation(ownGeoData);
+  utils.get(url, _.bind(function(response) {
+    if (response) {
+      var json = JSON.parse(response);
+      ownGeoData.ownIp = json.ip;
+      ownGeoData.ownCountryCode = json.country_code;
+      ownGeoData.ownCountryName = json.country_name;
+      ownGeoData.ownRegionCode = json.region_code;
+      ownGeoData.ownRegionName = json.region_name;
+      ownGeoData.ownTimezone = json.time_zone;
+      ownGeoData.ownZipcode = json.zip_code;
+      ownGeoData.ownCity = json.city;
+      ownGeoData.ownLat = json.latitude;
+      ownGeoData.ownLng = json.longitude;
 
-    // store this so that it’s available to the template
-    chrome.storage.local.set({ ownGeoData: ownGeoData });
+      geoCache.addOwnLocationEntry(ownGeoData);
+      if (entry) {
+        entry.getOwnGeo();
+      }
 
-    console.log('Got own geo, caching it');
+      // store this so that it’s available to the template
+      chrome.storage.local.set({ ownGeoData: ownGeoData });
+
+      console.log('Got own geo, caching it');
+    } else {
+      console.log('Can’t get own geo data');
+    }
   }, ownGeoData));
 };
 
@@ -265,7 +285,7 @@ GeoCache.prototype.getOwnLocation = function() {
   return this.hasEntry('ownGeoData', true);
 };
 
-GeoCache.prototype.addOwnLocation = function(ownGeoData) {
+GeoCache.prototype.addOwnLocationEntry = function(ownGeoData) {
   if (!ownGeoData) {
     return;
   }
