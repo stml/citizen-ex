@@ -33,6 +33,11 @@ var templateSources = [
 var chromeCore = coreSources.concat(chromeInit);
 var safariCore = coreSources.concat(safariInit);
 
+gulp.task('chromeLib', function () {
+  gulp.src(['./extensions/core/lib/*'])
+    .pipe(gulp.dest('./extensions/chrome/lib'));
+});
+
 gulp.task('chromeCore', function () {
   gulp.src(chromeCore)
     .pipe(include_file())
@@ -45,6 +50,12 @@ gulp.task('chromeTemplates', function () {
     .pipe(include_file())
     .pipe(concat('setup.js'))
     .pipe(gulp.dest('./extensions/chrome/injected/'));
+});
+
+
+gulp.task('safariLib', function () {
+  gulp.src(['./extensions/core/lib/*'])
+    .pipe(gulp.dest('./extensions/safari.safariextension/lib'));
 });
 
 gulp.task('safariCore', function () {
@@ -62,7 +73,7 @@ gulp.task('safariTemplates', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./extensions/templates/**/*.*', ['chromeCore', 'chromeTemplates', 'safariCore', 'safariTemplates']);
+  gulp.watch('./extensions/templates/**/*.*', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
 });
 
-gulp.task('default', ['chromeCore', 'chromeTemplates', 'safariCore', 'safariTemplates', 'watch']);
+gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib', 'watch']);
