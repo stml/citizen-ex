@@ -33,7 +33,7 @@ GeoCache.prototype.addOwnLocation = function(entry) {
       }
 
       // store this so that it’s available to the template
-      chrome.storage.local.set({ ownGeoData: ownGeoData });
+      storage.set({ ownGeoData: ownGeoData });
 
       console.log('Got own geo, caching it');
     } else {
@@ -96,7 +96,7 @@ GeoCache.prototype.reset = function() {
 
 GeoCache.prototype.recoverFromStorage = function() {
   console.log('Getting geo cache from storage');
-  chrome.storage.local.get('geoCache', _.bind(function(geoCache) {
+  storage.get('geoCache', _.bind(function(geoCache) {
     if (_.isEmpty(geoCache) || geoCache === undefined) {
       return;
     }
@@ -105,5 +105,5 @@ GeoCache.prototype.recoverFromStorage = function() {
 };
 
 GeoCache.prototype.updateStorage = function() {
-  chrome.storage.local.set({ 'geoCache': this.entries });
+  storage.set({ 'geoCache': this.entries });
 };

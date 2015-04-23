@@ -14,9 +14,11 @@ var safariInit = [
 
 var coreSources = [
   './extensions/templates/js/overwrite_warning.js',
+  './extensions/core/js/utils.js',
   './extensions/core/js/log_entry.js',
   './extensions/core/js/geo_cache.js',
   './extensions/core/js/country_log.js',
+  './extensions/core/js/storage.js',
   './extensions/core/js/shared_init.js'
 ];
 

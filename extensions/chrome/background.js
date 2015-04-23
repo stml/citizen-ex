@@ -7,6 +7,87 @@
  *
  */
 
+// Define and set up utilities
+
+var Utils = function() {};
+
+Utils.prototype.createLogEntry = function(tab) {
+  if (!tab) {
+    return;
+  }
+
+  // ignore empty tabs and chrome settings pages
+  var protocol = utils.getUrlProtocol(tab.url);
+  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
+    return;
+  }
+
+  var previousEntry = _.find(logEntries, function(entry) {
+    return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
+  });
+  if (previousEntry) {
+    console.log('Entry exists, skipping creation and adding a timestamp');
+    if (previousEntry.ownIp === undefined) {
+      previousEntry.getOwnGeo();
+    }
+    if (previousEntry.ip === undefined) {
+      previousEntry.getRemoteGeo(previousEntry.domain);
+    }
+    previousEntry.addTimestamp();
+    return;
+  }
+
+  var timestamp = new Date();
+  logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
+
+  var logEntry = new LogEntry();
+  logEntry.storeEntries(logEntries);
+  console.log('Created a new LogEntry');
+};
+
+Utils.prototype.findLogEntry = function(url, tabId, windowId) {
+  var selected = _.find(logEntries, function(entry) {
+    return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
+  });
+  return selected;
+};
+
+Utils.prototype.trimUrl = function(url) {
+  var uri = new URI(url);
+  var path = uri.hostname();
+  return path;
+};
+
+Utils.prototype.getUrlProtocol = function(url) {
+  var uri = new URI(url);
+  var protocol = uri.protocol();
+  return protocol;
+};
+
+Utils.prototype.log = function(thing) {
+  console.log(thing);
+};
+
+Utils.prototype.get = function(url, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+     callback(xhr.responseText);
+    } else if (xhr.readyState == 4) {
+      console.log('Error getting response data from ' + url);
+    }
+  }
+  xhr.send();
+};
+
+Utils.prototype.reset = function() {
+  logEntries = [];
+  countryLog.reset();
+  geoCache = new GeoCache();
+  console.log('Erased browsing data');
+};
+
 // Define the LogEntry class
 
 var LogEntry = function(url, timestamp, tabId, windowId) {
@@ -46,11 +127,11 @@ LogEntry.prototype.storeEntries = function(entries) {
   var logEntries = _.map(entries, function(entry) {
     return entry.toJSON();
   });
-  chrome.storage.local.set({ 'logEntries': logEntries });
+  storage.set({ 'logEntries': logEntries });
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  chrome.storage.local.get('ownGeoData', _.bind(function(result) {
+  storage.get('ownGeoData', _.bind(function(result) {
     // we try to retrieve the stored location
     var emptyResult = _.isEmpty(result);
 
@@ -165,7 +246,7 @@ GeoCache.prototype.addOwnLocation = function(entry) {
       }
 
       // store this so that it’s available to the template
-      chrome.storage.local.set({ ownGeoData: ownGeoData });
+      storage.set({ ownGeoData: ownGeoData });
 
       console.log('Got own geo, caching it');
     } else {
@@ -228,7 +309,7 @@ GeoCache.prototype.reset = function() {
 
 GeoCache.prototype.recoverFromStorage = function() {
   console.log('Getting geo cache from storage');
-  chrome.storage.local.get('geoCache', _.bind(function(geoCache) {
+  storage.get('geoCache', _.bind(function(geoCache) {
     if (_.isEmpty(geoCache) || geoCache === undefined) {
       return;
     }
@@ -237,7 +318,7 @@ GeoCache.prototype.recoverFromStorage = function() {
 };
 
 GeoCache.prototype.updateStorage = function() {
-  chrome.storage.local.set({ 'geoCache': this.entries });
+  storage.set({ 'geoCache': this.entries });
 };
 
 // Create and instantiate a country log
@@ -262,11 +343,11 @@ CountryLog.prototype.reset = function() {
 };
 
 CountryLog.prototype.updateStorage = function() {
-  chrome.storage.local.set({ 'countryLog': this.visits });
+  storage.set({ 'countryLog': this.visits });
 };
 
 CountryLog.prototype.recoverFromStorage = function() {
-  chrome.storage.local.get('countryLog', _.bind(function(countryLog) {
+  storage.get('countryLog', _.bind(function(countryLog) {
     if (_.isEmpty(countryLog) || countryLog === undefined) {
       return;
     }
@@ -274,9 +355,22 @@ CountryLog.prototype.recoverFromStorage = function() {
   }, this));
 };
 
+var Storage = function() {
+
+};
+
+Storage.prototype.set = function(property, value) {
+  chrome.storage.local.set({ property: value });
+};
+
+Storage.prototype.get = function(property, callback) {
+  chrome.storage.local.get(property, callback);
+};
+
+var utils = new Utils();
+var storage = new Storage();
 var geoCache = new GeoCache();
 var countryLog = new CountryLog();
-var utils = new Utils();
 var logEntries = [];
 
 // Define and set up Chrome utils

@@ -37,11 +37,9 @@ Utils.prototype.createLogEntry = function(tab) {
 };
 
 Utils.prototype.findLogEntry = function(url, tabId, windowId) {
-  console.log(url, tabId, windowId);
   var selected = _.find(logEntries, function(entry) {
     return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
   });
-  console.log(selected);
   return selected;
 };
 

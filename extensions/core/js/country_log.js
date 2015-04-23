@@ -20,11 +20,11 @@ CountryLog.prototype.reset = function() {
 };
 
 CountryLog.prototype.updateStorage = function() {
-  chrome.storage.local.set({ 'countryLog': this.visits });
+  storage.set({ 'countryLog': this.visits });
 };
 
 CountryLog.prototype.recoverFromStorage = function() {
-  chrome.storage.local.get('countryLog', _.bind(function(countryLog) {
+  storage.get('countryLog', _.bind(function(countryLog) {
     if (_.isEmpty(countryLog) || countryLog === undefined) {
       return;
     }

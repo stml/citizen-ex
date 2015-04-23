@@ -37,11 +37,11 @@ LogEntry.prototype.storeEntries = function(entries) {
   var logEntries = _.map(entries, function(entry) {
     return entry.toJSON();
   });
-  chrome.storage.local.set({ 'logEntries': logEntries });
+  storage.set({ 'logEntries': logEntries });
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  chrome.storage.local.get('ownGeoData', _.bind(function(result) {
+  storage.get('ownGeoData', _.bind(function(result) {
     // we try to retrieve the stored location
     var emptyResult = _.isEmpty(result);
 
