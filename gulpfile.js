@@ -33,14 +33,14 @@ gulp.task('safariCore', function () {
   gulp.src(coreSources)
     .pipe(include_file())
     .pipe(concat('background.js'))
-    .pipe(gulp.dest('./extensions/safari/'));
+    .pipe(gulp.dest('./extensions/safari.safariextension/'));
 });
 
 gulp.task('safariTemplates', function () {
   gulp.src(templateSources)
     .pipe(include_file())
     .pipe(concat('setup.js'))
-    .pipe(gulp.dest('./extensions/safari/injected/'));
+    .pipe(gulp.dest('./extensions/safari.safariextension/injected/'));
 });
 
 gulp.task('watch', function() {
