@@ -77,6 +77,11 @@ LogEntry.prototype.getOwnGeo = function() {
 };
 
 LogEntry.prototype.getRemoteGeo = function(domain) {
+  if (domain === undefined) {
+    console.log('can’t geolocate without a domain');
+    return;
+  }
+
   var cachedEntry = geoCache.hasEntry('domain', domain);
   if (cachedEntry && cachedEntry.ip) {
     this.ip = cachedEntry.ip;
@@ -120,6 +125,10 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
 var Utils = function() {};
 
 Utils.prototype.createLogEntry = function(tab) {
+  if (!tab) {
+    return;
+  }
+
   // ignore empty tabs and chrome settings pages
   var protocol = utils.getUrlProtocol(tab.url);
   if (protocol === 'chrome' || protocol === 'chrome-devtools') {
