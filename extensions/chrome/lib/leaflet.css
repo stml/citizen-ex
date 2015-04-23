@@ -181,7 +181,7 @@
 /* visual tweaks */
 
 .leaflet-container {
-	background: #333;
+	background: #000;
 	outline: 0;
 	}
 .leaflet-container a {

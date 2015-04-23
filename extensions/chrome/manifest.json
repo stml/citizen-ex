@@ -22,7 +22,8 @@
   },
   "web_accessible_resources": [
     "flags/*.svg",
-    "leaflet-images/*"
+    "leaflet-images/*",
+    "images/*"
   	],
   "content_scripts": [
     {
