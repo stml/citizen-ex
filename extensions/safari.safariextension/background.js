@@ -130,122 +130,6 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
   }
 };
 
-
-// Define and set up utilities
-
-var Utils = function() {};
-
-Utils.prototype.createLogEntry = function(tab) {
-  if (!tab) {
-    return;
-  }
-
-  // ignore empty tabs and chrome settings pages
-  var protocol = utils.getUrlProtocol(tab.url);
-  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
-    return;
-  }
-
-  var previousEntry = _.find(logEntries, function(entry) {
-    return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
-  });
-  if (previousEntry) {
-    console.log('Entry exists, skipping creation and adding a timestamp');
-    if (previousEntry.ownIp === undefined) {
-      previousEntry.getOwnGeo();
-    }
-    if (previousEntry.ip === undefined) {
-      previousEntry.getRemoteGeo(previousEntry.domain);
-    }
-    previousEntry.addTimestamp();
-    return;
-  }
-
-  var timestamp = new Date();
-  logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
-
-  var logEntry = new LogEntry();
-  logEntry.storeEntries(logEntries);
-  console.log('Created a new LogEntry');
-};
-
-Utils.prototype.findLogEntry = function(url, tabId, windowId) {
-  console.log(url, tabId, windowId);
-  var selected = _.find(logEntries, function(entry) {
-    return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
-  });
-  console.log(selected);
-  return selected;
-};
-
-Utils.prototype.trimUrl = function(url) {
-  var uri = new URI(url);
-  var path = uri.hostname();
-  return path;
-};
-
-Utils.prototype.getUrlProtocol = function(url) {
-  var uri = new URI(url);
-  var protocol = uri.protocol();
-  return protocol;
-};
-
-Utils.prototype.log = function(thing) {
-  console.log(thing);
-};
-
-Utils.prototype.get = function(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-     callback(xhr.responseText);
-    } else if (xhr.readyState == 4) {
-      console.log('Error getting response data from ' + url);
-    }
-  }
-  xhr.send();
-};
-
-Utils.prototype.reset = function() {
-  logEntries = [];
-  countryLog.reset();
-  geoCache = new GeoCache();
-  console.log('Erased browsing data');
-};
-
-var utils = new Utils();
-
-
-// Define and set up Chrome utils
-
-var ChromeUtils = function() {};
-
-ChromeUtils.prototype.getTabById = function(tabId, callback) {
-  // we use a callback here because chrome.tabs.get is asynchronous
-  chrome.tabs.get(tabId, callback);
-};
-
-var chromeUtils = new ChromeUtils();
-
-
-// Fetch the stored log entries on load, so we can keep adding to them
-
-var logEntries = [];
-chrome.storage.local.get('logEntries', function(entries) {
-  if (entries && entries.logEntries) {
-    var entries = entries.logEntries;
-    logEntries = _.map(entries, function(entry) {
-      var logEntry = new LogEntry();
-      logEntry.fromJSON(JSON.parse(entry));
-      return logEntry;
-    });
-
-    console.log('Fetched the stored log entries');
-  }
-});
-
-
 // Set up geo-cache
 
 var GeoCache = function() {
@@ -356,9 +240,6 @@ GeoCache.prototype.updateStorage = function() {
   chrome.storage.local.set({ 'geoCache': this.entries });
 };
 
-var geoCache = new GeoCache();
-
-
 // Create and instantiate a country log
 
 var CountryLog = function() {
@@ -393,56 +274,7 @@ CountryLog.prototype.recoverFromStorage = function() {
   }, this));
 };
 
+var geoCache = new GeoCache();
 var countryLog = new CountryLog();
-
-
-// Respond to events
-
-chrome.tabs.onUpdated.addListener(function(tabId) {
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
-});
-
-chrome.tabs.onCreated.addListener(function(tab) {
-  utils.createLogEntry(tab);
-});
-
-// fires when an existing tab is selected
-chrome.tabs.onActivated.addListener(function(activeInfo) {
-  var tabId = activeInfo.tabId;
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
-});
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript(null, { file: 'injected/browserAction.js' });
-});
-
-chrome.storage.onChanged.addListener(function(data) {
-  if (data.logEntries || data.geoCache) {
-    if (_.has(data.logEntries, 'newValue') || _.has(data.geoCache, 'newValue')) {
-      return;
-    }
-
-    // if there are no values then it means we want to clear all history
-    utils.reset();
-  }
-});
-
-// we have to use Chrome’s messaging system because the page can’t find out its own tabId
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.activeTab) {
-    sendResponse(sender.tab);
-  } else if (request.allTabs) {
-    var windowId = sender.tab.windowId;
-    var senderObject = sender;
-
-    // this has to use message sending back and forth
-    // simple value sending to a callback fails
-    chrome.tabs.query({ windowId: windowId }, function(tabs) {
-      chrome.tabs.sendMessage(senderObject.tab.id, { tabs: tabs });
-    });
-  } else if (request.allLogEntries) {
-    sendResponse(logEntries);
-  } else if (request.countryLog) {
-    sendResponse(countryLog);
-  }
-});
+var utils = new Utils();
+var logEntries = [];

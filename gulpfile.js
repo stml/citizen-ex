@@ -2,9 +2,22 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var include_file = require('gulp-include-file');
 
+var chromeInit = [
+  './extensions/core/js/chrome/utils.js',
+  './extensions/core/js/chrome/init.js'
+];
+
+var safariInit = [
+  './extensions/core/js/safari/utils.js',
+  './extensions/core/js/safari/init.js'
+];
+
 var coreSources = [
   './extensions/templates/js/overwrite_warning.js',
-  './extensions/core/js/background.js'
+  './extensions/core/js/log_entry.js',
+  './extensions/core/js/geo_cache.js',
+  './extensions/core/js/country_log.js',
+  './extensions/core/js/shared_init.js'
 ];
 
 var templateSources = [
@@ -15,8 +28,11 @@ var templateSources = [
   './extensions/templates/js/initialize.js'
 ];
 
+var chromeCore = coreSources.concat(chromeInit);
+var safariCore = coreSources.concat(safariInit);
+
 gulp.task('chromeCore', function () {
-  gulp.src(coreSources)
+  gulp.src(chromeCore)
     .pipe(include_file())
     .pipe(concat('background.js'))
     .pipe(gulp.dest('./extensions/chrome/'));
