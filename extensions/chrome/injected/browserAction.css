@@ -69,6 +69,21 @@
 	height: 250px;
 	margin-bottom: 25px;
 	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_mapdata {
+	margin-top: 20px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_mapdata p {
+	padding: 2px 5px;
+	border-radius: 10px;
+	margin-bottom: 5px;
+	color: #000;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_mapdata p.cex_location_known {
+	background: yellow;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_mapdata p.cex_location_unknown {
+	background: red;
+	}
 	
 .citizen-ex__pane #cex_hud #cex_map {
 	margin-left: 300px;	
@@ -90,9 +105,6 @@
     filter: gray; /* IE6-9 */
     filter: grayscale(1); /* W3C */
   	}
-.citizen-ex__pane #cex_hud #cex_map #cex_mapdata {
-/* 	display: none; */
-	}
 	
 .citizen-ex__pane #cex_hud #cex_header h1 {
 	margin: 0 0 0 0;
@@ -100,6 +112,8 @@
 	font-size: 24px;
 	color: #000;
 	float: left;
+	font-weight: bold;
+	letter-spacing: 0.1;
 	}
 .citizen-ex__pane #cex_hud #cex_header a {
 	color: #000 !important;
@@ -120,11 +134,15 @@
 	}	
 
 .citizen-ex__pane #cex_hud h2 {
-	margin: 0 0 0 0;
-	padding: 0;
+	width: 100%;
 	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	color: #fff;
 	}
 
 .citizen-ex__pane #cex_hud p {
 	width: 100%;
+	font-size: 14px;
+	color: #fff;
 	}
