@@ -140,6 +140,12 @@ Utils.prototype.createLogEntry = function(tab) {
   });
   if (previousEntry) {
     console.log('Entry exists, skipping creation and adding a timestamp');
+    if (previousEntry.ownIp === undefined) {
+      previousEntry.getOwnGeo();
+    }
+    if (previousEntry.ip === undefined) {
+      previousEntry.getRemoteGeo(previousEntry.domain);
+    }
     previousEntry.addTimestamp();
     return;
   }
