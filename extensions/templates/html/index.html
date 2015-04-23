@@ -88,6 +88,9 @@
 						xy = circleCoords(x0,y0,r,circlepointer+degrees);
 						badge.lineTo(xy[0],xy[1]);
 						badge.closePath();
+						badge.lineWidth=1;
+						badge.strokeStyle="#333";
+						badge.stroke();
 						badge.fill();
 				      	};	
 				    img.src = chrome.extension.getURL('flags/'+country+'.svg');
