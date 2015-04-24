@@ -1,5 +1,5 @@
 var browser = new Browser();
-var storage = new Storage(browser);
+var storage = new CxStorage(browser);
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);
 var countryLog = new CountryLog(browser);

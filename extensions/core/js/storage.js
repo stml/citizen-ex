@@ -1,28 +1,35 @@
-var Storage = function(browser) {
+var CxStorage = function(browser) {
   this.browser = browser;
 };
 
-Storage.prototype.set = function(property, value) {
+CxStorage.prototype.set = function(property, value) {
+  var json = JSON.prune(value);
   if (this.browser.chrome()) {
-    chrome.storage.local.set({ property: value });
+    chrome.storage.local.set({ property: json });
   } else if (this.browser.safari()) {
-    localStorage[property] = value;
+    localStorage[property] = json;
   } else {
     throw 'Unknown browser';
   }
 };
 
-Storage.prototype.get = function(property, callback) {
+CxStorage.prototype.get = function(property, callback) {
   if (this.browser.chrome()) {
-    chrome.storage.local.get(property, callback);
+    chrome.storage.local.get(property, function(result) {
+      callback(JSON.parse(result));
+    });
   } else if (this.browser.safari()) {
-    callback(localStorage[property]);
+    var data = undefined;
+    if (localStorage[property]) {
+      var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
   } else {
     throw 'Unknown browser';
   }
 };
 
-Storage.prototype.clear = function() {
+CxStorage.prototype.clear = function() {
   if (this.browser.chrome()) {
     chrome.storage.local.clear();
   } else if (this.browser.safari()) {

@@ -25,31 +25,38 @@ Browser.prototype.safari = function() {
   return this.name === 'safari';
 };
 
-var Storage = function(browser) {
+var CxStorage = function(browser) {
   this.browser = browser;
 };
 
-Storage.prototype.set = function(property, value) {
+CxStorage.prototype.set = function(property, value) {
+  var json = JSON.prune(value);
   if (this.browser.chrome()) {
-    chrome.storage.local.set({ property: value });
+    chrome.storage.local.set({ property: json });
   } else if (this.browser.safari()) {
-    localStorage[property] = value;
+    localStorage[property] = json;
   } else {
     throw 'Unknown browser';
   }
 };
 
-Storage.prototype.get = function(property, callback) {
+CxStorage.prototype.get = function(property, callback) {
   if (this.browser.chrome()) {
-    chrome.storage.local.get(property, callback);
+    chrome.storage.local.get(property, function(result) {
+      callback(JSON.parse(result));
+    });
   } else if (this.browser.safari()) {
-    callback(localStorage[property]);
+    var data = undefined;
+    if (localStorage[property]) {
+      var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
   } else {
     throw 'Unknown browser';
   }
 };
 
-Storage.prototype.clear = function() {
+CxStorage.prototype.clear = function() {
   if (this.browser.chrome()) {
     chrome.storage.local.clear();
   } else if (this.browser.safari()) {
@@ -68,6 +75,8 @@ var Utils = function(browser) {
 Utils.prototype.findEntryForTab = function(tab) {
   if (this.browser.chrome()) {
     return chromeUtils.findEntryForTab(tab);
+  } else if (this.browser.safari()) {
+    return safariUtils.findEntryForTab(tab);
   }
 };
 
@@ -422,7 +431,7 @@ CountryLog.prototype.recoverFromStorage = function() {
 };
 
 var browser = new Browser();
-var storage = new Storage(browser);
+var storage = new CxStorage(browser);
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);
 var countryLog = new CountryLog(browser);
