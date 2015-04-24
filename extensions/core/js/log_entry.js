@@ -41,41 +41,40 @@ LogEntry.prototype.storeEntries = function(entries) {
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  storage.get('ownGeoData', _.bind(function(result) {
-    // we try to retrieve the stored location
-    var emptyResult = _.isEmpty(result);
+  var ownLocation = geoCache.getOwnLocation();
 
-    if (emptyResult) {
-      // if there isn’t one we need to fetch it
-      geoCache.addOwnLocation(this);
-    } else {
-      var ownGeoData = result.ownGeoData;
-      var ownLocation = geoCache.getOwnLocation();
+  if (!ownLocation) {
+    // if there isn’t one we need to fetch it
+    geoCache.addOwnLocation(this);
+    return;
+  }
 
-      // but if we have a new one we should use that
-      if (ownLocation.ownIp) {
-        ownGeoData = ownLocation;
-      }
+  // if there is one, we need to check how old it is
+  var cutOffTime = moment(ownLocation.timestamp).add(1, 'hour').valueOf();
+  var now = new Date();
 
-      if (ownGeoData.ownIp) {
-        this.ownIp = ownGeoData.ownIp;
-        this.ownCountryCode = ownGeoData.ownCountryCode;
-        this.ownCountryName = ownGeoData.ownCountryName;
-        this.ownRegionCode = ownGeoData.ownRegionCode;
-        this.ownRegionName = ownGeoData.ownRegionName;
-        this.ownTimezone = ownGeoData.ownTimezone;
-        this.ownZipcode = ownGeoData.ownZipcode;
-        this.ownCity = ownGeoData.ownCity;
-        this.ownLat = ownGeoData.ownLat;
-        this.ownLng = ownGeoData.ownLng;
-        console.log('Using cached own geo');
-        this.storeEntries(logEntries);
-      } else {
-        console.log('No own geo data available yet');
-      }
+  // if necessary, fetch a new own geo
+  if (cutOffTime > now.getTime()) {
+    geoCache.addOwnLocation(this);
+    return;
+  }
 
-    }
-  }, this));
+  if (ownLocation.ownIp) {
+    this.ownIp = ownLocation.ownIp;
+    this.ownCountryCode = ownLocation.ownCountryCode;
+    this.ownCountryName = ownLocation.ownCountryName;
+    this.ownRegionCode = ownLocation.ownRegionCode;
+    this.ownRegionName = ownLocation.ownRegionName;
+    this.ownTimezone = ownLocation.ownTimezone;
+    this.ownZipcode = ownLocation.ownZipcode;
+    this.ownCity = ownLocation.ownCity;
+    this.ownLat = ownLocation.ownLat;
+    this.ownLng = ownLocation.ownLng;
+    this.storeEntries(logEntries);
+  } else {
+    console.log('No own geo data available yet');
+  }
+
 };
 
 LogEntry.prototype.getRemoteGeo = function(domain) {
