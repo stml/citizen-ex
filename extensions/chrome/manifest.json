@@ -10,7 +10,7 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["lib/JSON.prune.js", "lib/URI.js", "lib/underscore.js", "background.js"],
+    "scripts": ["lib/JSON.prune.js", "lib/URI.js", "lib/moment.js", "lib/underscore.js", "background.js"],
     "persistent": false
   },
   "icons": {
