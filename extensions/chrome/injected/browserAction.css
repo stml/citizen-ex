@@ -6,6 +6,7 @@
 	box-sizing: content-box;
 	-webkit-box-sizing: content-box;
 	-moz-box-sizing: content-box;
+	box-shadow: none;
 	color: #000;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	font-size: 12px;
@@ -28,6 +29,13 @@
 	text-transform: none;
 	visibility: visible;
 	white-space: normal;
+	-webkit-text-rendering: optimizeLegibility;
+	-moz-text-rendering: optimizeLegibility;
+	-ms-text-rendering: optimizeLegibility;
+	-o-text-rendering: optimizeLegibility;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	}
 
 .citizen-ex__pane {
@@ -102,39 +110,58 @@
 	width: 250px;
 	margin-right: 30px;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_canvas {
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column #cex_badge_canvas {
 	width: 250px;
 	height: 250px;
 	margin-bottom: 25px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table {
+	width: 100%;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td {
+	color: #fff;
+	font-size: 14px;
+	padding: 6px 0;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning {
+	border-bottom: 1px solid #fff;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning a {
+	font-size: 18px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td a {
+	color: #fff;
+	font-size: 14px;
+	padding: 6px 0;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
 	float: right;
 	width: 250px;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table {
 	width: 100%;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table .thead {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table .thead {
 	font-weight: bold;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table tr {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr {
 	border-top: 1px solid #fff;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table tr:first-child {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr:first-child {
 	border-top: none;
 	}	
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table tr:first-child td {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr:first-child td {
 	padding: 0 0 6px;
 	}	
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table td {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td {
 	color: #fff;
 	font-size: 14px;
 	padding: 6px 0;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table td.country {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.country {
 	text-align: left;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table td.percentage {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.percentage {
 	text-align: right;
 	}
 	

@@ -29,12 +29,34 @@
 				<h2>This is your Algorithmic Citizenship</h2>
 				
 				<canvas id="cex_badge_canvas"></canvas>
+				
+				<table id="share_table">
+					<tr>
+						<td colspan="4" class="cex_meaning"><a href="#" class="more" name="more">What does this mean?</a></td>
+					</tr>
+					<tr>
+						<td class="title">Share:</td>
+						<td class="icon facebook"><a href="#" class="cex_share_facebook">Facebook</a></td>
+						<td class="icon twitter"><a href="#" class="cex_share_twitter">Twitter</a></td>
+						<td class="icon email"><a href="#" class="cex_share_email">Email</a></td>
+					</tr>
+				</table>
+				<script type="text/javascript">
+/*
+					$('#share_table td.icon').css("height","14px");
+					$('#share_table td.icon').css("width","14px");
+					$('#share_table td.icon').css("text-indent","-999999px");
+					$('#share_table td.facebook').css("background","url('"+chrome.extension.getURL('images/icon-facebook.png')+"') no-repeat");
+					$('#share_table td.twitter').css("background","url('"+chrome.extension.getURL('images/icon-twitter.png')+"') no-repeat");
+					$('#share_table td.email').css("background","url('"+chrome.extension.getURL('images/icon-email.png')+"') no-repeat");
+*/
+				</script>
 			
 			</div><!-- cex_badge_column -->
 			
 			<div id="cex_data_column">
 				
-				<table>
+				<table id="distribution_table">
 					<tr>
 						<td class="thead country">Your distribution</td>
 						<td class="thead percentage">%</td>
@@ -92,7 +114,7 @@
 						badge.moveTo(x0, y0);
 						var xy = circleCoords(x0,y0,r,circlepointer);
 						badge.lineTo(xy[0],xy[1]);
-						for (i = 0; i < degrees; i=i+30) {
+						for (i = 0; i < degrees; i=i+20) {
 							xy = circleCoords(x0,y0,r,circlepointer+i);
 							badge.lineTo(xy[0],xy[1]);
 							}
@@ -100,7 +122,7 @@
 						badge.lineTo(xy[0],xy[1]);
 						badge.closePath();
 						badge.lineWidth=1;
-						badge.strokeStyle="#333";
+						badge.strokeStyle="#888";
 						badge.stroke();
 						badge.fill();
 				      	};	
