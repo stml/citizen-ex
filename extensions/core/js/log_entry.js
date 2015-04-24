@@ -20,10 +20,6 @@ LogEntry.prototype.fromJSON = function(json) {
   return this;
 };
 
-LogEntry.prototype.toJSON = function() {
-  return JSON.prune(this);
-};
-
 LogEntry.prototype.latestTimestamp = function() {
   return _.max(this.timestamps);
 };
@@ -34,10 +30,7 @@ LogEntry.prototype.addTimestamp = function() {
 };
 
 LogEntry.prototype.storeEntries = function(entries) {
-  var logEntries = _.map(entries, function(entry) {
-    return entry.toJSON();
-  });
-  storage.set('logEntries', logEntries);
+  storage.set('logEntries', entries);
 };
 
 LogEntry.prototype.getOwnGeo = function() {
