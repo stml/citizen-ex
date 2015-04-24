@@ -133,20 +133,35 @@
 	  	$('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map_window');
+			var cexmap = L.map('cex_map_window', { zoomControl:false });
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
 				attribution: '<a href="http://openstreetmap.org/copyright">Map data: © OpenStreetMap</a>'}).addTo(cexmap);
-			cexmap.attributionControl.setPrefix("");
-			L.Icon.Default.imagePath = chrome.extension.getURL('leaflet-images');
+			cexmap.attributionControl.setPrefix("");			
 			cexmap.setView([0,0],2);
+			
+			var destIcon = L.icon({
+				iconUrl: chrome.extension.getURL('images/map-marker-cyan.png'),	
+				iconSize:     [40,40], // size of the icon
+				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
+				});
+			var origIcon = L.icon({
+				iconUrl: chrome.extension.getURL('images/map-marker-yellow.png'),	
+				iconSize:     [40,40], // size of the icon
+				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
+				});
+				
+			<% if (ownGeoData && entry.lat && entry.lng) { %>
+				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+			<% } %>
+			
 			var cexmarkergroup = new L.featureGroup();
 			<% if (ownGeoData && ownGeoData.ownIp) { %>
-				var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>]).addTo(cexmap);
+				var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
 				cexmarkergroup.addLayer(origMarker);
 			<% } else { %>
 		    <% }; %>
 			<% if (entry.ip) { %>
-				var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>]).addTo(cexmap);
+				var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>], {icon: destIcon}).addTo(cexmap);
 				cexmarkergroup.addLayer(destMarker);
 		    <% } else { %>
 		    
