@@ -6,8 +6,10 @@ var GeoCache = function() {
 };
 
 GeoCache.prototype.addOwnLocation = function(entry) {
+  var timestamp = new Date();
   var ownGeoData = {
-    ownGeoData: true
+    ownGeoData: true,
+    timestamp: timestamp.getTime()
   };
 
   var entry = entry;
