@@ -63,6 +63,7 @@
 	width: 250px;
 	float: left;
 	padding: 25px;
+	overflow: hidden;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_canvas {
 	width: 250px;
