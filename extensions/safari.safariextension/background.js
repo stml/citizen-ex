@@ -43,7 +43,15 @@ Storage.prototype.clear = function() {
 
 // Define and set up utilities
 
-var Utils = function() {};
+var Utils = function(browser) {
+  this.browser = browser;
+};
+
+Utils.prototype.findEntryForTab = function(tab) {
+  if (this.browser.chrome()) {
+    return chromeUtils.findEntryForTab(tab);
+  }
+};
 
 Utils.prototype.createLogEntry = function(tab) {
   if (!tab) {
@@ -56,9 +64,7 @@ Utils.prototype.createLogEntry = function(tab) {
     return;
   }
 
-  var previousEntry = _.find(logEntries, function(entry) {
-    return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
-  });
+  var previousEntry = utils.findEntryForTab(tab);
   if (previousEntry) {
     console.log('Entry exists, skipping creation and adding a timestamp');
     if (previousEntry.ownIp === undefined) {
@@ -165,41 +171,40 @@ LogEntry.prototype.storeEntries = function(entries) {
 };
 
 LogEntry.prototype.getOwnGeo = function() {
-  storage.get('ownGeoData', _.bind(function(result) {
-    // we try to retrieve the stored location
-    var emptyResult = _.isEmpty(result);
+  var ownLocation = geoCache.getOwnLocation();
 
-    if (emptyResult) {
-      // if there isn’t one we need to fetch it
-      geoCache.addOwnLocation(this);
-    } else {
-      var ownGeoData = result.ownGeoData;
-      var ownLocation = geoCache.getOwnLocation();
+  if (!ownLocation) {
+    // if there isn’t one we need to fetch it
+    geoCache.addOwnLocation(this);
+    return;
+  }
 
-      // but if we have a new one we should use that
-      if (ownLocation.ownIp) {
-        ownGeoData = ownLocation;
-      }
+  // if there is one, we need to check how old it is
+  var cutOffTime = moment(ownLocation.timestamp).add(1, 'hour').valueOf();
+  var now = new Date();
 
-      if (ownGeoData.ownIp) {
-        this.ownIp = ownGeoData.ownIp;
-        this.ownCountryCode = ownGeoData.ownCountryCode;
-        this.ownCountryName = ownGeoData.ownCountryName;
-        this.ownRegionCode = ownGeoData.ownRegionCode;
-        this.ownRegionName = ownGeoData.ownRegionName;
-        this.ownTimezone = ownGeoData.ownTimezone;
-        this.ownZipcode = ownGeoData.ownZipcode;
-        this.ownCity = ownGeoData.ownCity;
-        this.ownLat = ownGeoData.ownLat;
-        this.ownLng = ownGeoData.ownLng;
-        console.log('Using cached own geo');
-        this.storeEntries(logEntries);
-      } else {
-        console.log('No own geo data available yet');
-      }
+  // if necessary, fetch a new own geo
+  if (cutOffTime > now.getTime()) {
+    geoCache.addOwnLocation(this);
+    return;
+  }
 
-    }
-  }, this));
+  if (ownLocation.ownIp) {
+    this.ownIp = ownLocation.ownIp;
+    this.ownCountryCode = ownLocation.ownCountryCode;
+    this.ownCountryName = ownLocation.ownCountryName;
+    this.ownRegionCode = ownLocation.ownRegionCode;
+    this.ownRegionName = ownLocation.ownRegionName;
+    this.ownTimezone = ownLocation.ownTimezone;
+    this.ownZipcode = ownLocation.ownZipcode;
+    this.ownCity = ownLocation.ownCity;
+    this.ownLat = ownLocation.ownLat;
+    this.ownLng = ownLocation.ownLng;
+    this.storeEntries(logEntries);
+  } else {
+    console.log('No own geo data available yet');
+  }
+
 };
 
 LogEntry.prototype.getRemoteGeo = function(domain) {
@@ -253,8 +258,10 @@ var GeoCache = function() {
 };
 
 GeoCache.prototype.addOwnLocation = function(entry) {
+  var timestamp = new Date();
   var ownGeoData = {
-    ownGeoData: true
+    ownGeoData: true,
+    timestamp: timestamp.getTime()
   };
 
   var entry = entry;
@@ -396,7 +403,7 @@ var geoCache = new GeoCache(browser);
 var countryLog = new CountryLog(browser);
 var logEntries = [];
 
-};
+// Fetch the stored log entries on load, so we can keep adding to them
 
 storage.get('logEntries', function(entries) {
   if (entries && entries.logEntries) {
@@ -411,8 +418,13 @@ storage.get('logEntries', function(entries) {
   }
 });
 
-var utils = new Utils();
-var storage = new Storage();
-var geoCache = new GeoCache();
-var countryLog = new CountryLog();
-var logEntries = [];
+
+safari.application.addEventListener('navigate', function(stuff) {
+  console.log(safari.application.activeBrowserWindow.activeTab);
+  utils.createLogEntry(safari.application.activeBrowserWindow.activeTab);
+}, true);
+
+safari.application.addEventListener('navigate', function(stuff) {
+  console.log(safari.application.activeBrowserWindow.activeTab);
+  utils.createLogEntry(safari.application.activeBrowserWindow.activeTab);
+}, true);

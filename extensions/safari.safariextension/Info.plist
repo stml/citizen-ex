@@ -49,6 +49,9 @@
 		<dict>
 			<key>Start</key>
 			<array>
+				<string>lib/underscore.js</string>
+				<string>lib/jquery.js</string>
+				<string>lib/moment.js</string>
 				<string>injected/setup.js</string>
 			</array>
 		</dict>
