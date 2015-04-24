@@ -1,6 +1,14 @@
 // Define and set up utilities
 
-var Utils = function() {};
+var Utils = function(browser) {
+  this.browser = browser;
+};
+
+Utils.prototype.findEntryForTab = function(tab) {
+  if (this.browser.chrome()) {
+    return chromeUtils.findEntryForTab(tab);
+  }
+};
 
 Utils.prototype.createLogEntry = function(tab) {
   if (!tab) {
@@ -13,9 +21,7 @@ Utils.prototype.createLogEntry = function(tab) {
     return;
   }
 
-  var previousEntry = _.find(logEntries, function(entry) {
-    return tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId;
-  });
+  var previousEntry = utils.findEntryForTab(tab);
   if (previousEntry) {
     console.log('Entry exists, skipping creation and adding a timestamp');
     if (previousEntry.ownIp === undefined) {
