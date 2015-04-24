@@ -216,7 +216,7 @@
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_dest_column {
 	width: 50%;
 	float: left;
-	background: #03c9c8;
+	background: #e8db03;
 	box-sizing:border-box;
   	-moz-box-sizing:border-box;
   	-webkit-box-sizing:border-box;
@@ -226,7 +226,7 @@
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_orig_column {
 	width: 50%;
 	float: right;
-	background: #e8db03;
+	background: #03c9c8;
 	padding: 15px 0;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata h3 {
