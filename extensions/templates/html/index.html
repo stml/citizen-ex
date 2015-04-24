@@ -123,7 +123,11 @@
 		
 		<div id="cex_map">
 		
-		<div id="cex_map_window" class="dark"><img id="cex_map_loading" src="" alt="Loading"/></div>
+		<div id="cex_map_window" class="dark">
+			<img id="cex_map_loading" src="" alt="Loading"/>  
+			<!-- Add mapbox watermark -->
+  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
+  		</div>
 	    
 	  	<script type="text/javascript">
 	  	$('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
@@ -131,7 +135,7 @@
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window');
 			L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://mapbox.com/about/maps">&copy; Mapbox &copy; OpenStreetMap</a>'}).addTo(cexmap);
+				attribution: '<a href="http://openstreetmap.org/copyright">Map data: © OpenStreetMap</a>'}).addTo(cexmap);
 			cexmap.attributionControl.setPrefix("");
 			L.Icon.Default.imagePath = chrome.extension.getURL('leaflet-images');
 			cexmap.setView([0,0],2);
