@@ -185,7 +185,7 @@ LogEntry.prototype.storeEntries = function(entries) {
   var logEntries = _.map(entries, function(entry) {
     return entry.toJSON();
   });
-  storage.set({ 'logEntries': logEntries });
+  storage.set('logEntries', logEntries);
 };
 
 LogEntry.prototype.getOwnGeo = function() {
@@ -377,7 +377,7 @@ GeoCache.prototype.recoverFromStorage = function() {
 };
 
 GeoCache.prototype.updateStorage = function() {
-  storage.set({ 'geoCache': this.entries });
+  storage.set('geoCache', this.entries);
 };
 
 // Create and instantiate a country log
