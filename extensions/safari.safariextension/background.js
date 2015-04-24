@@ -185,7 +185,7 @@ LogEntry.prototype.storeEntries = function(entries) {
   var logEntries = _.map(entries, function(entry) {
     return entry.toJSON();
   });
-  storage.set({ 'logEntries': logEntries });
+  storage.set('logEntries', logEntries);
 };
 
 LogEntry.prototype.getOwnGeo = function() {
@@ -202,7 +202,7 @@ LogEntry.prototype.getOwnGeo = function() {
   var now = new Date();
 
   // if necessary, fetch a new own geo
-  if (cutOffTime > now.getTime()) {
+  if (cutOffTime <= now.getTime()) {
     geoCache.addOwnLocation(this);
     return;
   }
@@ -276,6 +276,11 @@ var GeoCache = function() {
 };
 
 GeoCache.prototype.addOwnLocation = function(entry) {
+  // skip if we are already fetching the data
+  if (this.fetching) {
+    return;
+  }
+
   var timestamp = new Date();
   var ownGeoData = {
     ownGeoData: true,
@@ -285,6 +290,7 @@ GeoCache.prototype.addOwnLocation = function(entry) {
   var entry = entry;
   var url = 'https://freegeoip.net/json'
 
+  this.fetching = true;
   utils.get(url, _.bind(function(response) {
     if (response) {
       var json = JSON.parse(response);
@@ -299,19 +305,20 @@ GeoCache.prototype.addOwnLocation = function(entry) {
       ownGeoData.ownLat = json.latitude;
       ownGeoData.ownLng = json.longitude;
 
+      console.log('Got own geo, caching it');
       geoCache.addOwnLocationEntry(ownGeoData);
+
+      // now update the log entry
       if (entry) {
         entry.getOwnGeo();
       }
 
-      // store this so that it’s available to the template
-      storage.set({ ownGeoData: ownGeoData });
-
-      console.log('Got own geo, caching it');
     } else {
       console.log('Can’t get own geo data');
     }
-  }, ownGeoData));
+    this.fetching = null;
+    console.log(this);
+  }, this));
 };
 
 GeoCache.prototype.getOwnLocation = function() {
@@ -367,17 +374,17 @@ GeoCache.prototype.reset = function() {
 };
 
 GeoCache.prototype.recoverFromStorage = function() {
-  console.log('Getting geo cache from storage');
   storage.get('geoCache', _.bind(function(geoCache) {
     if (_.isEmpty(geoCache) || geoCache === undefined) {
       return;
     }
     this.entries = geoCache.geoCache;
+    console.log('Got geo cache from storage');
   }, this));
 };
 
 GeoCache.prototype.updateStorage = function() {
-  storage.set({ 'geoCache': this.entries });
+  storage.set('geoCache', this.entries);
 };
 
 // Create and instantiate a country log

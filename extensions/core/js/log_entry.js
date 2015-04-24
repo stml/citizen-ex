@@ -37,7 +37,7 @@ LogEntry.prototype.storeEntries = function(entries) {
   var logEntries = _.map(entries, function(entry) {
     return entry.toJSON();
   });
-  storage.set({ 'logEntries': logEntries });
+  storage.set('logEntries', logEntries);
 };
 
 LogEntry.prototype.getOwnGeo = function() {
@@ -54,7 +54,7 @@ LogEntry.prototype.getOwnGeo = function() {
   var now = new Date();
 
   // if necessary, fetch a new own geo
-  if (cutOffTime > now.getTime()) {
+  if (cutOffTime <= now.getTime()) {
     geoCache.addOwnLocation(this);
     return;
   }
