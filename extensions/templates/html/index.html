@@ -130,7 +130,7 @@
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window');
-			L.tileLayer('http://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
+			L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
 				attribution: '<a href="http://mapbox.com/about/maps">&copy; Mapbox &copy; OpenStreetMap</a>'}).addTo(cexmap);
 			cexmap.attributionControl.setPrefix("");
 			L.Icon.Default.imagePath = chrome.extension.getURL('leaflet-images');
@@ -148,6 +148,8 @@
 		    
 		    <% }; %>
 		    cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
+		    // kill loading circle
+		    $('img#cex_map_loading').hide();
 		    }
 	    
 	  	</script>
