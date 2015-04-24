@@ -1,18 +1,3 @@
-// Fetch the stored log entries on load, so we can keep adding to them
-
-chrome.storage.local.get('logEntries', function(entries) {
-  if (entries && entries.logEntries) {
-    var entries = entries.logEntries;
-    logEntries = _.map(entries, function(entry) {
-      var logEntry = new LogEntry();
-      logEntry.fromJSON(JSON.parse(entry));
-      return logEntry;
-    });
-
-    console.log('Fetched the stored log entries');
-  }
-});
-
 // Respond to events
 
 chrome.tabs.onUpdated.addListener(function(tabId) {

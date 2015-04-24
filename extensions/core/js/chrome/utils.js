@@ -7,4 +7,10 @@ ChromeUtils.prototype.getTabById = function(tabId, callback) {
   chrome.tabs.get(tabId, callback);
 };
 
+ChromeUtils.prototype.findEntryForTab = function(tab) {
+  return _.find(logEntries, function(entry) {
+    return (tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId);
+  });
+};
+
 var chromeUtils = new ChromeUtils();
