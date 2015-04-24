@@ -7,6 +7,40 @@
  *
  */
 
+var Storage = function(browser) {
+  this.browser = browser;
+};
+
+Storage.prototype.set = function(property, value) {
+  if (this.browser.chrome()) {
+    chrome.storage.local.set({ property: value });
+  } else if (this.browser.safari()) {
+    localStorage[property] = value;
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+Storage.prototype.get = function(property, callback) {
+  if (this.browser.chrome()) {
+    chrome.storage.local.get(property, callback);
+  } else if (this.browser.safari()) {
+    callback(localStorage[property]);
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+Storage.prototype.clear = function() {
+  if (this.browser.chrome()) {
+    chrome.storage.local.clear();
+  } else if (this.browser.safari()) {
+    localStorage.clear();
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
 // Define and set up utilities
 
 var Utils = function() {};
@@ -355,17 +389,27 @@ CountryLog.prototype.recoverFromStorage = function() {
   }, this));
 };
 
-var Storage = function() {
+var browser = new Browser();
+var storage = new Storage(browser);
+var utils = new Utils(browser);
+var geoCache = new GeoCache(browser);
+var countryLog = new CountryLog(browser);
+var logEntries = [];
 
 };
 
-Storage.prototype.set = function(property, value) {
-  chrome.storage.local.set({ property: value });
-};
+storage.get('logEntries', function(entries) {
+  if (entries && entries.logEntries) {
+    var entries = entries.logEntries;
+    logEntries = _.map(entries, function(entry) {
+      var logEntry = new LogEntry();
+      logEntry.fromJSON(JSON.parse(entry));
+      return logEntry;
+    });
 
-Storage.prototype.get = function(property, callback) {
-  chrome.storage.local.get(property, callback);
-};
+    console.log('Fetched the stored log entries');
+  }
+});
 
 var utils = new Utils();
 var storage = new Storage();
