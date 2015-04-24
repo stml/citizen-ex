@@ -60,7 +60,7 @@ gulp.task('safariLib', function () {
 });
 
 gulp.task('safariCore', function () {
-  gulp.src(coreSources)
+  gulp.src(safariCore)
     .pipe(include_file())
     .pipe(concat('background.js'))
     .pipe(gulp.dest('./extensions/safari.safariextension/'));
@@ -74,7 +74,7 @@ gulp.task('safariTemplates', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./extensions/templates/**/*.*', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
+  gulp.watch(['./extensions/templates/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
 });
 
 gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib', 'watch']);
