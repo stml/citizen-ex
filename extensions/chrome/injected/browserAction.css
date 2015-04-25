@@ -44,7 +44,7 @@
 	left: 0;
 	top: 0;
 	display: none;
-	z-index: 3000;
+	z-index: 9999999;
 	color: #000;
 	opacity: 0.95;
 	}
@@ -75,6 +75,7 @@
 	color: #fff;
 	font-weight: bold;
 	display: inline-block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	}
 .citizen-ex__pane #cex_hud #cex_header a {
 	color: #fff !important;
@@ -84,6 +85,7 @@
 	font-weight: normal;
 	letter-spacing: 0.1em;
 	font-size: 14px;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	}
 .citizen-ex__pane #cex_hud #cex_header a.more {
 	line-height: 1;
@@ -119,6 +121,7 @@
 	width: 100%;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td {
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
 	font-size: 14px;
 	padding: 6px 0;
@@ -128,11 +131,14 @@
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning a {
 	font-size: 18px;
+	text-decoration: none;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td a {
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
 	font-size: 14px;
-	padding: 6px 0;
+	padding: 6px 0;	
+	text-decoration: none;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
 	float: right;
@@ -154,6 +160,7 @@
 	padding: 0 0 6px;
 	}	
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td {
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
 	font-size: 14px;
 	padding: 6px 0;
@@ -182,7 +189,8 @@
 	padding: 2px 5px;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_map_window .leaflet-control-attribution a {
-	color: rgba(255, 255, 255, 0.701961);
+	color: rgba(255, 255, 255, 0.701961);	
+	text-decoration: none;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_map_window .mapbox-maplogo {
 	position:absolute;
@@ -230,6 +238,8 @@
 	padding: 15px 0;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata h3 {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #000;
 	font-size: 14px;
 	font-weight: normal;
@@ -239,6 +249,8 @@
 	line-height: 1;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata p {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	margin: 0 15px;
 	color: #000;
 	font-size: 14px;
@@ -252,6 +264,8 @@
 	}
 
 .citizen-ex__pane #cex_hud h2 {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	width: 100%;
 	font-size: 22px;
 	line-height: 1.25;
@@ -261,6 +275,8 @@
 	}
 
 .citizen-ex__pane #cex_hud p {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	width: 100%;
 	font-size: 14px;
 	color: #fff;
