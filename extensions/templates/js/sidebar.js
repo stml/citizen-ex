@@ -10,11 +10,13 @@ var Sidebar = Backbone.Model.extend({
   },
 
   setUpCitizenship: function() {
-    message.send({ countryLog: true }, _.bind(function(countryLog) {
-      var countryCodes = _.pick(countryLog.visits, _.identity);
-      var citizenship = this.calculateCitizenship(countryCodes);
-      this.set({ citizenship: citizenship });
-    }, this));
+    message.send({ countryLog: true });
+  },
+
+  receiveCitizenship: function(countryLog) {
+    var countryCodes = _.pick(countryLog.visits, _.identity);
+    var citizenship = this.calculateCitizenship(countryCodes);
+    this.set({ citizenship: citizenship });
   },
 
   setUpOpenTabsCitizenship: function() {
@@ -60,18 +62,20 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getAllLogEntries: function() {
-    message.send({ allLogEntries: true }, _.bind(function(entries) {
-      var logEntries = _.map(entries, function(entry) {
-        var logEntry = new LogEntry();
-        return logEntry.fromJSON(entry);
-      });
+    message.send({ allLogEntries: true });
+  },
 
-      if (!logEntries) {
-        this.set({ logEntries: '' });
-      } else {
-        this.set({ logEntries: logEntries });
-      }
-    }, this));
+  receiveAllLogEntries: function(entries) {
+    var logEntries = _.map(entries, function(entry) {
+      var logEntry = new LogEntry();
+      return logEntry.fromJSON(entry);
+    });
+
+    if (!logEntries) {
+      this.set({ logEntries: '' });
+    } else {
+      this.set({ logEntries: logEntries });
+    }
   },
 
   getLogEntry: function(url) {
@@ -91,34 +95,36 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getLogEntryForTab: function() {
-    message.send({ activeTab: true }, _.bind(function(response) {
-      var tab = response;
-      var entry = this.getLogEntry(tab.url);
+    message.send({ activeTab: true });
+  },
 
-      if (!entry) {
-        this.set({ entry: '' });
-        return;
-      } else {
-        this.set({ entry: entry });
-      }
+  receiveActiveTab: function(url) {
+    var entry = this.getLogEntry(url);
 
-    }, this));
+    if (!entry) {
+      this.set({ entry: '' });
+      return;
+    } else {
+      this.set({ entry: entry });
+    }
   },
 
   getOwnGeoData: function() {
     // we can’t get it from storage (not shared)
     // we have to fetch it using the messaging system
-    message.send({ ownGeoData: true }, _.bind(function(ownGeoData) {
-      this.set({ ownGeoData: ownGeoData });
-    }, this));
+    message.send({ ownGeoData: true });
+  },
+
+  receiveOwnGeoData: function(ownGeoData) {
+    this.set({ ownGeoData: ownGeoData });
   },
 
   requestOpenTabs: function() {
     message.send({ allTabs: true });
   },
 
-  updateTabs: function(tabs) {
-    this.set({ tabs: tabs });
+  updateTabs: function(urls) {
+    this.set({ tabs: urls });
     this.getTabEntries();
   },
 
@@ -127,8 +133,8 @@ var Sidebar = Backbone.Model.extend({
 
     if (tabs) {
       var entries = [];
-      _.each(tabs, _.bind(function(tab) {
-        var logEntry = this.getLogEntry(tab.url);
+      _.each(tabs, _.bind(function(tabUrl) {
+        var logEntry = this.getLogEntry(tabUrl);
         if (logEntry) {
           entries.push(logEntry);
         }

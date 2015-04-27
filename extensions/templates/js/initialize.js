@@ -17,10 +17,4 @@ var panes = [
   new Pane('settings', settings)
 ];
 
-var sidebar = new Sidebar(panes, browser);
-
-_.each(panes, function(pane) {
-  new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
-});
-
 
