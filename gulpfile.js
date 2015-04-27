@@ -25,6 +25,9 @@ var coreSources = [
 
 var templateSources = [
   './extensions/templates/js/overwrite_warning.js',
+  './extensions/core/js/browser.js',
+  './extensions/core/js/storage.js',
+  './extensions/core/js/message.js',
   './extensions/templates/js/log_entry.js',
   './extensions/templates/js/sidebar.js',
   './extensions/templates/js/sidebar_pane.js',
@@ -74,7 +77,7 @@ gulp.task('safariTemplates', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./extensions/templates/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
+  gulp.watch(['./extensions/templates/**/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
 });
 
 gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib', 'watch']);
