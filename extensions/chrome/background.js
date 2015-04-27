@@ -30,6 +30,10 @@ var CxStorage = function(browser) {
 };
 
 CxStorage.prototype.set = function(property, value) {
+  if (!property) {
+    return;
+  }
+
   var json = JSON.prune(value);
   if (this.browser.chrome()) {
     chrome.storage.local.set({ property: json });
@@ -43,7 +47,11 @@ CxStorage.prototype.set = function(property, value) {
 CxStorage.prototype.get = function(property, callback) {
   if (this.browser.chrome()) {
     chrome.storage.local.get(property, function(result) {
-      callback(JSON.parse(result));
+      var data = undefined;
+      if (result[property]) {
+        var data = JSON.parse(result[property]);
+      }
+      callback(data);
     });
   } else if (this.browser.safari()) {
     var data = undefined;
@@ -72,26 +80,28 @@ var Utils = function(browser) {
   this.browser = browser;
 };
 
-Utils.prototype.findEntryForTab = function(tab) {
-  if (this.browser.chrome()) {
-    return chromeUtils.findEntryForTab(tab);
-  } else if (this.browser.safari()) {
-    return safariUtils.findEntryForTab(tab);
-  }
+Utils.prototype.findEntryForUrl = function(url) {
+  var entries = _.filter(logEntries, function(logEntry) {
+    return logEntry.url === url;
+  });
+  latestEntry = _.max(entries, function(entry) {
+    return _.max(entry.timestamps);
+  });
+  return latestEntry;
 };
 
-Utils.prototype.createLogEntry = function(tab) {
-  if (!tab) {
+Utils.prototype.updateLogEntry = function(url) {
+  if (!url) {
     return;
   }
 
   // ignore empty tabs and chrome settings pages
-  var protocol = utils.getUrlProtocol(tab.url);
+  var protocol = utils.getUrlProtocol(url);
   if (protocol === 'chrome' || protocol === 'chrome-devtools') {
     return;
   }
 
-  var previousEntry = utils.findEntryForTab(tab);
+  var previousEntry = utils.findEntryForUrl(url);
   if (previousEntry) {
     console.log('Entry exists, skipping creation and adding a timestamp');
     if (previousEntry.ownIp === undefined) {
@@ -102,21 +112,28 @@ Utils.prototype.createLogEntry = function(tab) {
     }
     previousEntry.addTimestamp();
     return;
+  } else {
+    this.createLogEntry(url);
+  }
+};
+
+Utils.prototype.createLogEntry = function(url) {
+  if (!url) {
+    return;
+  }
+
+  // ignore empty tabs and chrome settings pages
+  var protocol = utils.getUrlProtocol(url);
+  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
+    return;
   }
 
   var timestamp = new Date();
-  logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
+  logEntries.push(new LogEntry(url, timestamp));
 
   var logEntry = new LogEntry();
   logEntry.storeEntries(logEntries);
   console.log('Created a new LogEntry');
-};
-
-Utils.prototype.findLogEntry = function(url, tabId, windowId) {
-  var selected = _.find(logEntries, function(entry) {
-    return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
-  });
-  return selected;
 };
 
 Utils.prototype.trimUrl = function(url) {
@@ -157,13 +174,11 @@ Utils.prototype.reset = function() {
 
 // Define the LogEntry class
 
-var LogEntry = function(url, timestamp, tabId, windowId) {
+var LogEntry = function(url, timestamp) {
   if (url) {
     this.url = url;
     this.domain = utils.trimUrl(url);
     this.timestamps = [timestamp];
-    this.tabId = tabId;
-    this.windowId = windowId;
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -221,6 +236,7 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownLat = ownLocation.ownLat;
     this.ownLng = ownLocation.ownLng;
     this.storeEntries(logEntries);
+
   } else {
     console.log('No own geo data available yet');
   }
@@ -319,7 +335,6 @@ GeoCache.prototype.addOwnLocation = function(entry) {
       console.log('Can’t get own geo data');
     }
     this.fetching = null;
-    console.log(this);
   }, this));
 };
 
@@ -333,6 +348,7 @@ GeoCache.prototype.addOwnLocationEntry = function(ownGeoData) {
   }
   this.removeOwnLocation();
   this.addEntry(ownGeoData);
+  storage.set('ownGeoData', ownGeoData);
 };
 
 GeoCache.prototype.removeOwnLocation = function() {
@@ -377,10 +393,15 @@ GeoCache.prototype.reset = function() {
 
 GeoCache.prototype.recoverFromStorage = function() {
   storage.get('geoCache', _.bind(function(geoCache) {
-    if (_.isEmpty(geoCache) || geoCache === undefined) {
+    if (_.isEmpty(geoCache) || geoCache === undefined || !geoCache) {
       return;
     }
-    this.entries = geoCache.geoCache;
+    // handle how differently chrome works
+    if (geoCache.geoCache) {
+      this.entries = geoCache.geoCache;
+    } else {
+      this.entries = geoCache;
+    }
     console.log('Got geo cache from storage');
   }, this));
 };
@@ -451,12 +472,8 @@ var ChromeUtils = function() {};
 
 ChromeUtils.prototype.getTabById = function(tabId, callback) {
   // we use a callback here because chrome.tabs.get is asynchronous
-  chrome.tabs.get(tabId, callback);
-};
-
-ChromeUtils.prototype.findEntryForTab = function(tab) {
-  return _.find(logEntries, function(entry) {
-    return (tab.url === entry.url && tab.id === entry.tabId && tab.windowId === entry.windowId);
+  chrome.tabs.get(tabId, function(tab){
+    callback(tab.url);
   });
 };
 
@@ -465,17 +482,19 @@ var chromeUtils = new ChromeUtils();
 // Respond to events
 
 chrome.tabs.onUpdated.addListener(function(tabId) {
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
-});
-
-chrome.tabs.onCreated.addListener(function(tab) {
-  utils.createLogEntry(tab);
+  // create a new entry
+  chromeUtils.getTabById(tabId, function(tabUrl) {
+    utils.createLogEntry(tabUrl);
+  });
 });
 
 // fires when an existing tab is selected
 chrome.tabs.onActivated.addListener(function(activeInfo) {
+  // update timestamp
   var tabId = activeInfo.tabId;
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
+  chromeUtils.getTabById(tabId, function(tabUrl) {
+    utils.updateLogEntry(tabUrl);
+  });
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
@@ -510,5 +529,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     sendResponse(logEntries);
   } else if (request.countryLog) {
     sendResponse(countryLog);
+  } else if (request.ownGeoData) {
+    sendResponse(geoCache.getOwnLocation());
   }
 });

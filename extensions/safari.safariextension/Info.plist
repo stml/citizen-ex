@@ -52,6 +52,7 @@
 				<string>lib/underscore.js</string>
 				<string>lib/jquery.js</string>
 				<string>lib/moment.js</string>
+				<string>lib/backbone.js</string>
 				<string>injected/setup.js</string>
 			</array>
 		</dict>

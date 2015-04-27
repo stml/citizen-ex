@@ -7,6 +7,88 @@
  *
  */
 
+var Browser = function() {
+  this.name = 'unknown';
+  var notChrome = _.isUndefined(window.chrome);
+  if (!notChrome) {
+    this.name = 'chrome';
+  } else {
+    this.name = 'safari';
+  }
+};
+
+Browser.prototype.chrome = function() {
+  return this.name === 'chrome';
+};
+
+Browser.prototype.safari = function() {
+  return this.name === 'safari';
+};
+
+var CxStorage = function(browser) {
+  this.browser = browser;
+};
+
+CxStorage.prototype.set = function(property, value) {
+  if (!property) {
+    return;
+  }
+
+  var json = JSON.prune(value);
+  if (this.browser.chrome()) {
+    chrome.storage.local.set({ property: json });
+  } else if (this.browser.safari()) {
+    localStorage[property] = json;
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+CxStorage.prototype.get = function(property, callback) {
+  if (this.browser.chrome()) {
+    chrome.storage.local.get(property, function(result) {
+      var data = undefined;
+      if (result[property]) {
+        var data = JSON.parse(result[property]);
+      }
+      callback(data);
+    });
+  } else if (this.browser.safari()) {
+    var data = undefined;
+    if (localStorage[property]) {
+      var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+CxStorage.prototype.clear = function() {
+  if (this.browser.chrome()) {
+    chrome.storage.local.clear();
+  } else if (this.browser.safari()) {
+    localStorage.clear();
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+var CxMessage = function(browser) {
+  this.browser = browser;
+};
+
+CxMessage.prototype.send = function(message, callback) {
+  if (this.browser.chrome()) {
+    chrome.runtime.sendMessage(message, callback);
+  } else if (this.browser.safari()) {
+    // safari
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+
 var LogEntry = function() {};
 
 LogEntry.prototype.fromJSON = function(json) {
@@ -24,8 +106,9 @@ LogEntry.prototype.latestTimestamp = function() {
 };
 
 var Sidebar = Backbone.Model.extend({
-  initialize: function(panes) {
+  initialize: function(panes, browser) {
     this.panes = panes;
+    this.browser = browser;
     this.resetValues();
     this.getOwnGeoData();
     this.getAllLogEntries();
@@ -34,7 +117,7 @@ var Sidebar = Backbone.Model.extend({
   },
 
   setUpCitizenship: function() {
-    chrome.runtime.sendMessage({ countryLog: true }, _.bind(function(countryLog) {
+    message.send({ countryLog: true }, _.bind(function(countryLog) {
       var countryCodes = _.pick(countryLog.visits, _.identity);
       var citizenship = this.calculateCitizenship(countryCodes);
       this.set({ citizenship: citizenship });
@@ -84,10 +167,10 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getAllLogEntries: function() {
-    chrome.runtime.sendMessage({ allLogEntries: true }, _.bind(function(entries) {
+    message.send({ allLogEntries: true }, _.bind(function(entries) {
       var logEntries = _.map(entries, function(entry) {
         var logEntry = new LogEntry();
-        return logEntry.fromJSON(JSON.parse(entry));
+        return logEntry.fromJSON(entry);
       });
 
       if (!logEntries) {
@@ -98,23 +181,26 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
-  getLogEntry: function(url, tabId, windowId) {
+  getLogEntry: function(url) {
     var logEntries = this.get('logEntries');
 
     if (!logEntries) {
       return null;
     }
 
-    var entry = _.find(logEntries, function(logEntry) {
-      return logEntry.url === url && logEntry.tabId === tabId && logEntry.windowId === windowId;
+    var entries = _.filter(logEntries, function(logEntry) {
+      return logEntry.url === url;
     });
-    return entry;
+    latestEntry = _.max(entries, function(entry) {
+      return _.max(entry.timestamps);
+    });
+    return latestEntry;
   },
 
   getLogEntryForTab: function() {
-    chrome.runtime.sendMessage({ activeTab: true }, _.bind(function(response) {
+    message.send({ activeTab: true }, _.bind(function(response) {
       var tab = response;
-      var entry = this.getLogEntry(tab.url, tab.id, tab.windowId);
+      var entry = this.getLogEntry(tab.url);
 
       if (!entry) {
         this.set({ entry: '' });
@@ -123,18 +209,19 @@ var Sidebar = Backbone.Model.extend({
         this.set({ entry: entry });
       }
 
-
     }, this));
   },
 
   getOwnGeoData: function() {
-    chrome.storage.local.get('ownGeoData', _.bind(function(object) {
-      this.set({ ownGeoData: object.ownGeoData });
+    // we can’t get it from storage (not shared)
+    // we have to fetch it using the messaging system
+    message.send({ ownGeoData: true }, _.bind(function(ownGeoData) {
+      this.set({ ownGeoData: ownGeoData });
     }, this));
   },
 
   requestOpenTabs: function() {
-    chrome.runtime.sendMessage({ allTabs: true });
+    message.send({ allTabs: true });
   },
 
   updateTabs: function(tabs) {
@@ -148,7 +235,7 @@ var Sidebar = Backbone.Model.extend({
     if (tabs) {
       var entries = [];
       _.each(tabs, _.bind(function(tab) {
-        var logEntry = this.getLogEntry(tab.url, tab.id, tab.windowId);
+        var logEntry = this.getLogEntry(tab.url);
         if (logEntry) {
           entries.push(logEntry);
         }
@@ -203,7 +290,7 @@ var Sidebar = Backbone.Model.extend({
 
   eraseData: function() {
     this.resetValues();
-    chrome.storage.local.clear();
+    storage.clear();
   }
 });
 
@@ -279,6 +366,10 @@ var currentTab = "<div id=\"cex_hud\">\n\n\t<div id=\"cex_header\">\n\t\t<h1>Cit
 var about = "<h1>About</h1>\n<a href=\"#\" name=\"currentTab\">Current page</a>\n<a href=\"#\" name=\"settings\">Settings</a>\n";
 var settings = "<h1>Settings</h1>\n<a href=\"#\" class=\"erase\">Erase all data (cannot undo this action)</a>\n<a href=\"#\" name=\"currentTab\">Current page</a>\n<a href=\"#\" name=\"about\">About</a>\n\n\n";
 
+var browser = new Browser();
+var storage = new CxStorage(browser);
+var message = new CxMessage(browser);
+
 var Pane = function(name, template) {
   this.name = name;
   this.template = template;
@@ -290,7 +381,7 @@ var panes = [
   new Pane('settings', settings)
 ];
 
-var sidebar = new Sidebar(panes);
+var sidebar = new Sidebar(panes, browser);
 
 _.each(panes, function(pane) {
   new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
