@@ -48,5 +48,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     sendResponse(logEntries);
   } else if (request.countryLog) {
     sendResponse(countryLog);
+  } else if (request.ownGeoData) {
+    sendResponse(geoCache.getOwnLocation());
   }
 });
