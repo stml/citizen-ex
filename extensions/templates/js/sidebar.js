@@ -74,17 +74,20 @@ var Sidebar = Backbone.Model.extend({
     }, this));
   },
 
-  getLogEntry: function(url, tabId, windowId) {
+  getLogEntry: function(url) {
     var logEntries = this.get('logEntries');
 
     if (!logEntries) {
       return null;
     }
 
-    var entry = _.find(logEntries, function(logEntry) {
-      return logEntry.url === url && logEntry.tabId === tabId && logEntry.windowId === windowId;
+    var entries = _.filter(logEntries, function(logEntry) {
+      return logEntry.url === url;
     });
-    return entry;
+    latestEntry = _.max(entries, function(entry) {
+      return _.max(entry.timestamps);
+    });
+    return latestEntry;
   },
 
   getLogEntryForTab: function() {
@@ -125,7 +128,7 @@ var Sidebar = Backbone.Model.extend({
     if (tabs) {
       var entries = [];
       _.each(tabs, _.bind(function(tab) {
-        var logEntry = this.getLogEntry(tab.url, tab.id, tab.windowId);
+        var logEntry = this.getLogEntry(tab.url);
         if (logEntry) {
           entries.push(logEntry);
         }
