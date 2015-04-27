@@ -58,13 +58,13 @@
 				
 				<table id="distribution_table">
 					<tr>
-						<td class="thead country">Your distribution</td>
-						<td class="thead percentage">%</td>
+						<td class="thead cex_country">Your distribution</td>
+						<td class="thead cex_percentage">%</td>
 					</tr>
 				<% _.each(citizenship, function(country) { %>
 					<tr>
-						<td class="country"><%= country.code %></td>
-						<td class="percentage"><%= country.percentage %></td>
+						<td class="cex_country"><%= country.code %></td>
+						<td class="cex_percentage"><%= country.percentage %></td>
 					</tr>
 				<% }); %>
 				</table>

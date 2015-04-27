@@ -94,7 +94,7 @@
 	float: right;
 	margin-right: 60px;
 	}
-.citizen-ex__pane #cex_hud #cex_header a:hover {
+.citizen-ex__pane #cex_hud #cex_header a.cex_more:hover {
 	text-decoration: underline;
 	}	
 .citizen-ex__pane #cex_hud #cex_main {
@@ -170,10 +170,10 @@
 	border: none;
 	display: table-cell;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.country {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.cex_country {
 	text-align: left;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.percentage {
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.cex_percentage {
 	text-align: right;
 	padding-left: 20px;
 	}
