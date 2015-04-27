@@ -1,17 +1,19 @@
 // Respond to events
 
 chrome.tabs.onUpdated.addListener(function(tabId) {
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
-});
-
-chrome.tabs.onCreated.addListener(function(tab) {
-  utils.createLogEntry(tab);
+  // create a new entry
+  chromeUtils.getTabById(tabId, function(tabUrl) {
+    utils.createLogEntry(tabUrl);
+  });
 });
 
 // fires when an existing tab is selected
 chrome.tabs.onActivated.addListener(function(activeInfo) {
+  // update timestamp
   var tabId = activeInfo.tabId;
-  chromeUtils.getTabById(tabId, utils.createLogEntry);
+  chromeUtils.getTabById(tabId, function(tabUrl) {
+    utils.updateLogEntry(tabUrl);
+  });
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
