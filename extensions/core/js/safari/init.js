@@ -10,8 +10,10 @@ safari.application.addEventListener('activate', function(stuff) {
   utils.updateLogEntry(safari.application.activeBrowserWindow.activeTab.url);
 }, true);
 
-safari.application.addEventListener('command', function(stuff) {
-  safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('openSidebar');
+safari.application.addEventListener('command', function(command) {
+  if (command.command === 'openSidebar') {
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('openSidebar');
+  }
 }, false);
 
 safari.application.addEventListener('message', function(message) {
@@ -22,7 +24,7 @@ safari.application.addEventListener('message', function(message) {
 
   } else if (name === 'allTabs') {
     var tabs = safari.application.activeBrowserWindow.tabs;
-    var urls = _.pluch(tabs, 'url');
+    var urls = _.pluck(tabs, 'url');
     message.target.page.dispatchMessage(name, { tabs: urls }, false)
 
   } else if (name === 'allLogEntries') {

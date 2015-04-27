@@ -24,7 +24,7 @@
 				<key>Filename</key>
 				<string>global.html</string>
 				<key>Label</key>
-				<string>Hello</string>
+				<string>Global</string>
 			</dict>
 		</array>
 		<key>Database Quota</key>
@@ -34,12 +34,16 @@
 		<key>Toolbar Items</key>
 		<array>
 			<dict>
+				<key>Command</key>
+				<string>openSidebar</string>
 				<key>Identifier</key>
 				<string>toggle</string>
 				<key>Image</key>
 				<string>icon16.png</string>
 				<key>Label</key>
 				<string>Toggle</string>
+				<key>Tool Tip</key>
+				<string></string>
 			</dict>
 		</array>
 	</dict>
@@ -56,6 +60,10 @@
 				<string>injected/setup.js</string>
 			</array>
 		</dict>
+		<key>Stylesheets</key>
+		<array>
+			<string>injected/browserAction.css</string>
+		</array>
 	</dict>
 	<key>DeveloperIdentifier</key>
 	<string>R9WHUEF8R8</string>

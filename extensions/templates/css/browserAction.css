@@ -1,0 +1,94 @@
+.citizen-ex__pane {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: none;
+	z-index: 3000;
+	color: #000;
+	}
+
+.citizen-ex__pane #cex_hud {
+	margin: 0 2em;
+	background: #888;
+	font-size: 16px;
+	line-height: 1.2;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	border-top: 0;
+	border-right: 2px solid #000;
+	border-bottom: 2px solid #000;
+	border-left: 2px solid #000;
+	overflow: hidden;
+	position: relative;
+	}
+
+.citizen-ex__pane #cex_hud #cex_header {
+	padding: 1em;
+	width: 100%;
+	border-bottom: 2px solid #000;
+	overflow: hidden;
+	position: relative;
+	}
+	
+.citizen-ex__pane #cex_hud #cex_badge {
+	width: 250px;
+	float: left;
+	padding: 25px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_canvas {
+	width: 250px;
+	height: 250px;
+	margin-bottom: 25px;
+	}
+	
+.citizen-ex__pane #cex_hud #cex_map {
+	margin-left: 300px;	
+	border-left: 2px solid #000;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window {
+	width: 100%;
+	height: 450px;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window img {
+    -webkit-filter: grayscale(1); /* Webkit */
+    filter: gray; /* IE6-9 */
+    filter: grayscale(1); /* W3C */
+  	}
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata {
+/* 	display: none; */
+	}
+	
+.citizen-ex__pane #cex_hud #cex_header h1 {
+	margin: 0 0 0 0;
+	padding: 0;
+	font-size: 24px;
+	color: #000;
+	float: left;
+	}
+.citizen-ex__pane #cex_hud #cex_header a {
+	color: #000 !important;
+	text-transform: uppercase;
+	float: right;
+	text-decoration: none;
+	border-radius: 10px;
+	padding: 5px;
+	margin-right: 30px;
+	font-weight: bold;
+	font-size: 14px;
+	}
+.citizen-ex__pane #cex_hud #cex_header a:hover {
+	background: #777;
+	}
+.citizen-ex__pane #cex_hud #cex_header a:active {
+	background: #666;
+	}	
+
+.citizen-ex__pane #cex_hud h2 {
+	margin: 0 0 0 0;
+	padding: 0;
+	font-size: 14px;
+	}
+
+.citizen-ex__pane #cex_hud p {
+	width: 100%;
+	}

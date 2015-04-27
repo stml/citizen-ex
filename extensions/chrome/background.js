@@ -518,22 +518,24 @@ chrome.storage.onChanged.addListener(function(data) {
 
 // we have to use Chrome’s messaging system because the page can’t find out its own tabId
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.activeTab) {
-    sendResponse(sender.tab);
-  } else if (request.allTabs) {
-    var windowId = sender.tab.windowId;
-    var senderObject = sender;
-
-    // this has to use message sending back and forth
-    // simple value sending to a callback fails
-    chrome.tabs.query({ windowId: windowId }, function(tabs) {
-      chrome.tabs.sendMessage(senderObject.tab.id, { tabs: tabs });
+  var senderObject = sender;
+  if (_.has(request, 'activeTab')) {
+    chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
+      chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
     });
-  } else if (request.allLogEntries) {
-    sendResponse(logEntries);
-  } else if (request.countryLog) {
-    sendResponse(countryLog);
-  } else if (request.ownGeoData) {
-    sendResponse(geoCache.getOwnLocation());
+  } else if (_.has(request, 'allTabs')) {
+    var windowId = sender.tab.windowId;
+
+    chrome.tabs.query({ windowId: windowId }, function(tabs) {
+      var urls = _.pluck(tabs, 'url');
+
+      chrome.tabs.sendMessage(senderObject.tab.id, { tabs: urls });
+    });
+  } else if (_.has(request, 'allLogEntries')) {
+    chrome.tabs.sendMessage(senderObject.tab.id, { allLogEntries: logEntries });
+  } else if (_.has(request, 'countryLog')) {
+    chrome.tabs.sendMessage(senderObject.tab.id, { countryLog: countryLog });
+  } else if (_.has(request, 'ownGeoData')) {
+    chrome.tabs.sendMessage(senderObject.tab.id, { ownGeoData: geoCache.getOwnLocation() });
   }
 });
