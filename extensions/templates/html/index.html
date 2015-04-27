@@ -1,18 +1,12 @@
 <div id="cex_hud">
 
 	<div id="cex_header">
-		<h1>Citizen Ex</h1>
-		<a href="#" class="cex_more" name="more">More Info</a>
-		<a href="#" class="cex_close" name="close">Close</a>
+		<img id="cex_logo" src="" width="107" height="24" />
+		<a href="#" class="cex_more" name="more">More Info</a>	
+		<img id="cex_close" src="" width="24" height="24" />
 		<script type="text/javascript">
-			$('#cex_header h1').css("height","24px");
-			$('#cex_header h1').css("width","107px");	
-			$('#cex_header h1').css("text-indent","-999999px");
-			$('#cex_header h1').css("background","url('"+chrome.extension.getURL('images/logo-small-white.svg')+"') no-repeat");
-			$('#cex_header a.cex_close').css("height","24px");
-			$('#cex_header a.cex_close').css("width","24px");	
-			$('#cex_header a.cex_close').css("text-indent","-999999px");
-			$('#cex_header a.cex_close').css("background","url('"+chrome.extension.getURL('images/close.png')+"') no-repeat");
+			$('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
+			$('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
 		</script>
 	</div>
 
@@ -156,8 +150,12 @@
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window', { zoomControl:false });
-			L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
+			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
 				attribution: '<a href="http://openstreetmap.org/copyright">Map data: © OpenStreetMap</a>'}).addTo(cexmap);
+			cextilelayer.on('tileerror', function(error, tile) {
+			    console.log(error);
+			    console.log(tile);
+				});
 			cexmap.attributionControl.setPrefix("");			
 			cexmap.setView([0,0],2);
 			
