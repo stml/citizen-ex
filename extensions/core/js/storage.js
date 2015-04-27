@@ -3,6 +3,10 @@ var CxStorage = function(browser) {
 };
 
 CxStorage.prototype.set = function(property, value) {
+  if (!property) {
+    return;
+  }
+
   var json = JSON.prune(value);
   if (this.browser.chrome()) {
     chrome.storage.local.set({ property: json });
