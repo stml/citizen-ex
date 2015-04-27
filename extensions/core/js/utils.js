@@ -4,24 +4,24 @@ var Utils = function(browser) {
   this.browser = browser;
 };
 
-Utils.prototype.findEntryForTab = function(tab) {
-  if (this.browser.chrome()) {
-    return chromeUtils.findEntryForTab(tab);
-  }
+Utils.prototype.findEntryForUrl = function(url) {
+  return _.find(logEntries, function(entry) {
+    return url === entry.url;
+  });
 };
 
-Utils.prototype.createLogEntry = function(tab) {
-  if (!tab) {
+Utils.prototype.updateLogEntry = function(url) {
+  if (!url) {
     return;
   }
 
   // ignore empty tabs and chrome settings pages
-  var protocol = utils.getUrlProtocol(tab.url);
+  var protocol = utils.getUrlProtocol(url);
   if (protocol === 'chrome' || protocol === 'chrome-devtools') {
     return;
   }
 
-  var previousEntry = utils.findEntryForTab(tab);
+  var previousEntry = utils.findEntryForUrl(url);
   if (previousEntry) {
     console.log('Entry exists, skipping creation and adding a timestamp');
     if (previousEntry.ownIp === undefined) {
@@ -32,21 +32,28 @@ Utils.prototype.createLogEntry = function(tab) {
     }
     previousEntry.addTimestamp();
     return;
+  } else {
+    this.createLogEntry(url);
+  }
+};
+
+Utils.prototype.createLogEntry = function(url) {
+  if (!url) {
+    return;
+  }
+
+  // ignore empty tabs and chrome settings pages
+  var protocol = utils.getUrlProtocol(url);
+  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
+    return;
   }
 
   var timestamp = new Date();
-  logEntries.push(new LogEntry(tab.url, timestamp, tab.id, tab.windowId));
+  logEntries.push(new LogEntry(url, timestamp));
 
   var logEntry = new LogEntry();
   logEntry.storeEntries(logEntries);
   console.log('Created a new LogEntry');
-};
-
-Utils.prototype.findLogEntry = function(url, tabId, windowId) {
-  var selected = _.find(logEntries, function(entry) {
-    return url === entry.url && parseInt(tabId) === entry.tabId && parseInt(windowId) === entry.windowId;
-  });
-  return selected;
 };
 
 Utils.prototype.trimUrl = function(url) {
