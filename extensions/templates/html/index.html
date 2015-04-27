@@ -8,19 +8,19 @@
 	<div id="cex_main">
 
 	<% if (entry) { %>
-	
+
 	  	<div id="cex_badge">
-	  
+
 				<% if (citizenship.length > 0) { %>
-				
+
 				<canvas id="cex_badge_canvas"></canvas>
-				
+
 				<h2>This is your Algorithmic Citizenship</h2>
-				<p>You are 
+				<p>You are
 				<% _.each(citizenship, function(country) { %>
 				  <%= country.percentage %>% <%= country.code %>,
 				<% }); %>.</p>
-				
+
 				<div id="cex_mapdata">
 				    <% if (ownGeoData && ownGeoData.ownIp) { %>
 				      <p>Your IP: <%= ownGeoData.ownIp %>. You’re in <%= ownGeoData.ownCity %>, <%= ownGeoData.ownCountryCode %>.</p>
@@ -32,12 +32,12 @@
 				      <p>Website IP: <%= entry.ip %>. This address is located in <%= entry.city %>, <%= entry.countryCode %>.</p>
 				      <p>Website Lat: <%= entry.lat %>, Lng: <%= entry.lng %></p>
 				      </div>
-				      
+
 				    <% } else { %>
 				      <p>No remote geo data available yet.</p>
 				    <% }; %>
 				</div><!-- cex_mapdata -->
-				
+
 				<script type="text/javascript">
 				var percents = [
 				<% _.each(citizenship, function(country) { %>
@@ -46,16 +46,16 @@
 					// set canvas to css heights
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
-				
-				var badge = $("#cex_badge_canvas").get(0).getContext("2d");	
-				
+
+				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
+
 				// circle centre and radius
 				var x0 = $('#cex_badge_canvas').attr('width')/2;
 				var y0 = $('#cex_badge_canvas').attr('height')/2;
 				var r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);
-			
+
 				var circlepointer = 0;
-				
+
 				$.each(percents, function() {
 					var country = this[0];
 					var value = this[1];
@@ -63,7 +63,7 @@
 					drawSegment(badge,x0,y0,r,circlepointer,country,degrees);
 					circlepointer = circlepointer + degrees;
 					});
-					
+
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
 					img.onload = function() {
@@ -90,27 +90,31 @@
 						badge.lineTo(xy[0],xy[1]);
 						badge.closePath();
 						badge.fill();
-				      	};	
-				    img.src = chrome.extension.getURL('flags/'+country+'.svg');
-					}	
-					
+				      	};
+                      if (!_.isUndefined(window.chrome)) {
+                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      } else if (safari) {
+                        img.src = safari.extension.baseURI + 'flags/'+country+'.svg';
+                      }
+					}
+
 				function circleCoords(x0,y0,r,theta) {
 					var x = x0 + r * Math.cos(theta * Math.PI / 180);
 					var y = y0 + r * Math.sin(theta * Math.PI / 180);
-					return [x,y];	
+					return [x,y];
 					}
-				</script>  
-				
+				</script>
+
 		</div><!-- cex_badge -->
-								  
+
 				<% } else { %>
 				  <p>No Citizenship data available yet. Keep browsing!</p>
 				<% }; %>
-		
+
 		<div id="cex_map">
-		
+
 		<div id="cex_map_window" class="dark"></div>
-	    
+
 	    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
 	  	<script type="text/javascript">
@@ -125,19 +129,19 @@
 			var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>]).addTo(map);
 			destMarker.bindPopup("Website: <%= entry.city %>, <%= entry.countryCode %> (<%= entry.ip %>)").openPopup();
 	    <% } else { %>
-	    
+
 	    <% }; %>
 	  	</script>
-	    
+
 	    </div>
-	    
+
 	  <% } else { %>
-	  
+
 	  		<div id="cex_nodata">
 				<p>No data available yet.</p>
 			</div>
 	  <% }; %>
-	  
+
 	</div><!-- #cex_main -->
 
 </div><!-- #cex_hud -->
