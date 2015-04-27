@@ -87,10 +87,10 @@
 	font-size: 14px;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	}
-.citizen-ex__pane #cex_hud #cex_header a.more {
+.citizen-ex__pane #cex_hud #cex_header a.cex_more {
 	line-height: 1;
 	}
-.citizen-ex__pane #cex_hud #cex_header a.close {
+.citizen-ex__pane #cex_hud #cex_header a.cex_close {
 	float: right;
 	margin-right: 60px;
 	}
