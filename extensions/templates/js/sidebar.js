@@ -1,6 +1,7 @@
 var Sidebar = Backbone.Model.extend({
-  initialize: function(panes) {
+  initialize: function(panes, browser) {
     this.panes = panes;
+    this.browser = browser;
     this.resetValues();
     this.getOwnGeoData();
     this.getAllLogEntries();
