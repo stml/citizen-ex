@@ -1,12 +1,10 @@
 // Define the LogEntry class
 
-var LogEntry = function(url, timestamp, tabId, windowId) {
+var LogEntry = function(url, timestamp) {
   if (url) {
     this.url = url;
     this.domain = utils.trimUrl(url);
     this.timestamps = [timestamp];
-    this.tabId = tabId;
-    this.windowId = windowId;
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -64,6 +62,7 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownLat = ownLocation.ownLat;
     this.ownLng = ownLocation.ownLng;
     this.storeEntries(logEntries);
+
   } else {
     console.log('No own geo data available yet');
   }
