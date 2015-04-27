@@ -31,11 +31,14 @@ var templateSources = [
   './extensions/templates/js/log_entry.js',
   './extensions/templates/js/sidebar.js',
   './extensions/templates/js/sidebar_pane.js',
-  './extensions/templates/js/initialize.js'
+  './extensions/templates/js/init_shared.js'
 ];
 
 var chromeCore = coreSources.concat(chromeInit);
 var safariCore = coreSources.concat(safariInit);
+
+var chromeTemplates = templateSources.concat(['./extensions/templates/js/init_chrome.js']);
+var safariTemplates = templateSources.concat(['./extensions/templates/js/init_safari.js']);
 
 gulp.task('chromeLib', function () {
   gulp.src(['./extensions/core/lib/*'])
@@ -50,7 +53,7 @@ gulp.task('chromeCore', function () {
 });
 
 gulp.task('chromeTemplates', function () {
-  gulp.src(templateSources)
+  gulp.src(chromeTemplates)
     .pipe(include_file())
     .pipe(concat('setup.js'))
     .pipe(gulp.dest('./extensions/chrome/injected/'));
@@ -70,7 +73,7 @@ gulp.task('safariCore', function () {
 });
 
 gulp.task('safariTemplates', function () {
-  gulp.src(templateSources)
+  gulp.src(safariTemplates)
     .pipe(include_file())
     .pipe(concat('setup.js'))
     .pipe(gulp.dest('./extensions/safari.safariextension/injected/'));
