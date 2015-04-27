@@ -47,11 +47,11 @@
 	<dict>
 		<key>Scripts</key>
 		<dict>
-			<key>Start</key>
+			<key>End</key>
 			<array>
+				<string>lib/moment.js</string>
 				<string>lib/underscore.js</string>
 				<string>lib/jquery.js</string>
-				<string>lib/moment.js</string>
 				<string>lib/backbone.js</string>
 				<string>injected/setup.js</string>
 			</array>
