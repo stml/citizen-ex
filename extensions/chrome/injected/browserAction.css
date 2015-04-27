@@ -125,6 +125,8 @@
 	color: #fff;
 	font-size: 14px;
 	padding: 6px 0;
+	border: none;
+	display: table-cell;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning {
 	border-bottom: 1px solid #fff;
@@ -146,6 +148,7 @@
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table {
 	width: 100%;
+    table-layout: fixed;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table .thead {
 	font-weight: bold;
@@ -164,12 +167,15 @@
 	color: #fff;
 	font-size: 14px;
 	padding: 6px 0;
+	border: none;
+	display: table-cell;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.country {
 	text-align: left;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.percentage {
 	text-align: right;
+	padding-left: 20px;
 	}
 	
 .citizen-ex__pane #cex_hud #cex_map {
