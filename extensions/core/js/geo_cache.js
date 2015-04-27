@@ -47,7 +47,6 @@ GeoCache.prototype.addOwnLocation = function(entry) {
       console.log('Can’t get own geo data');
     }
     this.fetching = null;
-    console.log(this);
   }, this));
 };
 
@@ -61,6 +60,7 @@ GeoCache.prototype.addOwnLocationEntry = function(ownGeoData) {
   }
   this.removeOwnLocation();
   this.addEntry(ownGeoData);
+  storage.set('ownGeoData', ownGeoData);
 };
 
 GeoCache.prototype.removeOwnLocation = function() {
@@ -105,10 +105,15 @@ GeoCache.prototype.reset = function() {
 
 GeoCache.prototype.recoverFromStorage = function() {
   storage.get('geoCache', _.bind(function(geoCache) {
-    if (_.isEmpty(geoCache) || geoCache === undefined) {
+    if (_.isEmpty(geoCache) || geoCache === undefined || !geoCache) {
       return;
     }
-    this.entries = geoCache.geoCache;
+    // handle how differently chrome works
+    if (geoCache.geoCache) {
+      this.entries = geoCache.geoCache;
+    } else {
+      this.entries = geoCache;
+    }
     console.log('Got geo cache from storage');
   }, this));
 };
