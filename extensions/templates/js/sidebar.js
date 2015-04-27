@@ -9,7 +9,7 @@ var Sidebar = Backbone.Model.extend({
   },
 
   setUpCitizenship: function() {
-    chrome.runtime.sendMessage({ countryLog: true }, _.bind(function(countryLog) {
+    message.send({ countryLog: true }, _.bind(function(countryLog) {
       var countryCodes = _.pick(countryLog.visits, _.identity);
       var citizenship = this.calculateCitizenship(countryCodes);
       this.set({ citizenship: citizenship });
@@ -59,10 +59,10 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getAllLogEntries: function() {
-    chrome.runtime.sendMessage({ allLogEntries: true }, _.bind(function(entries) {
+    message.send({ allLogEntries: true }, _.bind(function(entries) {
       var logEntries = _.map(entries, function(entry) {
         var logEntry = new LogEntry();
-        return logEntry.fromJSON(JSON.parse(entry));
+        return logEntry.fromJSON(entry);
       });
 
       if (!logEntries) {
@@ -87,9 +87,9 @@ var Sidebar = Backbone.Model.extend({
   },
 
   getLogEntryForTab: function() {
-    chrome.runtime.sendMessage({ activeTab: true }, _.bind(function(response) {
+    message.send({ activeTab: true }, _.bind(function(response) {
       var tab = response;
-      var entry = this.getLogEntry(tab.url, tab.id, tab.windowId);
+      var entry = this.getLogEntry(tab.url);
 
       if (!entry) {
         this.set({ entry: '' });
@@ -98,18 +98,19 @@ var Sidebar = Backbone.Model.extend({
         this.set({ entry: entry });
       }
 
-
     }, this));
   },
 
   getOwnGeoData: function() {
-    chrome.storage.local.get('ownGeoData', _.bind(function(object) {
-      this.set({ ownGeoData: object.ownGeoData });
+    // we can’t get it from storage (not shared)
+    // we have to fetch it using the messaging system
+    message.send({ ownGeoData: true }, _.bind(function(ownGeoData) {
+      this.set({ ownGeoData: ownGeoData });
     }, this));
   },
 
   requestOpenTabs: function() {
-    chrome.runtime.sendMessage({ allTabs: true });
+    message.send({ allTabs: true });
   },
 
   updateTabs: function(tabs) {
