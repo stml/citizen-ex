@@ -84,10 +84,14 @@ Utils.prototype.findEntryForUrl = function(url) {
   var entries = _.filter(logEntries, function(logEntry) {
     return logEntry.url === url;
   });
-  latestEntry = _.max(entries, function(entry) {
-    return _.max(entry.timestamps);
-  });
-  return latestEntry;
+  if (!_.isEmpty(entries)) {
+    latestEntry = _.max(entries, function(entry) {
+      return _.max(entry.timestamps);
+    });
+    return latestEntry;
+  } else {
+    return null;
+  }
 };
 
 Utils.prototype.updateLogEntry = function(url) {
