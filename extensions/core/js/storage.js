@@ -20,7 +20,11 @@ CxStorage.prototype.set = function(property, value) {
 CxStorage.prototype.get = function(property, callback) {
   if (this.browser.chrome()) {
     chrome.storage.local.get(property, function(result) {
-      callback(JSON.parse(result));
+      var data = undefined;
+      if (result[property]) {
+        var data = JSON.parse(result[property]);
+      }
+      callback(data);
     });
   } else if (this.browser.safari()) {
     var data = undefined;
