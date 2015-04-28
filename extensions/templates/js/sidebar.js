@@ -429,7 +429,7 @@ var Sidebar = Backbone.Model.extend({
     if (countrycode == 'AE') { return 'United Arab Emirates'; }
     if (countrycode == 'GB') { return 'United Kingdom'; }
     if (countrycode == 'UK') { return 'United Kingdom'; }
-    if (countrycode == 'US') { return 'United States of America'; }
+    if (countrycode == 'US') { return 'USA'; }
     if (countrycode == 'UM') { return 'United States Minor Outlying Islands'; }
     if (countrycode == 'UY') { return 'Uruguay'; }
     if (countrycode == 'UZ') { return 'Uzbekistan'; }
