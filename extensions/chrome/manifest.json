@@ -29,7 +29,6 @@
     {
       "matches": ["http://*/*","https://*/*"],
       "css": [
-        "injected/mapbox.css",
         "injected/browserAction.css"
       ],
       "js": [
