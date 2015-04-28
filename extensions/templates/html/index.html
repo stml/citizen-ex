@@ -11,7 +11,7 @@
               $('.cex_more').attr('href',chrome.extension.getURL('options.html'));
 
             } else if (safari) {
-              $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.svg');
+              $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
               $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');
               $('.cex_more').attr('href',safari.extension.baseURI + 'options.html');
@@ -118,7 +118,7 @@
                       if (!_.isUndefined(window.chrome)) {
                         img.src = chrome.extension.getURL('flags/'+country+'.svg');
                       } else if (safari) {
-                        img.src = safari.extension.baseURI + 'flags/'+country+'.svg';
+                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';
                       }
 					}
 
@@ -160,7 +160,7 @@
 			    console.log(tile);
 				});
 			cexmap.attributionControl.setPrefix("");
-			cexmap.setView([0,0],2);
+/* 			cexmap.setView([0,0],2); */
             var yellowMarker;
             var cyanMarker;
 
@@ -223,7 +223,7 @@
 				    <div id="cex_orig_column">
 	    				<h3>Your tracked location</h3>
 					    <% if (ownGeoData && ownGeoData.ownIp) { %>
-					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></p>
+					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></strong></p>
 					      <p>IP Address: <%= ownGeoData.ownIp %></p>
 					      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
 					    <% } else { %>

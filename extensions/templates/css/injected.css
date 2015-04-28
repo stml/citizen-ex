@@ -110,6 +110,7 @@
 	float: left !important;
 	padding: 25px !important;
 	overflow: hidden !important;
+	box-sizing: content-box !important;
 	}
 	
 	
