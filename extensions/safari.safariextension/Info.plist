@@ -18,15 +18,6 @@
 	<string>1</string>
 	<key>Chrome</key>
 	<dict>
-		<key>Bars</key>
-		<array>
-			<dict>
-				<key>Filename</key>
-				<string>global.html</string>
-				<key>Label</key>
-				<string>Global</string>
-			</dict>
-		</array>
 		<key>Database Quota</key>
 		<real>52428800</real>
 		<key>Global Page</key>
