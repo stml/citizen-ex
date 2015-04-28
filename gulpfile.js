@@ -46,6 +46,11 @@ var safariCore = coreSources.concat(safariInit);
 var chromeTemplates = templateSources.concat(['./extensions/templates/js/init_chrome.js']);
 var safariTemplates = templateSources.concat(['./extensions/templates/js/init_safari.js']);
 
+gulp.task('chromeImages', function () {
+  gulp.src(['./extensions/templates/images/*.*'])
+    .pipe(gulp.dest('./extensions/chrome/images/'));
+});
+
 gulp.task('chromeCss', function () {
   gulp.src(cssSources)
     .pipe(concat('browserAction.css'))
@@ -69,6 +74,11 @@ gulp.task('chromeTemplates', function () {
     .pipe(include_file())
     .pipe(concat('setup.js'))
     .pipe(gulp.dest('./extensions/chrome/injected/'));
+});
+
+gulp.task('safariImages', function () {
+  gulp.src(['./extensions/templates/images/*.*'])
+    .pipe(gulp.dest('./extensions/safari.safariextension/images/'));
 });
 
 gulp.task('safariCss', function () {
@@ -97,7 +107,7 @@ gulp.task('safariTemplates', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./extensions/templates/**/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss']);
+  gulp.watch(['./extensions/templates/**/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'chromeImages', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss', 'safariImages']);
 });
 
-gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss', 'watch']);
+gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'chromeImages', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss', 'safariImages', 'watch']);

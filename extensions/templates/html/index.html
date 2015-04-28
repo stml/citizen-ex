@@ -5,8 +5,13 @@
 		<a href="#" class="cex_more" name="more">More Info</a>
 		<img id="cex_close" src="" width="24" height="24" />
 		<script type="text/javascript">
-			$('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
-			$('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
+            if (!_.isUndefined(window.chrome)) {
+              $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
+              $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
+            } else if (safari) {
+              $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.svg');
+              $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
+            }
 		</script>
 	</div>
 
@@ -120,7 +125,11 @@
 						badge.stroke();
 						badge.fill();
 				      	};
-				    img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      if (!_.isUndefined(window.chrome)) {
+                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      } else if (safari) {
+                        img.src = safari.extension.baseURI + 'flags/'+country+'.svg';
+                      }
 					}
 
 				function circleCoords(x0,y0,r,theta) {
@@ -146,7 +155,11 @@
   		</div>
 
 	  	<script type="text/javascript">
-	  	$('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+        if (!_.isUndefined(window.chrome)) {
+          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+        } else if (safari) {
+          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+        }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window', { zoomControl:false });
@@ -158,14 +171,24 @@
 				});
 			cexmap.attributionControl.setPrefix("");
 			cexmap.setView([0,0],2);
+            var yellowMarker;
+            var cyanMarker;
+
+            if (!_.isUndefined(window.chrome)) {
+              cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');
+              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
+            } else if (safari) {
+              cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';
+              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
+            }
 
 			var destIcon = L.icon({
-				iconUrl: chrome.extension.getURL('images/map-marker-yellow.png'),
+				iconUrl: yellowMarker,
 				iconSize:     [41,41], // size of the icon
 				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
 				});
 			var origIcon = L.icon({
-				iconUrl: chrome.extension.getURL('images/map-marker-cyan.png'),
+				iconUrl: cyanMarker,
 				iconSize:     [41,41], // size of the icon
 				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
 				});
