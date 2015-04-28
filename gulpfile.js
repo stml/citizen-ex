@@ -8,8 +8,8 @@ var images = [
 
 var cssSources = [
  './extensions/templates/css/overwrite_warning.css',
- './extensions/templates/css/leaflet.css',
- './extensions/templates/css/injected.css'
+ './extensions/templates/css/injected.css',
+ './extensions/templates/css/leaflet.css'
 ];
 
 var chromeInit = [
