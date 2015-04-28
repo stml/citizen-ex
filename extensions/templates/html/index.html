@@ -120,11 +120,7 @@
 						badge.stroke();
 						badge.fill();
 				      	};
-                      if (!_.isUndefined(window.chrome)) {
-                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
-                      } else if (safari) {
-                        img.src = safari.extension.baseURI + 'flags/'+country+'.svg';
-                      }
+				    img.src = chrome.extension.getURL('flags/'+country+'.svg');
 					}
 
 				function circleCoords(x0,y0,r,theta) {
@@ -133,9 +129,15 @@
 					return [x,y];
 					}
 
-
 			</script>
 
+		</div><!-- cex_badge -->
+
+				<% } else { %>
+				  <h2>No Citizenship data available yet. Keep browsing!</h2>
+				<% }; %>
+
+		<div id="cex_map">
 
 		<div id="cex_map_window" class="dark">
 			<img id="cex_map_loading" src="" alt="Loading"/>
