@@ -113,7 +113,7 @@
 	background: #888;
 	width: 548px;
 	float: left;
-	padding: 25px;
+	padding: 25px !important;
 	overflow: hidden;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column {
