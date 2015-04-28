@@ -4,8 +4,9 @@ var SidebarPane = Backbone.View.extend({
   className: 'citizen-ex__pane',
 
   events: {
-    'click .erase': 'eraseData',
-    'click a': 'togglePane'
+    'click .cex_erase': 'eraseData',
+    'click .cex_close': 'close',
+    'click a[name]': 'togglePane'
   },
 
   initialize: function(options) {
@@ -54,6 +55,11 @@ var SidebarPane = Backbone.View.extend({
     event.preventDefault();
     var paneName = event.currentTarget.name;
     this.model.activatePane(paneName);
+  },
+
+  close: function(event) {
+    event.preventDefault();
+    this.model.close();
   },
 
   eraseData: function(event) {

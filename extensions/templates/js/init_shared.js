@@ -1,8 +1,7 @@
 // templates/js/init_shared.js
 
 var currentTab = INCLUDE_FILE('../html/index.html');
-var about = INCLUDE_FILE('../html/about.html');
-var settings = INCLUDE_FILE('../html/settings.html');
+var moreInfo = INCLUDE_FILE('../html/more_info.html');
 
 var browser = new Browser();
 var storage = new CxStorage(browser);
@@ -15,6 +14,5 @@ var Pane = function(name, template) {
 
 var panes = [
   new Pane('currentTab', currentTab),
-  new Pane('about', about),
-  new Pane('settings', settings)
+  new Pane('moreInfo', moreInfo)
 ];
