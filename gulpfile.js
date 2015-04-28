@@ -2,6 +2,10 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var include_file = require('gulp-include-file');
 
+var images = [
+  './extensions/templates/images/*.*'
+];
+
 var cssSources = [
  './extensions/templates/css/overwrite_warning.css',
  './extensions/templates/css/leaflet.css',
@@ -47,7 +51,7 @@ var chromeTemplates = templateSources.concat(['./extensions/templates/js/init_ch
 var safariTemplates = templateSources.concat(['./extensions/templates/js/init_safari.js']);
 
 gulp.task('chromeImages', function () {
-  gulp.src(['./extensions/templates/images/*.*'])
+  gulp.src(images)
     .pipe(gulp.dest('./extensions/chrome/images/'));
 });
 
@@ -77,7 +81,7 @@ gulp.task('chromeTemplates', function () {
 });
 
 gulp.task('safariImages', function () {
-  gulp.src(['./extensions/templates/images/*.*'])
+  gulp.src(images)
     .pipe(gulp.dest('./extensions/safari.safariextension/images/'));
 });
 
