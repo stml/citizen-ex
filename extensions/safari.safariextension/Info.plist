@@ -58,11 +58,13 @@
 				<string>lib/jquery.js</string>
 				<string>lib/backbone.js</string>
 				<string>injected/setup.js</string>
+				<string>lib/mapbox.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>
 		<array>
 			<string>injected/browserAction.css</string>
+			<string>injected/mapbox.css</string>
 		</array>
 	</dict>
 	<key>DeveloperIdentifier</key>

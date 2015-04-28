@@ -26,7 +26,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*","https://*/*"],
-      "css": ["injected/browserAction.css"],
+      "css": ["injected/mapbox.css","injected/browserAction.css"],
       "js": [
         "lib/underscore.js",
         "lib/jquery.js",
