@@ -2,15 +2,19 @@
 
 	<div id="cex_header">
 		<img id="cex_logo" src="" width="107" height="24" />
-		<a href="#" class="cex_more" name="moreInfo">More Info</a>
+		<a href="#" class="cex_more" target="_blank">More Info</a>
         <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
               $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
               $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
+              $('.cex_more').attr('href',chrome.extension.getURL('options.html'));
+
             } else if (safari) {
               $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.svg');
               $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
+              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');
+              $('.cex_more').attr('href',safari.extension.baseURI + 'options.html');
             }
 		</script>
 	</div>

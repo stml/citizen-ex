@@ -5,8 +5,7 @@ var SidebarPane = Backbone.View.extend({
 
   events: {
     'click .cex_erase': 'eraseData',
-    'click .cex_close': 'close',
-    'click a[name]': 'togglePane'
+    'click .cex_close': 'close'
   },
 
   initialize: function(options) {
