@@ -156,7 +156,7 @@
 			    console.log(tile);
 				});
 			cexmap.attributionControl.setPrefix("");
-			cexmap.setView([0,0],2);
+/* 			cexmap.setView([0,0],2); */
             var yellowMarker;
             var cyanMarker;
 
@@ -219,7 +219,7 @@
 				    <div id="cex_orig_column">
 	    				<h3>Your tracked location</h3>
 					    <% if (ownGeoData && ownGeoData.ownIp) { %>
-					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></p>
+					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></strong></p>
 					      <p>IP Address: <%= ownGeoData.ownIp %></p>
 					      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
 					    <% } else { %>
