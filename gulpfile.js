@@ -4,7 +4,7 @@ var include_file = require('gulp-include-file');
 
 var cssSources = [
  './extensions/templates/css/overwrite_warning.css',
- './extensions/templates/css/mapbox.css',
+ './extensions/templates/css/leaflet.css',
  './extensions/templates/css/injected.css'
 ];
 

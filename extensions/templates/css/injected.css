@@ -1,94 +1,289 @@
+.citizen-ex__pane * {
+	background: transparent;
+	background-image: none;
+	border: none;
+	border-collapse: collapse;
+	box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-shadow: none;
+	color: #000;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-stretch: normal;
+	font-variant: normal;
+	letter-spacing: normal;
+	line-height: 1;
+	list-style: none;
+	margin: 0;
+	opacity: 1;
+	outline: none;
+	padding: 0;
+	position: static;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0;
+	text-shadow: none;
+	text-transform: none;
+	visibility: visible;
+	white-space: normal;
+	-webkit-text-rendering: optimizeLegibility;
+	-moz-text-rendering: optimizeLegibility;
+	-ms-text-rendering: optimizeLegibility;
+	-o-text-rendering: optimizeLegibility;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	}
+
 .citizen-ex__pane {
 	width: 100%;
 	position: fixed;
 	left: 0;
 	top: 0;
 	display: none;
-	z-index: 3000;
+	z-index: 9999999;
 	color: #000;
+	opacity: 0.95;
 	}
 
 .citizen-ex__pane #cex_hud {
-	margin: 0 2em;
+	margin: 0 0;
 	background: #888;
 	font-size: 16px;
 	line-height: 1.2;
 	font-family: "Helvetica Neue", Arial, sans-serif;
-	border-top: 0;
-	border-right: 2px solid #000;
-	border-bottom: 2px solid #000;
-	border-left: 2px solid #000;
+	border-bottom: 14px solid #000;
 	overflow: hidden;
 	position: relative;
 	}
 
 .citizen-ex__pane #cex_hud #cex_header {
-	padding: 1em;
 	width: 100%;
-	border-bottom: 2px solid #000;
+	padding: 18px 30px;
 	overflow: hidden;
 	position: relative;
+	background: #000;
 	}
-	
+.citizen-ex__pane #cex_hud #cex_header #cex_logo {
+	margin: 0 30px 0 0;
+	padding: 0;
+	font-size: 24px;
+	line-height: 1;
+	color: #fff;
+	font-weight: bold;
+	display: inline-block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	}
+.citizen-ex__pane #cex_hud #cex_header a {
+	color: #fff !important;
+	text-transform: uppercase;
+	display: inline;
+	text-decoration: none;
+	font-weight: normal;
+	letter-spacing: 0.1em;
+	font-size: 14px;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	}
+.citizen-ex__pane #cex_hud #cex_header a.cex_more {
+	line-height: 1;
+	}
+.citizen-ex__pane #cex_hud #cex_header #cex_close {
+	float: right;
+	margin-right: 60px;
+	}
+.citizen-ex__pane #cex_hud #cex_header a.cex_more:hover {
+	text-decoration: underline;
+	}
+.citizen-ex__pane #cex_hud #cex_main {
+	background: #888;
+	}
 .citizen-ex__pane #cex_hud #cex_badge {
-	width: 250px;
+	background: #888;
+	width: 548px;
 	float: left;
 	padding: 25px;
+	overflow: hidden;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_canvas {
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column {
+	float: left;
+	width: 250px;
+	margin-right: 30px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column #cex_badge_canvas {
 	width: 250px;
 	height: 250px;
 	margin-bottom: 25px;
 	}
-	
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table {
+	width: 100%;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	color: #fff;
+	font-size: 14px;
+	padding: 6px 0;
+	border: none;
+	display: table-cell;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning {
+	border-bottom: 1px solid #fff;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td.cex_meaning a {
+	font-size: 18px;
+	text-decoration: none;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column table#share_table td a {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	color: #fff;
+	font-size: 14px;
+	padding: 6px 0;
+	text-decoration: none;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
+	float: right;
+	width: 250px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table {
+	width: 100%;
+    table-layout: fixed;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table .thead {
+	font-weight: bold;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr {
+	border-top: 1px solid #fff;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr:first-child {
+	border-top: none;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table tr:first-child td {
+	padding: 0 0 6px;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	color: #fff;
+	font-size: 14px;
+	padding: 6px 0;
+	border: none;
+	display: table-cell;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.cex_country {
+	text-align: left;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.cex_percentage {
+	text-align: right;
+	padding-left: 20px;
+	}
+
 .citizen-ex__pane #cex_hud #cex_map {
-	margin-left: 300px;	
+	margin-left: 600px;
 	border-left: 2px solid #000;
+	background: #000;
+	overflow: hidden;
+	position: relative;
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_map_window {
 	width: 100%;
-	height: 450px;
+	height: 395px;
+	text-align: center;
 	}
-.citizen-ex__pane #cex_hud #cex_map #cex_map_window img {
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window .leaflet-control-attribution {
+	background: rgba(0, 0, 0, 0.701961);
+	padding: 2px 5px;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window .leaflet-control-attribution a {
+	color: rgba(255, 255, 255, 0.701961);
+	text-decoration: none;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window .mapbox-maplogo {
+	position:absolute;
+	display:block;
+	height: 20px;
+	width: 65px;
+	left:10px;
+	top:365px;
+	text-indent: -9999px;
+	z-index:99999;
+	overflow:hidden;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAoCAMAAAAFWtJHAAAAwFBMVEUAAAAAAAAAAABtbW0AAAAAAAAAAAAAAAAAAAAAAAClpaUAAADp6ekAAAD5+fna2toAAAAMDAzv7+/Nzc0AAAA2Njb8/Pz9/f3T09MAAAAAAAD7+/sAAAArKyuxsbH39/fs7OwbGxuIiIjz8/N8fHyenp7u7u74+PgAAAC8vLxWVlbx8fF1dXXl5eVcXFyUlJTQ0NDFxcVCQkLAwMC4uLj19fXo6OjW1tarq6ve3t77+/vi4uL6+vrKysrNzc3///8w7gSSAAAAP3RSTlMAOQNdPSYBPywKexLLGPCxNEHXnzFL+v2nGwf1IEiE6dBFad9jd9PuLo1V2mDDV3Cjl06SiuXIq4C3973ym6BQMVUPAAAEXElEQVR4Ae2WCVP6OBiH05L0l1IqrVbkKHJ54I0oHn+PfP9vtUle0z/YdhbH2XVnd58ZnRJIeHiPJOx//mH4vQSAN+8FjAhFxgHIaPvJeZ99hxwEElon5iAQbj85Y98g8ODwjEOMAvGFyeE3FEKgodTBqj0BJGN9DhyNd5Ta3ean9QEopfaA+LsKhnEKRExqg4FSP6Og7oEkAjBWnxSCgBX4xF+kcLoPcOBQrSv0e5kH7s1j37jECQieCTPiFGxL5VHw2zQWCeeJiPt6kjRQw0XSkIdVChf67xGa4alSnZlT6HEQ8CK9ANbhvXUF9xlDkBfTuHDWScgC9+z5FQpPI12TlwC6+sV7ixR8CUMKiwjm2GQeOQWHMGuHGdbnObJAwCEqFJpNU5H6uaPUaEIKiQfg+PHk1+u4OwW9PlWW2ctbA4BHCtp+cNK+H8Jos4gDmC5ar4Nx9waaG/2B13NgDqS7+vm2RgEtEws82P+kwIHhs/pgkQKcFIhfd7CogtGNjYMHTLpurD0ERbYFw4JaD3GlQuNAL/JEsSAF4HqlCnaHACk4WhOn4OgCkMD5hSpYNYDJTD8Y46n+jsE1kPhVCuR6QBXhFK7MUOu9O6b1SWF3b+/9ZVWMGOlu93E8UDaAhgc7bfH+0DHqKXCkHzoNDFfU+zxiVQrUC9QXTuHYtKpN59OA3IxCG4b7jh6ZFuVockaNTW09mkJzOaPU49a6mE9cAchZpQJNpUWcwgV9r6FJswsFKrITp2B5pMBMdnS0z2HZNy2+BNKxSZxZfglkrFYBJxQnpzA5sN/HheR2aFQoZBLAi149dQoyAYYjW0hHlHguBAdMcR0DuDZ5omevX6+AI8qcU7ikKT3GBHCnXwydgmCC0tRwCnGQ2Wp6Be71yNIWfQSkOl9vAI1SBCNWrwC01RROgX7BuT2HI4r7tFAw086p/NwZEdOEa7R1uAFuNmQPuKAEAjYNQ0CyeoUEWHYBnpQVQgpvc0Ph+gsKlAnKg1+vEHsw5LKciLKCAJobiWBzYFGbCKpHqkZZrxBFHEASyFI59vJPCskcwNVGOWZAOqsrR+pKbaNeAMT1CixMEtlnsqopNxUMzVJT3tY35aXZm6a6Y9QhwMN6BUJWbE1lhbMO1WehkO7poO0sK7em9MJGxp1XSbC1gtugzzSLQmGsX7VntJGSwsPZ2d2z3bIPKzdoOp3Wzqt8G4XyMVUoFIxLx1S7+piaHtCvR3FeRVsq0GFdp9C5TbGpcNqsPqyHKxcfd14h21KhuLKUFU4f3osrC7F6uV3WXFnadL7wyAPeKDXw2RoJCO5GY4DouYvb/gepVXheLoewzPseQG9N/vzilrMIjoStE3++zvle4eSurw7XEe76ynI4aq+v7lEyt1x5awiFlFLQbHKIpabnM3eJLym4Szzzc/du7SU+zOXv9UNpECH7IoH/gecURPlN9vdQpeD47yhIFNX0U0QgvID9nENm+yxk/xb+AGAjNfRZuk9qAAAAAElFTkSuQmCC);
+	background-repeat:no-repeat;
+	background-position: 0 0 ;
+	background-size: 65px 20px;
+    }
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window #cex_map_loading {
+	width: 400px;
+	height: 300px;
+	margin: 75px auto 0;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_map_window img.leaflet-tile {
     -webkit-filter: grayscale(1); /* Webkit */
     filter: gray; /* IE6-9 */
     filter: grayscale(1); /* W3C */
   	}
+
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata {
-/* 	display: none; */
+	border-top: 2px solid #000;
 	}
-	
-.citizen-ex__pane #cex_hud #cex_header h1 {
-	margin: 0 0 0 0;
-	padding: 0;
-	font-size: 24px;
-	color: #000;
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_dest_column {
+	width: 50%;
 	float: left;
+	background: #e8db03;
+	box-sizing:border-box;
+  	-moz-box-sizing:border-box;
+  	-webkit-box-sizing:border-box;
+	border-right: 2px solid #000;
+	padding: 15px 0;
 	}
-.citizen-ex__pane #cex_hud #cex_header a {
-	color: #000 !important;
-	text-transform: uppercase;
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_orig_column {
+	width: 50%;
 	float: right;
-	text-decoration: none;
-	border-radius: 10px;
-	padding: 5px;
-	margin-right: 30px;
-	font-weight: bold;
+	background: #03c9c8;
+	padding: 15px 0;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata h3 {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	color: #000;
 	font-size: 14px;
+	font-weight: normal;
+	margin: 0 15px 8px 15px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #000;
+	line-height: 1;
 	}
-.citizen-ex__pane #cex_hud #cex_header a:hover {
-	background: #777;
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata p {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	margin: 0 15px;
+	color: #000;
+	font-size: 14px;
+	line-height: 1.5;
 	}
-.citizen-ex__pane #cex_hud #cex_header a:active {
-	background: #666;
-	}	
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata p strong {
+	color: #000;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 1.5;
+	}
 
 .citizen-ex__pane #cex_hud h2 {
-	margin: 0 0 0 0;
-	padding: 0;
-	font-size: 14px;
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	width: 100%;
+	font-size: 22px;
+	line-height: 1.25;
+	font-weight: bold;
+	margin: 0 0 20px 0;
+	color: #fff;
 	}
 
 .citizen-ex__pane #cex_hud p {
+	display: block;
+	font-family: "Helvetica Neue", Arial, sans-serif;
 	width: 100%;
+	font-size: 14px;
+	color: #fff;
 	}
