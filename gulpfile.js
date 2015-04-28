@@ -2,6 +2,12 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var include_file = require('gulp-include-file');
 
+var cssSources = [
+ './extensions/templates/css/overwrite_warning.css',
+ './extensions/templates/css/mapbox.css',
+ './extensions/templates/css/injected.css'
+];
+
 var chromeInit = [
   './extensions/core/js/chrome/utils.js',
   './extensions/core/js/chrome/init.js'
@@ -40,6 +46,12 @@ var safariCore = coreSources.concat(safariInit);
 var chromeTemplates = templateSources.concat(['./extensions/templates/js/init_chrome.js']);
 var safariTemplates = templateSources.concat(['./extensions/templates/js/init_safari.js']);
 
+gulp.task('chromeCss', function () {
+  gulp.src(cssSources)
+    .pipe(concat('browserAction.css'))
+    .pipe(gulp.dest('./extensions/chrome/injected/'));
+});
+
 gulp.task('chromeLib', function () {
   gulp.src(['./extensions/core/lib/*'])
     .pipe(gulp.dest('./extensions/chrome/lib'));
@@ -59,6 +71,11 @@ gulp.task('chromeTemplates', function () {
     .pipe(gulp.dest('./extensions/chrome/injected/'));
 });
 
+gulp.task('safariCss', function () {
+  gulp.src(cssSources)
+    .pipe(concat('browserAction.css'))
+    .pipe(gulp.dest('./extensions/safari.safariextension/injected/'));
+});
 
 gulp.task('safariLib', function () {
   gulp.src(['./extensions/core/lib/*'])
@@ -80,7 +97,7 @@ gulp.task('safariTemplates', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./extensions/templates/**/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib']);
+  gulp.watch(['./extensions/templates/**/*.*', './extensions/core/**/*.js'], ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss']);
 });
 
-gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'safariCore', 'safariTemplates', 'safariLib', 'watch']);
+gulp.task('default', ['chromeCore', 'chromeTemplates', 'chromeLib', 'chromeCss', 'safariCore', 'safariTemplates', 'safariLib', 'safariCss', 'watch']);
