@@ -52,7 +52,7 @@
 					</tr>
 				<% _.each(citizenship, function(country) { %>
 					<tr>
-						<td class="cex_country"><%= country.code %></td>
+						<td class="cex_country"><%= sidebar.convertCountryCode(country.code) %></td>
 						<td class="cex_percentage"><%= country.percentage %></td>
 					</tr>
 				<% }); %>
