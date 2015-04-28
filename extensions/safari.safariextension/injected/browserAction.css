@@ -158,6 +158,7 @@
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column ul#cex_sharebuttons {
 	width: 100% !important;
 	list-style: none !important;
+	margin: 0 !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column ul#cex_sharebuttons li {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
