@@ -211,7 +211,7 @@
 	    			<div id="cex_dest_column">
 	    				<h3>Current remote location</h3>
 					    <% if (entry.ip) { %>
-					      <p><strong><% if (entry.city.length > 0) { %><%= entry.city %>, <% } %><%= entry.countryCode %></strong></p>
+					      <p><strong><% if (entry.city.length > 0) { %><%= entry.city %>, <% } %><%= sidebar.convertCountryCode(entry.countryCode) %></strong></p>
 					      <p>IP Address: <%= entry.ip %></p>
 					      <p>Lat: <%= entry.lat %> / Lon: <%= entry.lng %></p>
 					    <% } else { %>
@@ -223,7 +223,7 @@
 				    <div id="cex_orig_column">
 	    				<h3>Your tracked location</h3>
 					    <% if (ownGeoData && ownGeoData.ownIp) { %>
-					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></strong></p>
+					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= sidebar.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
 					      <p>IP Address: <%= ownGeoData.ownIp %></p>
 					      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
 					    <% } else { %>
