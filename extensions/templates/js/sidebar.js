@@ -7,6 +7,7 @@ var Sidebar = Backbone.Model.extend({
     this.getAllLogEntries();
     this.getLogEntryForTab();
     this.setUpCitizenship();
+    this.requestOpenTabs();
   },
 
   setUpCitizenship: function() {
