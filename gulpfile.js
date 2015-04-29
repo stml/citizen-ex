@@ -15,6 +15,7 @@ var optionsSources = [
   './extensions/core/js/browser.js',
   './extensions/core/js/storage.js',
   './extensions/core/js/message.js',
+  './extensions/templates/js/log_entry.js',
   './extensions/options/js/options.js',
   './extensions/options/js/options_page.js',
   './extensions/options/js/init_shared.js'
@@ -64,6 +65,9 @@ var safariCore = coreSources.concat(safariInit);
 var chromeTemplates = templateSources.concat(['./extensions/templates/js/init_chrome.js']);
 var safariTemplates = templateSources.concat(['./extensions/templates/js/init_safari.js']);
 
+var chromeOptions = optionsSources.concat(['./extensions/options/js/init_chrome.js']);
+var safariOptions = optionsSources.concat(['./extensions/options/js/init_safari.js']);
+
 gulp.task('chromeMoreInfo', function () {
   gulp.src(moreInfo)
     .pipe(gulp.dest('./extensions/chrome/'));
@@ -86,7 +90,7 @@ gulp.task('chromeLib', function () {
 });
 
 gulp.task('chromeOptions', function () {
-  gulp.src(optionsSources)
+  gulp.src(chromeOptions)
     .pipe(include_file())
     .pipe(concat('options.js'))
     .pipe(gulp.dest('./extensions/chrome/options/'));
@@ -106,10 +110,10 @@ gulp.task('chromeTemplates', function () {
     .pipe(gulp.dest('./extensions/chrome/injected/'));
 });
 
-// gulp.task('safariMoreInfo', function () {
-//   gulp.src(moreInfo)
-//     .pipe(gulp.dest('./extensions/safari.safariextension/'));
-// });
+gulp.task('safariMoreInfo', function () {
+  gulp.src(moreInfo)
+    .pipe(gulp.dest('./extensions/safari.safariextension/'));
+});
 
 gulp.task('safariImages', function () {
   gulp.src(images)
@@ -125,6 +129,13 @@ gulp.task('safariCss', function () {
 gulp.task('safariLib', function () {
   gulp.src(['./extensions/core/lib/*'])
     .pipe(gulp.dest('./extensions/safari.safariextension/lib'));
+});
+
+gulp.task('safariOptions', function () {
+  gulp.src(safariOptions)
+    .pipe(include_file())
+    .pipe(concat('options.js'))
+    .pipe(gulp.dest('./extensions/safari.safariextension/options/'));
 });
 
 gulp.task('safariCore', function () {
@@ -161,7 +172,9 @@ gulp.task('watch', function() {
       'safariTemplates',
       'safariLib',
       'safariCss',
-      'safariImages'
+      'safariImages',
+      'safariOptions',
+      'safariMoreInfo'
     ]
   );
 });
@@ -181,6 +194,8 @@ gulp.task('default',
     'safariLib',
     'safariCss',
     'safariImages',
+    'safariOptions',
+    'safariMoreInfo',
 
     'watch'
   ]
