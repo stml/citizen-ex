@@ -272,21 +272,6 @@ var Sidebar = Backbone.Model.extend({
     return latestEntries;
   },
 
-  activatePane: function(name) {
-    var pane = _.find(this.panes, function(pane) {
-      return pane.name === name;
-    });
-    this.set({ activePane: pane });
-  },
-
-  toggle: function() {
-    if (this.has('activePane')) {
-      this.close();
-    } else {
-      this.open();
-    }
-  },
-
   open: function() {
     this.set({ open: true });
   },
