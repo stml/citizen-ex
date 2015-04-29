@@ -9,6 +9,7 @@
     "unlimitedStorage",
     "<all_urls>"
   ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": ["lib/JSON.prune.js", "lib/URI.js", "lib/moment.js", "lib/underscore.js", "background.js"],
     "persistent": false
