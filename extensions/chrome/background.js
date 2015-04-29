@@ -128,7 +128,7 @@ Utils.prototype.createLogEntry = function(url) {
 
   // ignore empty tabs and chrome settings pages
   var protocol = utils.getUrlProtocol(url);
-  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
+  if (protocol === 'chrome' || protocol === 'chrome-devtools' || protocol === 'chrome-extension') {
     return;
   }
 
@@ -523,11 +523,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
       chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
     });
+
   } else if (_.has(request, 'allTabs')) {
     var windowId = sender.tab.windowId;
 
     chrome.tabs.query({ windowId: windowId }, function(tabs) {
       var urls = _.pluck(tabs, 'url');
+      console.log(urls);
 
       chrome.tabs.sendMessage(senderObject.tab.id, { tabs: urls });
     });

@@ -44,6 +44,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     chrome.tabs.query({ windowId: windowId }, function(tabs) {
       var urls = _.pluck(tabs, 'url');
+      console.log(urls);
 
       chrome.tabs.sendMessage(senderObject.tab.id, { tabs: urls });
     });

@@ -58,6 +58,10 @@
 	opacity: 0.95;
 	}
 
+.citizen-ex__pane.open {
+  display: block;
+}
+
 .citizen-ex__pane #cex_hud {
 	margin: 0 0 !important;
 	background: #888 !important;
@@ -106,13 +110,13 @@
 .citizen-ex__pane #cex_hud #cex_header a.cex_more:hover {
 	text-decoration: underline !important;
 	}
-	
-	
+
+
 .citizen-ex__pane #cex_hud #cex_main {
 	background: #888 !important;
 	}
-	
-	
+
+
 .citizen-ex__pane #cex_hud #cex_badge {
 	background: #888 !important;
 	width: 548px !important;
@@ -121,8 +125,8 @@
 	overflow: hidden !important;
 	box-sizing: content-box !important;
 	}
-	
-	
+
+
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column {
 	float: left !important;
 	width: 250px !important;
@@ -143,7 +147,7 @@
 	height: 250px !important;
 	margin-bottom: 25px !important;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_whatmeans {	
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_whatmeans {
 	border-bottom: 1px solid #fff !important;
 	padding-bottom: 6px !important;
 	margin-bottom: 6px !important;
