@@ -8,11 +8,11 @@ var logEntries = [];
 // Fetch the stored log entries on load, so we can keep adding to them
 
 storage.get('logEntries', function(entries) {
-  if (entries && entries.logEntries) {
-    var entries = entries.logEntries;
+  if (entries) {
+    console.log(entries);
     logEntries = _.map(entries, function(entry) {
       var logEntry = new LogEntry();
-      logEntry.fromJSON(JSON.parse(entry));
+      logEntry.fromJSON(entry);
       return logEntry;
     });
 

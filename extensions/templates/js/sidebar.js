@@ -181,11 +181,11 @@ var Sidebar = Backbone.Model.extend({
 
   resetValues: function() {
     this.set({ citizenship: [] });
+    this.set({ tabEntries: [] });
     this.set({ ownGeoData: '' });
     this.set({ entry: '' });
     this.unset('logEntries');
     this.unset('tabs');
-    this.unset('tabEntries');
   },
 
   eraseData: function() {

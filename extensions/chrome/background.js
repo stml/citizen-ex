@@ -36,7 +36,9 @@ CxStorage.prototype.set = function(property, value) {
 
   var json = JSON.prune(value);
   if (this.browser.chrome()) {
-    chrome.storage.local.set({ property: json });
+    var obj = {};
+    obj[property] = json;
+    chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
   } else {
@@ -49,9 +51,9 @@ CxStorage.prototype.get = function(property, callback) {
     chrome.storage.local.get(property, function(result) {
       var data = undefined;
       if (result[property]) {
-        var data = JSON.parse(result[property]);
+        data = JSON.parse(result[property]);
+        callback(data);
       }
-      callback(data);
     });
   } else if (this.browser.safari()) {
     var data = undefined;
@@ -128,7 +130,7 @@ Utils.prototype.createLogEntry = function(url) {
 
   // ignore empty tabs and chrome settings pages
   var protocol = utils.getUrlProtocol(url);
-  if (protocol === 'chrome' || protocol === 'chrome-devtools' || protocol === 'chrome-extension') {
+  if (protocol !== 'http' && protocol !== 'https') {
     return;
   }
 
@@ -458,11 +460,11 @@ var logEntries = [];
 // Fetch the stored log entries on load, so we can keep adding to them
 
 storage.get('logEntries', function(entries) {
-  if (entries && entries.logEntries) {
-    var entries = entries.logEntries;
+  if (entries) {
+    console.log(entries);
     logEntries = _.map(entries, function(entry) {
       var logEntry = new LogEntry();
-      logEntry.fromJSON(JSON.parse(entry));
+      logEntry.fromJSON(entry);
       return logEntry;
     });
 

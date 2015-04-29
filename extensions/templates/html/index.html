@@ -189,13 +189,13 @@
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
 
-/*
-		    <% _.each(tabEntries, function(tabEntry) { %>
-		      	<% if (tabEntry.url !== entry.url) { %> 
-		      		var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);
-		      	<% } %>
-		    <% }) %>
-*/
+            <% if (tabEntries) { %>
+              <% _.each(tabEntries, function(tabEntry) { %>
+                  <% if (tabEntry.url !== entry.url) { %>
+                      var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);
+                  <% } %>
+              <% }) %>
+            <% } %>
 
 			<% if (ownGeoData && entry.lat && entry.lng) { %>
 				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);

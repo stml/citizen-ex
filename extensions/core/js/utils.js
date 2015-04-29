@@ -52,7 +52,7 @@ Utils.prototype.createLogEntry = function(url) {
 
   // ignore empty tabs and chrome settings pages
   var protocol = utils.getUrlProtocol(url);
-  if (protocol === 'chrome' || protocol === 'chrome-devtools' || protocol === 'chrome-extension') {
+  if (protocol !== 'http' && protocol !== 'https') {
     return;
   }
 

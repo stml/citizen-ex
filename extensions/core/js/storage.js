@@ -9,7 +9,9 @@ CxStorage.prototype.set = function(property, value) {
 
   var json = JSON.prune(value);
   if (this.browser.chrome()) {
-    chrome.storage.local.set({ property: json });
+    var obj = {};
+    obj[property] = json;
+    chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
   } else {
@@ -22,9 +24,9 @@ CxStorage.prototype.get = function(property, callback) {
     chrome.storage.local.get(property, function(result) {
       var data = undefined;
       if (result[property]) {
-        var data = JSON.parse(result[property]);
+        data = JSON.parse(result[property]);
+        callback(data);
       }
-      callback(data);
     });
   } else if (this.browser.safari()) {
     var data = undefined;
