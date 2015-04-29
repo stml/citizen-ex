@@ -185,6 +185,10 @@
 				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
 				});
 
+			<% if (tabEntries) { %>
+				console.log(tabEntries);
+		    <% } %>
+
 			<% if (ownGeoData && entry.lat && entry.lng) { %>
 				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
 			<% } %>
