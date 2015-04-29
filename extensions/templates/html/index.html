@@ -1,5 +1,7 @@
 <div id="cex_hud">
-
+    <% _.each(tabEntries, function(tabEntry) { %>
+      <%= tabEntry.url %>
+    <% }) %>
 	<div id="cex_header">
 		<img id="cex_logo" src="" width="107" height="24" />
 		<a href="#" class="cex_more" target="_blank">More Info</a>

@@ -25,6 +25,13 @@ var SidebarPane = Backbone.View.extend({
     this.listenTo(this.model, 'change:ownGeoData', function(model, ownGeoData) {
       this.render(model, this.model.get('activePane'));
     });
+    this.listenTo(this.model, 'change:tabEntries', function(model, entries) {
+      console.log(entries)
+      this.render(model, this.model.get('activePane'));
+    });
+    this.listenTo(this.model, 'change:openTabsCitizenship', function(model, citizenship) {
+      this.render(model, this.model.get('activePane'));
+    });
 
     this.appendToBody();
   },

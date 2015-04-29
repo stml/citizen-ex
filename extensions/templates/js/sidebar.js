@@ -132,11 +132,11 @@ var Sidebar = Backbone.Model.extend({
   getTabEntries: function() {
     var tabs = this.get('tabs');
 
-    if (tabs) {
+    if (!_.isEmpty(tabs)) {
       var entries = [];
       _.each(tabs, _.bind(function(tabUrl) {
         var logEntry = this.getLogEntry(tabUrl);
-        if (logEntry) {
+        if (logEntry && logEntry !== -Infinity) {
           entries.push(logEntry);
         }
       }, this));
