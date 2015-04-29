@@ -9,44 +9,25 @@ var SidebarPane = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    this.name = options.name;
     this.template = _.template(options.template);
 
-    this.listenTo(this.model, 'change:activePane', function(model, pane) {
-      this.render(model, pane);
-    });
-    this.listenTo(this.model, 'change:entry', function(model, logEntry) {
+    this.listenTo(this.model, 'change:open', this.render);
+    this.listenTo(this.model, 'change:entry', function() {
       this.model.setUpCitizenship();
-      this.render(model, this.model.get('activePane'));
+      this.render();
     });
-    this.listenTo(this.model, 'change:citizenship', function(model, citizenship) {
-      this.render(model, this.model.get('activePane'));
-    });
-    this.listenTo(this.model, 'change:ownGeoData', function(model, ownGeoData) {
-      this.render(model, this.model.get('activePane'));
-    });
-    this.listenTo(this.model, 'change:tabEntries', function(model, entries) {
-      console.log(entries)
-      this.render(model, this.model.get('activePane'));
-    });
-    this.listenTo(this.model, 'change:openTabsCitizenship', function(model, citizenship) {
-      this.render(model, this.model.get('activePane'));
-    });
+    this.listenTo(this.model, 'change:citizenship', this.render);
+    this.listenTo(this.model, 'change:ownGeoData', this.render);
+    this.listenTo(this.model, 'change:tabEntries', this.render);
+    this.listenTo(this.model, 'change:openTabsCitizenship', this.render);
 
     this.appendToBody();
   },
 
-  render: function(model, pane) {
-    if (pane) {
-      switch (pane.name) {
-        case this.name:
-          this.$el.html(this.template(this.model.toJSON()));
-          this.$el.slideDown();
-          break;
-        default:
-          this.$el.slideUp();
-          break;
-      }
+  render: function() {
+    if (this.model.get('open')) {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.slideDown();
     } else {
       this.$el.slideUp();
     }
@@ -55,12 +36,6 @@ var SidebarPane = Backbone.View.extend({
   appendToBody: function() {
     var body = $('body');
     this.$el.appendTo(body);
-  },
-
-  togglePane: function(event) {
-    event.preventDefault();
-    var paneName = event.currentTarget.name;
-    this.model.activatePane(paneName);
   },
 
   close: function(event) {

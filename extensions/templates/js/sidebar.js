@@ -1,6 +1,5 @@
 var Sidebar = Backbone.Model.extend({
-  initialize: function(panes, browser) {
-    this.panes = panes;
+  initialize: function(browser) {
     this.browser = browser;
     this.resetValues();
     this.getOwnGeoData();
@@ -172,14 +171,15 @@ var Sidebar = Backbone.Model.extend({
   },
 
   open: function() {
-    this.set({ activePane: this.panes[0] });
+    this.set({ open: true });
   },
 
   close: function() {
-    this.unset('activePane');
+    this.set({ open: false });
   },
 
   resetValues: function() {
+    this.set({ open: false });
     this.set({ citizenship: [] });
     this.set({ tabEntries: [] });
     this.set({ ownGeoData: '' });

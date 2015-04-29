@@ -14,7 +14,5 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-sidebar = new Sidebar(panes, browser);
-_.each(panes, function(pane) {
-  new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
-});
+sidebar = new Sidebar(browser);
+new SidebarPane({ model: sidebar, template: paneTemplate });

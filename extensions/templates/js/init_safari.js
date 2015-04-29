@@ -20,10 +20,8 @@ safari.self.addEventListener('message', function(message) {
     return;
   }
 
-  sidebar = new Sidebar(panes, browser);
-  _.each(panes, function(pane) {
-    new SidebarPane({ name: pane.name, model: sidebar, template: pane.template });
-  });
+  sidebar = new Sidebar(browser);
+  new SidebarPane({ model: sidebar, template: paneTemplate });
 
   // we fetch the last record again
   // as some of its request should have come back by now
