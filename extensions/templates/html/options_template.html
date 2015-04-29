@@ -266,6 +266,12 @@
       <% _.each(timeframeEntries, function(entry) { %>
         <%= entry.url %>
       <% }); %>
+      <br>
+      Timeframe domains
+      <br>
+      <% _.each(timeframeDomains, function(entry) { %>
+        <%= entry.code %> | <%= entry.percentage %>
+      <% }); %>
 
 	</div><!-- #cex_main -->
 

@@ -14,36 +14,43 @@ var Options = Backbone.Model.extend({
 
   receiveCitizenship: function(countryLog) {
     var countryCodes = _.pick(countryLog.visits, _.identity);
-    var citizenship = this.calculateCitizenship(countryCodes);
+    var citizenship = this.calculatePercentages(countryCodes);
     this.set({ citizenship: citizenship });
   },
 
-  calculateCitizenship: function(countryCodes) {
-    var sum = _.reduce(countryCodes, function(memo, num) { return memo + num; }, 0);
-    var countries = [];
-    _.each(countryCodes, function(value, key) {
+  calculatePercentages: function(data) {
+    var sum = _.reduce(data, function(memo, num) { return memo + num; }, 0);
+    var result = [];
+    _.each(data, function(value, key) {
       var percentage = (value / sum) * 100;
       percentage = percentage.toFixed(2);
-      countries.push({ code: key, percentage: percentage });
+      result.push({ code: key, percentage: percentage });
     });
-    countries = _.sortBy(countries, 'percentage');
+    result = _.sortBy(result, 'percentage');
 
-    return countries.reverse();
+    return result.reverse();
   },
 
   getCitizenshipForDays: function(n) {
     var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getCountryCodesFromEntries(entries);
-    var citizenship = this.calculateCitizenship(countryCodes);
+    var countryCodes = this.getPropertiesFromEntries(entries, 'countryCode');
+    var citizenship = this.calculatePercentages(countryCodes);
     return citizenship;
   },
 
-  getCountryCodesFromEntries: function(entries) {
+  getDomainsForDays: function(n) {
+    var entries = this.getTabEntriesForDays(n);
+    var domains = this.getPropertiesFromEntries(entries, 'domain');
+    var domainPopularity = this.calculatePercentages(domains);
+    return domainPopularity;
+  },
+
+  getPropertiesFromEntries: function(entries, property) {
     var validEntries = _.reject(entries, function(entry) {
-      return entry.countryCode === undefined || entry.countryCode === '';
+      return entry[property] === undefined || entry[property] === '';
     });
     var countryCodes = _.countBy(validEntries, function(entry) {
-      return entry.countryCode;
+      return entry[property];
     });
     return countryCodes;
   },
@@ -97,7 +104,7 @@ var Options = Backbone.Model.extend({
 
   resetValues: function() {
     this.set({ timeframe: this.timeframes[0] });
-    this.set({ timeframeEntries: [], timeframeCitizenship: [] });
+    this.set({ timeframeEntries: [], timeframeCitizenship: [], timeframeDomains: [] });
     this.set({ citizenship: [] });
     this.set({ entry: '' });
     this.unset('logEntries');
@@ -107,14 +114,14 @@ var Options = Backbone.Model.extend({
     var timeframe = _.find(this.timeframes, function(tf) {
       return tf.name === name;
     });
-    console.log(timeframe);
 
     var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
+    var domains = this.getDomainsForDays(this.get('timeframe').duration);
     var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
-    console.log(citizenship, entries);
     this.set({
       timeframeCitizenship: citizenship,
       timeframeEntries: entries,
+      timeframeDomains: domains,
       timeframe: timeframe
     });
   },
