@@ -5,7 +5,7 @@ var Options = Backbone.Model.extend({
     this.resetValues();
     this.getAllLogEntries();
     this.setUpCitizenship();
-    this.getOwnGeoData();
+    this.toggleTimeframe(this.timeframes[0].name)
   },
 
   setUpCitizenship: function() {
@@ -16,18 +16,6 @@ var Options = Backbone.Model.extend({
     var countryCodes = _.pick(countryLog.visits, _.identity);
     var citizenship = this.calculateCitizenship(countryCodes);
     this.set({ citizenship: citizenship });
-  },
-
-  setUpOpenTabsCitizenship: function() {
-    var tabEntries = this.get('tabEntries');
-    var validEntries = _.reject(tabEntries, function(entry) {
-      return entry.countryCode === undefined || entry.countryCode === '';
-    });
-    var countryCodes = _.countBy(validEntries, function(entry) {
-      return entry.countryCode;
-    });
-    var openTabsCitizenship = this.calculateCitizenship(countryCodes);
-    this.set({ openTabsCitizenship: openTabsCitizenship });
   },
 
   calculateCitizenship: function(countryCodes) {
@@ -93,77 +81,42 @@ var Options = Backbone.Model.extend({
     return latestEntry;
   },
 
-  // getLogEntryForTab: function() {
-  //   message.send({ activeTab: true });
-  // },
-
-  // receiveActiveTab: function(url) {
-  //   var entry = this.getLogEntry(url);
-
-  //   if (!entry) {
-  //     this.set({ entry: '' });
-  //     return;
-  //   } else {
-  //     this.set({ entry: entry });
-  //   }
-  // },
-
-  getOwnGeoData: function() {
-    message.send({ ownGeoData: true });
-  },
-
-  receiveOwnGeoData: function(ownGeoData) {
-    this.set({ ownGeoData: ownGeoData });
-  },
-
-  requestOpenTabs: function() {
-    message.send({ allTabs: true });
-  },
-
-  requestTabs: function(urls) {
-    this.set({ tabs: urls });
-    this.getTabEntries();
-  },
-
-  getTabEntries: function() {
-    var tabs = this.get('tabs');
-
-    if (tabs) {
-      var entries = [];
-      _.each(tabs, _.bind(function(tabUrl) {
-        var logEntry = this.getLogEntry(tabUrl);
-        if (logEntry) {
-          entries.push(logEntry);
-        }
-      }, this));
-      this.set({ tabEntries: entries });
-      this.setUpOpenTabsCitizenship();
-    } else {
-      this.set({ tabEntries: [] });
-    }
-  },
-
   getTabEntriesForDays: function(n) {
-    var tabEntries = this.get('tabEntries');
+    if (n === null) {
+      return this.get('logEntries');
+    }
+
+    var entries = this.get('logEntries');
     var cutOffDate = moment().subtract(n, 'days').valueOf();
-    var latestEntries = _.filter(tabEntries, function(entry) {
+
+    var latestEntries = _.filter(entries, function(entry) {
       return entry.latestTimestamp() <= cutOffDate;
     });
     return latestEntries;
   },
 
   resetValues: function() {
-    this.set({ timeframe: this.timeframes[0] })
+    this.set({ timeframe: this.timeframes[0] });
+    this.set({ timeframeEntries: [], timeframeCitizenship: [] });
     this.set({ citizenship: [] });
-    this.set({ ownGeoData: '' });
     this.set({ entry: '' });
     this.unset('logEntries');
-    this.unset('tabs');
-    this.unset('tabEntries');
   },
 
   toggleTimeframe: function(name) {
+    var timeframe = _.find(this.timeframes, function(tf) {
+      return tf.name === name;
+    });
+    console.log(timeframe);
 
+    var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
+    var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
+    console.log(citizenship, entries);
+    this.set({
+      timeframeCitizenship: citizenship,
+      timeframeEntries: entries,
+      timeframe: timeframe
+    });
   },
 
   eraseData: function() {

@@ -5,7 +5,7 @@
         <a href="#" class="cex_toggle" name="all-time">All time</a>
         <a href="#" class="cex_toggle" name="month">This month</a>
         <a href="#" class="cex_toggle" name="week">This week</a>
-        <a href="#" class="cex_toggle" name="today">Today</a>
+        <a href="#" class="cex_toggle" name="day">Today</a>
         <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
@@ -245,6 +245,27 @@
 				<p>No data available yet.</p>
 			</div>
 	  <% }; %>
+
+      Timeframe:
+      <%= timeframe.name %>
+      <br>
+      Timeframe duration:
+      <%= timeframe.duration %>
+      <br>
+      Timeframe citizenship
+      <br>
+      <% _.each(timeframeCitizenship, function(country) { %>
+          <tr>
+              <td class="cex_country"><%= options.convertCountryCode(country.code) %></td>
+              <td class="cex_percentage"><%= country.percentage %></td>
+          </tr>
+      <% }); %>
+      <br>
+      Timeframe entries
+      <br>
+      <% _.each(timeframeEntries, function(entry) { %>
+        <%= entry.url %>
+      <% }); %>
 
 	</div><!-- #cex_main -->
 
