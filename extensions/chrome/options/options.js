@@ -97,22 +97,6 @@ CxMessage.prototype.send = function(message) {
 };
 
 
-var LogEntry = function() {};
-
-LogEntry.prototype.fromJSON = function(json) {
-  var that = this;
-  _.each(json, function(value, key) {
-    that[key] = value;
-  });
-  return this;
-};
-
-LogEntry.prototype.latestTimestamp = function() {
-  return _.max(this.timestamps, function(timestamp) {
-    return Date.parse(timestamp).value;
-  });
-};
-
 var Options = Backbone.Model.extend({
   initialize: function(browser, timeframes) {
     this.browser = browser;
@@ -610,32 +594,5 @@ var optionsPage = new OptionsPage({ model: options, template: optionsTemplate })
 
 
 console.log(options);
-
-
-
-// options/js/init_chrome.js
-
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.tabs) {
-    options.updateTabs(request.tabs);
-  } else if (request.lastTab)  {
-    if (request.lastTab === null) {
-      return;
-    }
-    options.receiveLastTab(request.lastTab);
-  } else if (request.allLogEntries) {
-    if (request.allLogEntries === true) {
-      return;
-    }
-    options.receiveAllLogEntries(request.allLogEntries);
-  } else if (request.countryLog) {
-    if (request.countryLog === true) {
-      return;
-    }
-    options.receiveCitizenship(request.countryLog);
-  } else if (request.ownGeoData) {
-    options.receiveOwnGeoData(request.ownGeoData);
-  }
-});
 
 

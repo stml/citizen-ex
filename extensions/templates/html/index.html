@@ -1,7 +1,4 @@
 <div id="cex_hud">
-    <% _.each(tabEntries, function(tabEntry) { %>
-      <%= tabEntry.url %>
-    <% }) %>
 	<div id="cex_header">
 		<img id="cex_logo" src="" width="107" height="24" />
 		<a href="#" class="cex_more" target="_blank">More Info</a>
@@ -169,9 +166,11 @@
             if (!_.isUndefined(window.chrome)) {
               cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');
               yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
+              tabMarker = chrome.extension.getURL('images/map-marker-tab.png');
             } else if (safari) {
               cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';
               yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
+              tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';
             }
 
 			var destIcon = L.icon({
@@ -184,10 +183,19 @@
 				iconSize:     [41,41], // size of the icon
 				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
 				});
+			var tabIcon = L.icon({
+				iconUrl: tabMarker,
+				iconSize:     [9,9], // size of the icon
+				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
+				});
 
-			<% if (tabEntries) { %>
-				console.log(tabEntries);
-		    <% } %>
+/*
+		    <% _.each(tabEntries, function(tabEntry) { %>
+		      	<% if (tabEntry.url !== entry.url) { %> 
+		      		var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);
+		      	<% } %>
+		    <% }) %>
+*/
 
 			<% if (ownGeoData && entry.lat && entry.lng) { %>
 				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
