@@ -38,6 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
       chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
     });
+
   } else if (_.has(request, 'allTabs')) {
     var windowId = sender.tab.windowId;
 
