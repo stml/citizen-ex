@@ -9,7 +9,6 @@ var logEntries = [];
 
 storage.get('logEntries', function(entries) {
   if (entries) {
-    console.log(entries);
     logEntries = _.map(entries, function(entry) {
       var logEntry = new LogEntry();
       logEntry.fromJSON(entry);

@@ -26,7 +26,7 @@
     "flags/*.svg",
     "leaflet-images/*",
     "images/*",
-    "more_info.html"
+    "options.html"
   	],
   "content_scripts": [
     {

@@ -20,7 +20,7 @@ CountryLog.prototype.reset = function() {
 };
 
 CountryLog.prototype.updateStorage = function() {
-  storage.set({ 'countryLog': this.visits });
+  storage.set('countryLog', this.visits);
 };
 
 CountryLog.prototype.recoverFromStorage = function() {
@@ -28,6 +28,6 @@ CountryLog.prototype.recoverFromStorage = function() {
     if (_.isEmpty(countryLog) || countryLog === undefined) {
       return;
     }
-    this.visits = countryLog.countryLog;
+    this.visits = countryLog;
   }, this));
 };
