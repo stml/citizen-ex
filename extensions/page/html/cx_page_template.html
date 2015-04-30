@@ -1,76 +1,3 @@
-<html>
-<head>
-<title>Citizen Ex: Your Algorithmic Citizenship</title>
-
-<style>
-body {
-	background: #666;
-	color: #fff;
-	-webkit-text-rendering: optimizeLegibility;
-	-moz-text-rendering: optimizeLegibility;
-	-ms-text-rendering: optimizeLegibility;
-	-o-text-rendering: optimizeLegibility;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	font-family: "Helvetica Neue", Arial, sans-serif;
-	font-size: 30px;
-	letter-spacing: 0.15rem;
-	}
-
-#container {
-	margin: 0 50px;
-	}
-
-#header {
-	margin: 25px 0 50px;
-	}
-#header p.homepage {
-	float: right;
-	}
-#header p.homepage a {
-	color: #fff;
-	text-decoration: none;
-	border-bottom: 1px solid transparent;
-	text-transform: uppercase;
-	font-size: 16px;
-	letter-spacing: 0.2rem;
-	}
-#header p.homepage a:hover {
-	color: #fff000;
-	border-bottom: 1px solid #fff000;
-	}
-
-#toggles p {
-	font-size: 30px;
-	line-height: 1.33;
-	margin-bottom: 20px;
-	color: #fff;
-	}	
-#toggles ul {
-	list-style: none;
-	}
-#toggles ul li {
-	line-height: 1.33;
-	}
-#toggles ul li a {
-	font-size: 30px;
-	color: #b3b3b3;
-	text-decoration: none;
-	}
-#toggles ul li a:hover {
-	color: #fff;
-	}
-#toggles ul li a.selected {
-	color: #fff;
-	}
-	
-
-</style>	
-
-</head>
-<body>
-
 <div id="container">
 
 	<div id="header">
@@ -85,7 +12,7 @@ body {
             }
 		</script>
 	</div>
-	
+
 	<div id="toggles">
 		<p>This is your Algorithmic Citizenship for:</p>
 	    <ul>
@@ -98,7 +25,7 @@ body {
 
 	<div id="cex_main">
 
-	<% if (entry) { %>
+	<% if (currentEntry) { %>
 
 	  	<div id="cex_badge">
 
@@ -129,7 +56,7 @@ body {
 					</tr>
 				<% _.each(citizenship, function(country) { %>
 					<tr>
-						<td class="cex_country"><%= options.convertCountryCode(country.code) %></td>
+						<td class="cex_country"><%= cxPage.convertCountryCode(country.code) %></td>
 						<td class="cex_percentage"><%= country.percentage %></td>
 					</tr>
 				<% }); %>
@@ -260,8 +187,8 @@ body {
 				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
 				});
 
-			<% if (ownGeoData && entry.lat && entry.lng) { %>
-				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+			<% if (ownGeoData && currentEntry.lat && currentEntry.lng) { %>
+				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
 			<% } %>
 
 			var cexmarkergroup = new L.featureGroup();
@@ -270,8 +197,8 @@ body {
 				cexmarkergroup.addLayer(origMarker);
 			<% } else { %>
 		    <% }; %>
-			<% if (entry.ip) { %>
-				var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>], {icon: destIcon}).addTo(cexmap);
+			<% if (currentEntry.ip) { %>
+				var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
 				cexmarkergroup.addLayer(destMarker);
 		    <% } else { %>
 
@@ -287,10 +214,10 @@ body {
 
 	    			<div id="cex_dest_column">
 	    				<h3>Current remote location</h3>
-					    <% if (entry.ip) { %>
-					      <p><strong><% if (entry.city.length > 0) { %><%= entry.city %>, <% } %><%= entry.countryCode %></strong></p>
-					      <p>IP Address: <%= entry.ip %></p>
-					      <p>Lat: <%= entry.lat %> / Lon: <%= entry.lng %></p>
+					    <% if (currentEntry.ip) { %>
+					      <p><strong><% if (currentEntry.city.length > 0) { %><%= currentEntry.city %>, <% } %><%= currentEntry.countryCode %></strong></p>
+					      <p>IP Address: <%= currentEntry.ip %></p>
+					      <p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>
 					    <% } else { %>
 					      <p><strong>Remote location is unknown</strong></p>
 					      <p>&nbsp;</p>
@@ -330,7 +257,7 @@ body {
       <br>
       <% _.each(timeframeCitizenship, function(country) { %>
           <tr>
-              <td class="cex_country"><%= options.convertCountryCode(country.code) %></td>
+              <td class="cex_country"><%= cxPage.convertCountryCode(country.code) %></td>
               <td class="cex_percentage"><%= country.percentage %></td>
           </tr>
       <% }); %>
@@ -350,5 +277,3 @@ body {
 	</div><!-- #cex_main -->
 
 </div>
-</body>
-</html>

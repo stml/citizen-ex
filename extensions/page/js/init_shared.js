@@ -18,5 +18,5 @@ var timeframes = [
   new Timeframe('day', 1)
 ];
 
-var cxPage = new cxPage(browser, timeframes);
+var cxPage = new CxPage(browser, timeframes);
 var cxPageView = new CxPageView({ model: cxPage, template: cxPageTemplate });

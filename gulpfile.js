@@ -20,9 +20,15 @@ var pageSources = [
   './extensions/page/js/init_shared.js'
 ];
 
-var cssSources = [
+var panelCssSources = [
  './extensions/assets/css/overwrite_warning.css',
  './extensions/assets/css/panel.css',
+ './extensions/assets/css/leaflet.css'
+];
+
+var pageCssSources = [
+ './extensions/assets/css/overwrite_warning.css',
+ './extensions/assets/css/page.css',
  './extensions/assets/css/leaflet.css'
 ];
 
@@ -83,10 +89,16 @@ gulp.task('chromeLib', function () {
     .pipe(gulp.dest('./extensions/chrome/lib'));
 });
 
-gulp.task('chromeCss', function () {
-  gulp.src(cssSources)
+gulp.task('chromePanelCss', function () {
+  gulp.src(panelCssSources)
     .pipe(concat('panel.css'))
     .pipe(gulp.dest('./extensions/chrome/panel/'));
+});
+
+gulp.task('chromePageCss', function () {
+  gulp.src(pageCssSources)
+    .pipe(concat('page.css'))
+    .pipe(gulp.dest('./extensions/chrome/page/'));
 });
 
 gulp.task('chromeImages', function () {
@@ -134,10 +146,16 @@ gulp.task('safariLib', function () {
     .pipe(gulp.dest('./extensions/safari.safariextension/lib'));
 });
 
-gulp.task('safariCss', function () {
-  gulp.src(cssSources)
+gulp.task('safariPanelCss', function () {
+  gulp.src(panelCssSources)
     .pipe(concat('panel.css'))
     .pipe(gulp.dest('./extensions/safari.safariextension/panel/'));
+});
+
+gulp.task('safariPageCss', function () {
+  gulp.src(pageCssSources)
+    .pipe(concat('page.css'))
+    .pipe(gulp.dest('./extensions/safari.safariextension/page/'));
 });
 
 gulp.task('safariImages', function () {
@@ -184,7 +202,8 @@ gulp.task('watch', function() {
     [
       'chromeCore',
       'chromeLib',
-      'chromeCss',
+      'chromePanelCss',
+      'chromePageCss',
       'chromeImages',
       'chromeFlags',
       'chromePanel',
@@ -193,7 +212,8 @@ gulp.task('watch', function() {
 
       'safariCore',
       'safariLib',
-      'safariCss',
+      'safariPanelCss',
+      'safariPageCss',
       'safariImages',
       'safariFlags',
       'safariPanel',
@@ -207,7 +227,8 @@ gulp.task('default',
   [
     'chromeCore',
     'chromeLib',
-    'chromeCss',
+    'chromePanelCss',
+    'chromePageCss',
     'chromeImages',
     'chromeFlags',
     'chromePanel',
@@ -216,7 +237,8 @@ gulp.task('default',
 
     'safariCore',
     'safariLib',
-    'safariCss',
+    'safariPanelCss',
+    'safariPageCss',
     'safariImages',
     'safariFlags',
     'safariPanel',

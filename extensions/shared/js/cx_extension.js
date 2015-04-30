@@ -1,9 +1,8 @@
 // shared/js/cx_extension.js
 
 var CxExtension = Backbone.Model.extend({
-  initialize: function(browser, timeframes) {
+  initialize: function(browser) {
     this.browser = browser;
-    this.timeframes = timeframes;
 
     this.resetValues();
     this.requestOwnGeoData();

@@ -3,9 +3,11 @@
 var CxPage = CxExtension.extend({
   initialize: function(browser, timeframes) {
     CxExtension.prototype.initialize.apply(this, browser);
-
     this.timeframes = timeframes;
-    this.toggleTimeframe(this.timeframes[0].name)
+    this.set({ currentEntry: '' })
+
+    this.set({ timeframe: this.timeframes[0] });
+    this.toggleTimeframe(this.timeframes[0].name);
   },
 
   getCitizenshipForDays: function(n) {
