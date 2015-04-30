@@ -16,10 +16,10 @@
 	<div id="toggles">
 		<p>This is your Algorithmic Citizenship for:</p>
 	    <ul>
-	    	<li><a href="#" class="cex_toggle selected" name="all-time">All time</a></li>
-        	<li><a href="#" class="cex_toggle" name="month">This month</a></li>
-        	<li><a href="#" class="cex_toggle" name="week">This week</a></li>
-        	<li><a href="#" class="cex_toggle" name="day">Today</a></li>
+          <li><a href="#" class="cex_toggle <% if (timeframe.name === 'all-time') { %> selected <% } %>" name="all-time">All time</a></li>
+        	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'month') { %> selected <% } %>" name="month">This month</a></li>
+        	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>" name="week">This week</a></li>
+        	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>" name="day">Today</a></li>
         </ul>
 	</div>
 
