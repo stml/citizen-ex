@@ -651,5 +651,3 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 cxPanel = new CxPanel(browser);
 cxPanelView = new CxPanelView({ model: cxPanel, template: panelTemplate });
-
-console.log(cxPanel);

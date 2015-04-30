@@ -49,7 +49,7 @@
 				<string>lib/jquery.js</string>
 				<string>lib/backbone.js</string>
 				<string>lib/mapbox.js</string>
-				<string>panel/setup.js</string>
+				<string>panel/panel.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>
