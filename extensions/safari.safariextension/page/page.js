@@ -565,6 +565,7 @@ var CxPageView = Backbone.View.extend({
     this.name = options.name;
     this.template = _.template(options.template);
     this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'change:citizenship', this.triggerTimeframe);
     this.listenTo(this.model, 'change:logEntries', this.triggerTimeframe);
 
     this.appendToBody();
