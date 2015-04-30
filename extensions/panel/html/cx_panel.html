@@ -20,7 +20,7 @@
 
 	<div id="cex_main">
 
-	<% if (entry) { %>
+	<% if (currentEntry) { %>
 
 	  	<div id="cex_badge">
 
@@ -51,7 +51,7 @@
 					</tr>
 				<% _.each(citizenship, function(country) { %>
 					<tr>
-						<td class="cex_country"><%= sidebar.convertCountryCode(country.code) %></td>
+						<td class="cex_country"><%= cxPanel.convertCountryCode(country.code) %></td>
 						<td class="cex_percentage"><%= country.percentage %></td>
 					</tr>
 				<% }); %>
@@ -189,16 +189,16 @@
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
 
-            <% if (tabEntries) { %>
-              <% _.each(tabEntries, function(tabEntry) { %>
-                  <% if (tabEntry.url !== entry.url) { %>
+            <% if (openTabEntries) { %>
+              <% _.each(openTabEntries, function(tabEntry) { %>
+                  <% if (tabEntry.url !== currentEntry.url) { %>
                       var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);
                   <% } %>
               <% }) %>
             <% } %>
 
-			<% if (ownGeoData && entry.lat && entry.lng) { %>
-				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+			<% if (ownGeoData && currentEntry.lat && currentEntry.lng) { %>
+				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
 			<% } %>
 
 			var cexmarkergroup = new L.featureGroup();
@@ -207,8 +207,8 @@
 				cexmarkergroup.addLayer(origMarker);
 			<% } else { %>
 		    <% }; %>
-			<% if (entry.ip) { %>
-				var destMarker = L.marker([<%= entry.lat %>, <%= entry.lng %>], {icon: destIcon}).addTo(cexmap);
+			<% if (currentEntry.ip) { %>
+				var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
 				cexmarkergroup.addLayer(destMarker);
 		    <% } else { %>
 
@@ -224,10 +224,10 @@
 
 	    			<div id="cex_dest_column">
 	    				<h3>Current remote location</h3>
-					    <% if (entry.ip) { %>
-					      <p><strong><% if (entry.city.length > 0) { %><%= entry.city %>, <% } %><%= sidebar.convertCountryCode(entry.countryCode) %></strong></p>
-					      <p>IP Address: <%= entry.ip %></p>
-					      <p>Lat: <%= entry.lat %> / Lon: <%= entry.lng %></p>
+					    <% if (currentEntry.ip) { %>
+					      <p><strong><% if (currentEntry.city.length > 0) { %><%= currentEntry.city %>, <% } %><%= cxPanel.convertCountryCode(currentEntry.countryCode) %></strong></p>
+					      <p>IP Address: <%= currentEntry.ip %></p>
+					      <p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>
 					    <% } else { %>
 					      <p><strong>Remote location is unknown</strong></p>
 					      <p>&nbsp;</p>
@@ -237,7 +237,7 @@
 				    <div id="cex_orig_column">
 	    				<h3>Your tracked location</h3>
 					    <% if (ownGeoData && ownGeoData.ownIp) { %>
-					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= sidebar.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
+					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= cxPanel.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
 					      <p>IP Address: <%= ownGeoData.ownIp %></p>
 					      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
 					    <% } else { %>

@@ -17,7 +17,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 });
 
 chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.executeScript(null, { file: 'panel/panel.js' });
+  chrome.tabs.executeScript(null, { file: 'panel/open_panel.js' });
 });
 
 chrome.storage.onChanged.addListener(function(data) {
