@@ -159,7 +159,6 @@
 			    console.log(tile);
 				});
 			cexmap.attributionControl.setPrefix("");
-/* 			cexmap.setView([0,0],2); */
             var yellowMarker;
             var cyanMarker;
 
@@ -189,6 +188,7 @@
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
 
+/*
             <% if (tabEntries) { %>
               <% _.each(tabEntries, function(tabEntry) { %>
                   <% if (tabEntry.url !== entry.url) { %>
@@ -196,6 +196,7 @@
                   <% } %>
               <% }) %>
             <% } %>
+*/
 
 			<% if (ownGeoData && entry.lat && entry.lng) { %>
 				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= entry.lat %>, <%= entry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
