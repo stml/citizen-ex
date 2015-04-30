@@ -1,30 +1,93 @@
 <html>
 <head>
 <title>Citizen Ex: Your Algorithmic Citizenship</title>
+
+<style>
+body {
+	background: #666;
+	color: #fff;
+	-webkit-text-rendering: optimizeLegibility;
+	-moz-text-rendering: optimizeLegibility;
+	-ms-text-rendering: optimizeLegibility;
+	-o-text-rendering: optimizeLegibility;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-size: 30px;
+	letter-spacing: 0.15rem;
+	}
+
+#container {
+	margin: 0 50px;
+	}
+
+#header {
+	margin: 25px 0 50px;
+	}
+#header p.homepage {
+	float: right;
+	}
+#header p.homepage a {
+	color: #fff;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	text-transform: uppercase;
+	font-size: 16px;
+	letter-spacing: 0.2rem;
+	}
+#header p.homepage a:hover {
+	color: #fff000;
+	border-bottom: 1px solid #fff000;
+	}
+
+#toggles p {
+	font-size: 30px;
+	line-height: 1.33;
+	margin-bottom: 20px;
+	color: #fff;
+	}	
+#toggles ul {
+	list-style: none;
+	}
+#toggles ul li {
+	line-height: 1.33;
+	}
+#toggles ul li a {
+	font-size: 30px;
+	color: #b3b3b3;
+	text-decoration: none;
+	}
+#toggles ul li a:hover {
+	color: #fff;
+	}
+#toggles ul li a.selected {
+	color: #fff;
+	}
+	
+
+</style>	
+
 </head>
 <body>
-<div id="cex_page">
-<div id="cex_hud">
 
-	<div id="cex_header">
-		<img id="cex_logo" src="" width="107" height="24" />
+<div id="container">
+
+	<div id="header">
+		<img id="logo" src="" width="107" height="24" />
+		<p class="homepage"><a href="http://citizen-ex.com">citizen-ex.com &raquo;</a></p>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
-              $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
-              $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
-              $('.cex_more').attr('href',chrome.extension.getURL('options.html'));
+              $('#header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
 
             } else if (safari) {
-              $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
-              $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
-              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');
-              $('.cex_more').attr('href',safari.extension.baseURI + 'options.html');
+              $('#header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             }
 		</script>
 	</div>
 	
-	<div id="cex_toggles">
-		<p>This is your Algorighmic Citizenship for:</p>
+	<div id="toggles">
+		<p>This is your Algorithmic Citizenship for:</p>
 	    <ul>
 	    	<li><a href="#" class="cex_toggle selected" name="all-time">All time</a></li>
         	<li><a href="#" class="cex_toggle" name="month">This month</a></li>
@@ -286,7 +349,6 @@
 
 	</div><!-- #cex_main -->
 
-</div><!-- #cex_hud -->
-</div><!-- #cex_page -->
+</div>
 </body>
 </html>

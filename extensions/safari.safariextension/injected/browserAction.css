@@ -331,36 +331,6 @@
 	font-weight: bold !important;
 	line-height: 1.5 !important;
 	}
-
-body {
-	background: #666;
-	color: #fff;
-	}
-
-#cex_page #cex_hud #cex_header {
-	background: #666;
-	}
-
-#cex_page #cex_toggles p {
-	font-size: 30px;
-	line-height: 1.33;
-	margin-bottom: 20px;
-	color: #fff;
-	}	
-#cex_page #cex_toggles ul {
-	list-style: none;
-	}
-#cex_page #cex_toggles ul li {
-	line-height: 1.33;
-	}
-#cex_page #cex_toggles ul li a {
-	font-size: 30px;
-	color: #b3b3b3;
-	text-decoration: none;
-	}
-#cex_page #cex_toggles ul li a.selected {
-	color: #fff;
-	}
 /* required styles */
 
 .leaflet-map-pane,
