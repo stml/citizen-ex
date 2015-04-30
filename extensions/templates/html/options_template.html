@@ -1,12 +1,13 @@
+<html>
+<head>
+<title>Citizen Ex: Your Algorithmic Citizenship</title>
+</head>
+<body>
+<div id="cex_page">
 <div id="cex_hud">
 
 	<div id="cex_header">
 		<img id="cex_logo" src="" width="107" height="24" />
-        <a href="#" class="cex_toggle" name="all-time">All time</a>
-        <a href="#" class="cex_toggle" name="month">This month</a>
-        <a href="#" class="cex_toggle" name="week">This week</a>
-        <a href="#" class="cex_toggle" name="day">Today</a>
-        <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
               $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
@@ -20,6 +21,16 @@
               $('.cex_more').attr('href',safari.extension.baseURI + 'options.html');
             }
 		</script>
+	</div>
+	
+	<div id="cex_toggles">
+		<p>This is your Algorighmic Citizenship for:</p>
+	    <ul>
+	    	<li><a href="#" class="cex_toggle selected" name="all-time">All time</a></li>
+        	<li><a href="#" class="cex_toggle" name="month">This month</a></li>
+        	<li><a href="#" class="cex_toggle" name="week">This week</a></li>
+        	<li><a href="#" class="cex_toggle" name="day">Today</a></li>
+        </ul>
 	</div>
 
 	<div id="cex_main">
@@ -276,3 +287,6 @@
 	</div><!-- #cex_main -->
 
 </div><!-- #cex_hud -->
+</div><!-- #cex_page -->
+</body>
+</html>
