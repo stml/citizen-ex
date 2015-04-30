@@ -20,17 +20,19 @@ body#cex_page {
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	font-size: 30px;
 	letter-spacing: 0.15rem;
+	margin: 0;
+	padding: 0;
 	}
 
 body#cex_page #container {
-	margin: 0 50px;
 	}
 
-body#cex_page #header {
-	margin: 25px 0 50px;
+body#cex_page #header #logo {
+	float: left;
 	}
 body#cex_page #header p.homepage {
 	float: right;
+	margin: 0;
 	}
 body#cex_page #header p.homepage a {
 	color: #fff;
@@ -49,7 +51,8 @@ body#cex_page .section {
 	width: 100%;
 	overflow: hidden;
 	position: relative;
-	margin-bottom: 50px;
+	padding: 25px 50px;
+	box-sizing: border-box;
 	}	
 
 body#cex_page #toggles {
@@ -173,6 +176,112 @@ body#cex_page #map #cex_map img.leaflet-tile {
     filter: gray !important; /* IE6-9 */
     filter: grayscale(1) !important; /* W3C */
   	}
+
+body#cex_page #share p.sharelink {
+	width: 325px;
+	float: left;
+	display: table; 
+	overflow: hidden;
+	}
+body#cex_page #share p.sharelink a {
+	font-size: 16px;
+	line-height: 2;
+	height: 325px;
+	width: 325px;
+	display: table-cell; 
+	vertical-align: middle;
+	text-align: center;
+	border: 16px solid #fff000;
+	border-radius: 100%;
+	box-sizing:border-box;
+  	-moz-box-sizing:border-box;
+  	-webkit-box-sizing:border-box;
+  	color: #fff;
+  	text-decoration: none;
+  	text-transform: uppercase;
+	letter-spacing: 0.2rem;
+	}
+body#cex_page #share p.sharelink a:hover {
+	background: #fff000;
+	color: #000;
+	}
+body#cex_page #share p.info {
+	width: 20%;
+	float: right;
+	font-size: 13px;
+	}
+ 	
+body#cex_page #citizenship {
+	background: #00dcdc;
+	}
+body#cex_page #citizenship h2,
+body#cex_page #citizenship p {
+	color: #000;
+	}
+	
+body#cex_page #about {
+	background: #fff;
+	}
+body#cex_page #about h2,
+body#cex_page #about p {
+	color: #000;
+	}
+body#cex_page #about p {
+	font-size: 20px;
+	}
+body#cex_page #about #left {
+	width: 45%;
+	float: left;
+	}
+body#cex_page #about #left {
+	width: 45%;
+	float: right;
+	}
+	
+body#cex_page #footer {
+	background: #000;
+	}
+#footer .credits {
+	float: left;
+	}
+#footer .nav {
+	float: right;
+	}
+#footer .nav ul {
+	list-style: none;
+	text-align: right;	
+	}
+#footer .nav ul li {
+	display: inline;
+	font-size: 16px;
+	margin-left: 20px;
+	text-transform: uppercase;
+	}
+#footer h3.logo {
+	text-indent: -9999999px;
+	background: transparent url(../i/logo-small-white.svg) 0 0 no-repeat;
+	width: 433px;
+	height: 32px;
+	background-size: auto 32px;
+	}
+#footer p {
+	font-size: 20px;
+	}
+#footer p.nospace {
+	margin-bottom: 0;
+	}
+#footer a {
+	color: #fff;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	}
+#footer a:hover {
+	color: #fff000;
+	border-bottom: 1px solid #fff000;
+	}
+#footer p.nospace {
+	margin-bottom: 0;
+	}
 /* required styles */
 
 .leaflet-map-pane,

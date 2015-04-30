@@ -30,7 +30,7 @@
 				<key>Identifier</key>
 				<string>toggle</string>
 				<key>Image</key>
-				<string>icon16.png</string>
+				<string>icon64-complete.png</string>
 				<key>Label</key>
 				<string>Toggle</string>
 				<key>Tool Tip</key>
