@@ -64,6 +64,7 @@ body#cex_page #toggles p {
 	}
 body#cex_page #toggles ul {
 	list-style: none;
+	padding: 0;
 	}
 body#cex_page #toggles ul li {
 	line-height: 1.33;
@@ -100,6 +101,7 @@ body#cex_page #tables #sites {
 body#cex_page #tables table {
 	width: 100%;
     table-layout: fixed;
+	border-collapse: collapse;
 	}
 body#cex_page #tables table .thead {
 	font-weight: bold;
@@ -116,10 +118,9 @@ body#cex_page #tables table tr:first-child td {
 body#cex_page #tables table td {
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
-	font-size: 14px;
+	font-size: 20px;
 	padding: 6px 0;
 	border: none;
-	display: table-cell;
 	}
 .body#cex_page #tables table td.first {
 	text-align: left;
