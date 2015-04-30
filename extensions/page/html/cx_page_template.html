@@ -21,9 +21,113 @@
         	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>" name="week">This week</a></li>
         	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>" name="day">Today</a></li>
         </ul>
-	</div>
-
+	</div><!-- toggles -->
 	
+	<div id="badge">
+
+		<canvas id="cex_badge_canvas"></canvas>
+	
+		<script type="text/javascript">
+				var percents = [
+      			<% _.each(timeframeCitizenship, function(country) { %>
+          			["<%= country.code %>","<%= country.percentage %>"],
+      				<% }); %>];
+					// set canvas to css heights
+				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
+				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
+
+				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
+
+				// circle centre and radius
+				var x0 = $('#cex_badge_canvas').attr('width')/2;
+				var y0 = $('#cex_badge_canvas').attr('height')/2;
+				var r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);
+
+				var circlepointer = 0;
+
+				$.each(percents, function() {
+					var country = this[0];
+					var value = this[1];
+					var degrees = 360*(value/100);
+					drawSegment(badge,x0,y0,r,circlepointer,country,degrees);
+					circlepointer = circlepointer + degrees;
+					});
+
+				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
+					var img = new Image();
+					img.onload = function() {
+						var flagscaledheight = badge.canvas.clientHeight;
+						var flagscaledwidth = flagscaledheight*(img.width/img.height);
+						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
+						var svgCanvas = document.createElement("canvas");
+				    	svgCanvas.height = flagscaledheight;
+				    	svgCanvas.width = flagscaledwidth;
+				    	var svgCtx = svgCanvas.getContext("2d");
+				    	svgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);
+				    	var pattern = badge.createPattern(svgCanvas, 'repeat');
+				    	badge.fillStyle = pattern;
+						badge.beginPath();
+						badge.moveTo(x0, y0);
+						var xy = circleCoords(x0,y0,r,circlepointer);
+						badge.lineTo(xy[0],xy[1]);
+						for (i = 0; i < degrees; i=i+20) {
+							xy = circleCoords(x0,y0,r,circlepointer+i);
+							badge.lineTo(xy[0],xy[1]);
+							}
+						xy = circleCoords(x0,y0,r,circlepointer+degrees);
+						badge.lineTo(xy[0],xy[1]);
+						badge.closePath();
+						badge.lineWidth=1;
+						badge.strokeStyle="#888";
+						badge.stroke();
+						badge.fill();
+				      	};
+                      if (!_.isUndefined(window.chrome)) {
+                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      } else if (safari) {
+                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';
+                      }
+					}
+
+				function circleCoords(x0,y0,r,theta) {
+					var x = x0 + r * Math.cos(theta * Math.PI / 180);
+					var y = y0 + r * Math.sin(theta * Math.PI / 180);
+					return [x,y];
+					}
+
+			</script>
+	</div><!-- badge -->	
+	
+	<div id="your_distribution">
+	
+	
+	</div><!-- your_distribution -->
+		<table>
+		<tr>
+			<td class="thead country">Your Distribution</td>
+			<td class="thead percentage">%</td>
+		</tr>
+		<% _.each(timeframeCitizenship, function(country) { %>
+			<tr>
+				<td class="country"><%= cxPage.convertCountryCode(country.code) %></td>
+				<td class="percentage"><%= country.percentage %><</td>
+			</tr>
+		<% }); %>
+		</table>	
+	<div id="most_visited_sites">
+		<table>
+		<tr>
+			<td class="thead domain">Most Visited Sites</td>
+			<td class="thead country">Country</td>
+		</tr>
+		<% _.each(timeframeDomains, function(entry) { %>
+			<tr>
+				<td class="domain"><%= entry.code %></td>
+				<td class="country"><%= entry.percentage %></td>
+			</tr>
+		<% }); %>
+		</table>
+	</div><!-- most_visited_sites -->
 
       Timeframe:
       <%= timeframe.name %>
@@ -49,6 +153,7 @@
       Timeframe domains
       <br>
       <% _.each(timeframeDomains, function(entry) { %>
+      	<% console.log(timeframeDomains); %>
         <%= entry.code %> | <%= entry.percentage %>
       <% }); %>
 

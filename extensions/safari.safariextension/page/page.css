@@ -7,7 +7,7 @@
  *
  */
 
-body {
+body#cex_page {
 	background: #666;
 	color: #fff;
 	-webkit-text-rendering: optimizeLegibility;
@@ -22,17 +22,17 @@ body {
 	letter-spacing: 0.15rem;
 	}
 
-#container {
+body#cex_page #container {
 	margin: 0 50px;
 	}
 
-#header {
+body#cex_page #header {
 	margin: 25px 0 50px;
 	}
-#header p.homepage {
+body#cex_page #header p.homepage {
 	float: right;
 	}
-#header p.homepage a {
+body#cex_page #header p.homepage a {
 	color: #fff;
 	text-decoration: none;
 	border-bottom: 1px solid transparent;
@@ -40,36 +40,39 @@ body {
 	font-size: 16px;
 	letter-spacing: 0.2rem;
 	}
-#header p.homepage a:hover {
+body#cex_page #header p.homepage a:hover {
 	color: #fff000;
 	border-bottom: 1px solid #fff000;
 	}
 
-#toggles p {
+body#cex_page #toggles p {
 	font-size: 30px;
 	line-height: 1.33;
 	margin-bottom: 20px;
 	color: #fff;
 	}
-#toggles ul {
+body#cex_page #toggles ul {
 	list-style: none;
 	}
-#toggles ul li {
+body#cex_page #toggles ul li {
 	line-height: 1.33;
 	}
-#toggles ul li a {
+body#cex_page #toggles ul li a {
 	font-size: 30px;
 	color: #b3b3b3;
 	text-decoration: none;
 	}
-#toggles ul li a:hover {
+body#cex_page #toggles ul li a:hover {
 	color: #fff;
 	}
-#toggles ul li a.selected {
+body#cex_page #toggles ul li a.selected {
 	color: #fff;
 	}
 
-
+body#cex_page canvas#cex_badge_canvas {
+	width: 550px;
+	height: 550px;
+	}
 /* required styles */
 
 .leaflet-map-pane,

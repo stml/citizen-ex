@@ -60,3 +60,7 @@ body#cex_page #toggles ul li a.selected {
 	color: #fff;
 	}
 
+body#cex_page canvas#cex_badge_canvas {
+	width: 550px;
+	height: 550px;
+	}
