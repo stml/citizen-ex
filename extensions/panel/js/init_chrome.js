@@ -1,4 +1,4 @@
-// templates/js/init_chrome.js
+// panel/js/init_chrome.js
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   if (_.has(request, 'tabs')) {
@@ -15,4 +15,4 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 cxPanel = new CxPanel(browser);
-cxPanelView = new CxPanelView({ model: cxPanel, template: paneTemplate });
+cxPanelView = new CxPanelView({ model: cxPanel, template: panelTemplate });

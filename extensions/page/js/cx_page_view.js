@@ -1,3 +1,5 @@
+// page/js/cx_page_view.js
+
 var CxPageView = Backbone.View.extend({
   tagName: 'div',
 

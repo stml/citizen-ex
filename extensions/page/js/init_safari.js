@@ -1,3 +1,5 @@
+// page/js/init_safari.js
+
 safari.self.addEventListener('message', function(message) {
 
   if (message.name === 'tabs') {

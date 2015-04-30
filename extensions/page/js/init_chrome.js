@@ -1,4 +1,4 @@
-// options/js/init_chrome.js
+// page/js/init_chrome.js
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.tabs) {

@@ -1,4 +1,4 @@
-// templates/js/init_safari.js
+// panel/js/init_safari.js
 
 var cxPanel = false;
 
@@ -21,7 +21,7 @@ safari.self.addEventListener('message', function(message) {
   }
 
   cxPanel = new CxPanel(browser);
-  cxPanelView = new CxPanelView({ model: cxPanel, template: paneTemplate });
+  cxPanelView = new CxPanelView({ model: cxPanel, template: panelTemplate });
 
   // we fetch the last record again
   // as some of its request should have come back by now

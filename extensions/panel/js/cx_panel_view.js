@@ -1,3 +1,5 @@
+// panel/js/cx_panel_view.js
+
 var CxPanelView = Backbone.View.extend({
   tagName: 'div',
 

@@ -7,7 +7,7 @@
  *
  */
 
-var Browser = function() {
+var CxBrowser = function() {
   this.name = 'unknown';
   var notChrome = _.isUndefined(window.chrome);
   if (!notChrome) {
@@ -17,11 +17,11 @@ var Browser = function() {
   }
 };
 
-Browser.prototype.chrome = function() {
+CxBrowser.prototype.chrome = function() {
   return this.name === 'chrome';
 };
 
-Browser.prototype.safari = function() {
+CxBrowser.prototype.safari = function() {
   return this.name === 'safari';
 };
 
@@ -450,7 +450,7 @@ CountryLog.prototype.recoverFromStorage = function() {
   }, this));
 };
 
-var browser = new Browser();
+var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);

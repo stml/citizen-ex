@@ -11,8 +11,8 @@ safari.application.addEventListener('activate', function(stuff) {
 }, true);
 
 safari.application.addEventListener('command', function(command) {
-  if (command.command === 'openSidebar') {
-    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('openSidebar');
+  if (command.command === 'openCxPanel') {
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('openCxPanel');
   }
 }, false);
 

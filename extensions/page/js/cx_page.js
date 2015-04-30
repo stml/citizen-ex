@@ -1,3 +1,5 @@
+// page/js/cx_page.js
+
 var CxPage = CxExtension.extend({
   initialize: function(browser, timeframes) {
     CxExtension.prototype.initialize.apply(this, browser);

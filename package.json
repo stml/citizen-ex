@@ -9,7 +9,8 @@
     "gulp-include-file": "^0.1.0"
   },
   "devDependencies": {
-    "gulp": "^3.8.11"
+    "gulp": "^3.8.11",
+    "gulp-rename": "^1.2.2"
   },
   "repository": {
     "type": "git",

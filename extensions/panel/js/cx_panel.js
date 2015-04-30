@@ -1,3 +1,5 @@
+// panel/js/cx_panel.js
+
 var CxPanel = CxExtension.extend({
   initialize: function(browser) {
     CxExtension.prototype.initialize.apply(this, browser);

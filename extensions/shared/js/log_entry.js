@@ -1,3 +1,5 @@
+// shared/js/log_entry.js
+
 var LogEntry = function() {};
 
 LogEntry.prototype.fromJSON = function(json) {

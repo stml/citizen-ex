@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Author</key>
-	<string>James Bridle and Nat Buckley</string>
+    <string>James Bridle</string>
 	<key>Builder Version</key>
 	<string>10600.4.10.7</string>
 	<key>CFBundleDisplayName</key>
@@ -21,12 +21,12 @@
 		<key>Database Quota</key>
 		<real>52428800</real>
 		<key>Global Page</key>
-		<string>global.html</string>
+		<string>background.html</string>
 		<key>Toolbar Items</key>
 		<array>
 			<dict>
 				<key>Command</key>
-				<string>openSidebar</string>
+				<string>openCxPanel</string>
 				<key>Identifier</key>
 				<string>toggle</string>
 				<key>Image</key>
@@ -48,13 +48,13 @@
 				<string>lib/underscore.js</string>
 				<string>lib/jquery.js</string>
 				<string>lib/backbone.js</string>
-				<string>injected/setup.js</string>
 				<string>lib/mapbox.js</string>
+				<string>panel/setup.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>
 		<array>
-			<string>injected/browserAction.css</string>
+			<string>panel/panel.css</string>
 		</array>
 	</dict>
 	<key>DeveloperIdentifier</key>
