@@ -14,6 +14,7 @@ var CxPageView = Backbone.View.extend({
     this.name = options.name;
     this.template = _.template(options.template);
     this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'change:logEntries', this.triggerTimeframe);
 
     this.appendToBody();
     this.render();
@@ -31,6 +32,10 @@ var CxPageView = Backbone.View.extend({
   toggleTimeframe: function(event) {
     event.preventDefault();
     this.model.toggleTimeframe(event.target.name);
+  },
+
+  triggerTimeframe: function() {
+    this.model.toggleTimeframe(this.model.get('timeframe').name);
   },
 
   eraseData: function(event) {
