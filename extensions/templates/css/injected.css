@@ -80,6 +80,12 @@
 	font-weight: bold !important;
 	display: inline-block !important;
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
+	width: 107px !important;
+	height: 24px !important;
+	min-width: 107px !important;
+	min-height: 24px !important;
+	max-width: 107px !important;
+	max-height: 24px !important;
 	}
 .citizen-ex__pane #cex_hud #cex_header a {
 	color: #fff !important;
@@ -97,6 +103,12 @@
 .citizen-ex__pane #cex_hud #cex_header #cex_close {
 	float: right;
 	margin-right: 60px !important;
+	width: 24px !important;
+	height: 24px !important;
+	min-width: 24px !important;
+	min-height: 24px !important;
+	max-width: 24px !important;
+	max-height: 24px !important;
 	}
 .citizen-ex__pane #cex_hud #cex_header a.cex_more:hover {
 	text-decoration: underline !important;
@@ -176,6 +188,11 @@
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
 	float: right !important;
 	width: 250px !important;
+	}
+.citizen-ex__pane table,
+.citizen-ex__pane table tr,
+.citizen-ex__pane table td {
+	background: transparent !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table {
 	width: 100% !important;
