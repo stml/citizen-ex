@@ -1,36 +1,36 @@
 // templates/js/init_safari.js
 
-var sidebar = false;
+var cxPanel = false;
 
 safari.self.addEventListener('message', function(message) {
 
   if (message.name === 'tabs') {
-    sidebar.updateTabs(message.message.tabs);
+    cxPanel.receiveOpenTabs(message.message.tabs);
   } else if (message.name === 'activeTab') {
-    sidebar.receiveActiveTab(message.message.activeTab);
+    cxPanel.receiveActiveTab(message.message.activeTab);
   } else if (message.name === 'allLogEntries') {
-    sidebar.receiveAllLogEntries(message.message.allLogEntries);
+    cxPanel.receiveAllLogEntries(message.message.allLogEntries);
   } else if (message.name === 'countryLog') {
-    sidebar.receiveCitizenship(message.message.countryLog);
+    cxPanel.receiveCitizenship(message.message.countryLog);
   } else if (message.name === 'ownGeoData') {
-    sidebar.receiveOwnGeoData(message.message.ownGeoData);
+    cxPanel.receiveOwnGeoData(message.message.ownGeoData);
   }
 
-  if (sidebar) {
+  if (cxPanel) {
     return;
   }
 
-  sidebar = new Sidebar(browser);
-  new SidebarPane({ model: sidebar, template: paneTemplate });
+  cxPanel = new CxPanel(browser);
+  cxPanelView = new CxPanelView({ model: cxPanel, template: paneTemplate });
 
   // we fetch the last record again
   // as some of its request should have come back by now
-  sidebar.getLogEntryForTab();
+  cxPanel.requestActiveTab();
 
-  // we toggle the main sidebar pane visibility
-  if (message.name === 'openSidebar') {
-    sidebar.toggle();
-    sidebar.requestOpenTabs();
+  // we toggle the main cxPane pane visibility
+  if (message.name === 'openCxPanel') {
+    cxPanel.toggle();
+    cxPanel.requestOpenTabs();
   }
 
 }, false);

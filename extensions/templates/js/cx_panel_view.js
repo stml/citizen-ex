@@ -1,4 +1,4 @@
-var SidebarPane = Backbone.View.extend({
+var CxPanelView = Backbone.View.extend({
   tagName: 'div',
 
   className: 'citizen-ex__pane',
@@ -12,13 +12,10 @@ var SidebarPane = Backbone.View.extend({
     this.template = _.template(options.template);
 
     this.listenTo(this.model, 'change:open', this.render);
-    this.listenTo(this.model, 'change:entry', function() {
-      this.model.setUpCitizenship();
-      this.render();
-    });
+    this.listenTo(this.model, 'change:currentEntry', this.render);
     this.listenTo(this.model, 'change:citizenship', this.render);
     this.listenTo(this.model, 'change:ownGeoData', this.render);
-    this.listenTo(this.model, 'change:tabEntries', this.render);
+    this.listenTo(this.model, 'change:openTabsEntries', this.render);
     this.listenTo(this.model, 'change:openTabsCitizenship', this.render);
 
     this.appendToBody();

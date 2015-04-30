@@ -2,17 +2,17 @@
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   if (_.has(request, 'tabs')) {
-    sidebar.updateTabs(request.tabs);
+    cxPanel.receiveOpenTabs(request.tabs);
   } else if (_.has(request, 'activeTab'))  {
-    sidebar.receiveActiveTab(request.activeTab);
+    cxPanel.receiveActiveTab(request.activeTab);
   } else if (request.allLogEntries) {
-    sidebar.receiveAllLogEntries(request.allLogEntries);
+    cxPanel.receiveAllLogEntries(request.allLogEntries);
   } else if (request.countryLog) {
-    sidebar.receiveCitizenship(request.countryLog);
+    cxPanel.receiveCitizenship(request.countryLog);
   } else if (_.has(request, 'ownGeoData')) {
-    sidebar.receiveOwnGeoData(request.ownGeoData);
+    cxPanel.receiveOwnGeoData(request.ownGeoData);
   }
 });
 
-sidebar = new Sidebar(browser);
-new SidebarPane({ model: sidebar, template: paneTemplate });
+cxPanel = new CxPanel(browser);
+cxPanelView = new CxPanelView({ model: cxPanel, template: paneTemplate });

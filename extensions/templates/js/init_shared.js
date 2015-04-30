@@ -6,3 +6,5 @@ var browser = new Browser();
 var storage = new CxStorage(browser);
 var message = new CxMessage(browser);
 
+var cxPane;
+var cxPaneView;
