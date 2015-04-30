@@ -19,13 +19,13 @@ var CxExtension = Backbone.Model.extend({
     message.send({ allLogEntries: true });
   },
 
-  requestOwnGeodata: function() {
+  requestOwnGeoData: function() {
     message.send({ ownGeoData: true });
   },
 
   receiveCitizenship: function(countryLog) {
     var countryCodes = _.pick(countryLog.visits, _.identity);
-    var citizenship = this.calculateCitizenship(countryCodes);
+    var citizenship = this.calculatePercentages(countryCodes);
     this.set({ citizenship: citizenship });
   },
 

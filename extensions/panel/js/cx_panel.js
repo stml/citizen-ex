@@ -76,7 +76,7 @@ var CxPanel = CxExtension.extend({
     } else {
       this.open();
     }
-  }
+  },
 
   resetValues: function() {
     this.set({ open: false });

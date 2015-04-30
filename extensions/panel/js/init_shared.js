@@ -2,7 +2,7 @@
 
 var panelTemplate = INCLUDE_FILE('../html/cx_panel.html');
 
-var browser = new Browser();
+var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var message = new CxMessage(browser);
 
