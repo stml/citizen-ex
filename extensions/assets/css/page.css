@@ -35,7 +35,18 @@ body#cex_page #header p.homepage a:hover {
 	color: #fff000;
 	border-bottom: 1px solid #fff000;
 	}
+	
+body#cex_page .section {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+	margin-bottom: 50px;
+	}	
 
+body#cex_page #toggles {
+	width: 25%;
+	float: left;
+	}
 body#cex_page #toggles p {
 	font-size: 30px;
 	line-height: 1.33;
@@ -60,7 +71,51 @@ body#cex_page #toggles ul li a.selected {
 	color: #fff;
 	}
 
+body#cex_page badge {	
+	float: left;
+	width: 50%;
+	}
 body#cex_page canvas#cex_badge_canvas {
 	width: 550px;
 	height: 550px;
+	}
+
+body#cex_page #tables #distribution {
+	float: left;
+	width: 45%;
+	}	
+body#cex_page #tables #sites {
+	float: right;
+	width: 45%;
+	}
+body#cex_page #tables table {
+	width: 100%;
+    table-layout: fixed;
+	}
+body#cex_page #tables table .thead {
+	font-weight: bold;
+	}
+body#cex_page #tables table tr {
+	border-top: 1px solid #fff;
+	}
+body#cex_page #tables table tr:first-child {
+	border-top: none;
+	}
+body#cex_page #tables table tr:first-child td {
+	padding: 0 0 6px;
+	}
+body#cex_page #tables table td {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	color: #fff;
+	font-size: 20px;
+	padding: 6px 0;
+	border: none;
+	display: table-cell;
+	}
+.body#cex_page #tables table td.first {
+	text-align: left;
+	}
+body#cex_page #tables table td.second {
+	text-align: right;
+	padding-left: 20px;
 	}

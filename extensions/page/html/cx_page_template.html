@@ -11,7 +11,9 @@
               $('#header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             }
 		</script>
-	</div>
+	</div><!-- header -->
+	
+	<div id="badge" class="section">
 
 	<div id="toggles">
 		<p>This is your Algorithmic Citizenship for:</p>
@@ -22,8 +24,6 @@
         	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>" name="day">Today</a></li>
         </ul>
 	</div><!-- toggles -->
-	
-	<div id="badge">
 
 		<canvas id="cex_badge_canvas"></canvas>
 	
@@ -96,38 +96,40 @@
 					}
 
 			</script>
-	</div><!-- badge -->	
-	
-	<div id="your_distribution">
-	
-	
-	</div><!-- your_distribution -->
-		<table>
-		<tr>
-			<td class="thead country">Your Distribution</td>
-			<td class="thead percentage">%</td>
-		</tr>
-		<% _.each(timeframeCitizenship, function(country) { %>
+	</div><!-- badge -->
+
+	<div id="tables" class="section">	
+		<div id="distribution">
+			<table>
 			<tr>
-				<td class="country"><%= cxPage.convertCountryCode(country.code) %></td>
-				<td class="percentage"><%= country.percentage %></td>
+				<td class="thead first">Your Distribution</td>
+				<td class="thead second">%</td>
 			</tr>
-		<% }); %>
-		</table>	
-	<div id="most_visited_sites">
-		<table>
-		<tr>
-			<td class="thead domain">Most Visited Sites</td>
-			<td class="thead country">Country</td>
-		</tr>
-		<% _.each(timeframeDomains, function(entry) { %>
+			<% _.each(timeframeCitizenship, function(country) { %>
+				<tr>
+					<td class="first"><%= cxPage.convertCountryCode(country.code) %></td>
+					<td class="second"><%= country.percentage %></td>
+				</tr>
+			<% }); %>
+			</table>	
+	</div><!-- distribution -->
+			
+			
+		<div id="sites">
+			<table>
 			<tr>
-				<td class="domain"><%= entry.code %></td>
-				<td class="country"><%= entry.percentage %></td>
+				<td class="thead first">Most Visited Sites</td>
+				<td class="thead second">Country</td>
 			</tr>
-		<% }); %>
-		</table>
-	</div><!-- most_visited_sites -->
+			<% _.each(timeframeDomains, function(entry) { %>
+				<tr>
+					<td class="first"><%= entry.code %></td>
+					<td class="second"><%= entry.percentage %></td>
+				</tr>
+			<% }); %>
+			</table>
+		</div><!-- sites -->
+	</div><!-- tables -->
 
 <!--
       Timeframe:
@@ -154,7 +156,6 @@
       Timeframe domains
       <br>
       <% _.each(timeframeDomains, function(entry) { %>
-      	<% console.log(timeframeDomains); %>
         <%= entry.code %> | <%= entry.percentage %>
       <% }); %>
 -->
