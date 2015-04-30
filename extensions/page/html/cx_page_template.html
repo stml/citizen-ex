@@ -110,7 +110,7 @@
 		<% _.each(timeframeCitizenship, function(country) { %>
 			<tr>
 				<td class="country"><%= cxPage.convertCountryCode(country.code) %></td>
-				<td class="percentage"><%= country.percentage %><</td>
+				<td class="percentage"><%= country.percentage %></td>
 			</tr>
 		<% }); %>
 		</table>	
@@ -129,6 +129,7 @@
 		</table>
 	</div><!-- most_visited_sites -->
 
+<!--
       Timeframe:
       <%= timeframe.name %>
       <br>
@@ -156,6 +157,7 @@
       	<% console.log(timeframeDomains); %>
         <%= entry.code %> | <%= entry.percentage %>
       <% }); %>
+-->
 
 	</div><!-- #cex_main -->
 
