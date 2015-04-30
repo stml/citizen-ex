@@ -1,10 +1,10 @@
 // options/init_shared.js
 
-var browser = new Browser();
+var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var message = new CxMessage(browser);
 
-var optionsTemplate = INCLUDE_FILE('../../templates/html/options_template.html');
+var cxPageTemplate = INCLUDE_FILE('../../templates/html/cx_page_template.html');
 
 var Timeframe = function(name, duration) {
   this.name = name;
@@ -18,10 +18,5 @@ var timeframes = [
   new Timeframe('day', 1)
 ];
 
-var options = new Options(browser, timeframes);
-var optionsPage = new OptionsPage({ model: options, template: optionsTemplate });
-
-
-console.log(options);
-
-
+var cxPage = new cxPage(browser, timeframes);
+var cxPageView = new CxPageView({ model: cxPage, template: cxPageTemplate });

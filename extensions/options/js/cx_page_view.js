@@ -1,4 +1,4 @@
-var OptionsPage = Backbone.View.extend({
+var CxPageView = Backbone.View.extend({
   tagName: 'div',
 
   className: 'citizen-ex__pane open',

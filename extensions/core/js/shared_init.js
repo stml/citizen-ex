@@ -1,4 +1,4 @@
-var browser = new Browser();
+var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);

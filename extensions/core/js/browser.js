@@ -1,4 +1,4 @@
-var Browser = function() {
+var CxBrowser = function() {
   this.name = 'unknown';
   var notChrome = _.isUndefined(window.chrome);
   if (!notChrome) {
@@ -8,10 +8,10 @@ var Browser = function() {
   }
 };
 
-Browser.prototype.chrome = function() {
+CxBrowser.prototype.chrome = function() {
   return this.name === 'chrome';
 };
 
-Browser.prototype.safari = function() {
+CxBrowser.prototype.safari = function() {
   return this.name === 'safari';
 };

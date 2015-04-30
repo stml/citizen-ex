@@ -2,12 +2,11 @@ var CxExtension = Backbone.Model.extend({
   initialize: function(browser, timeframes) {
     this.browser = browser;
     this.timeframes = timeframes;
+
     this.resetValues();
     this.requestOwnGeoData();
     this.requestLogEntries();
-    // this.getLogEntryForTab();
     this.requestCitizenship();
-    // this.requestOpenTabs();
   },
 
   requestCitizenship: function() {
@@ -20,10 +19,6 @@ var CxExtension = Backbone.Model.extend({
 
   requestOwnGeodata: function() {
     message.send({ ownGeoData: true });
-  },
-
-  requestOpenTabs: function() {
-    message.send({ allTabs: true });
   },
 
   receiveCitizenship: function(countryLog) {
@@ -49,12 +44,7 @@ var CxExtension = Backbone.Model.extend({
     this.set({ ownGeoData: ownGeoData });
   },
 
-  receiveOpenTabs: function(urls) {
-    this.set({ openTabs: urls });
-    this.getOpenTabEntries();
-  },
-
-  getLogEntry: function(url) {
+  getLogEntryForUrl: function(url) {
     var logEntries = this.get('logEntries');
 
     if (!logEntries) {
@@ -68,37 +58,6 @@ var CxExtension = Backbone.Model.extend({
       return _.max(entry.timestamps);
     });
     return latestEntry;
-  },
-
-  getCitizenshipForDays: function(n) {
-    if (n === null) {
-      return this.get('citizenship');
-    }
-    var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getPropertiesFromEntries(entries, 'countryCode');
-    var citizenship = this.calculatePercentages(countryCodes);
-    return citizenship;
-  },
-
-  getDomainsForDays: function(n) {
-    var entries = this.getTabEntriesForDays(n);
-    var domains = this.getPropertiesFromEntries(entries, 'domain');
-    var domainPopularity = this.calculatePercentages(domains);
-    return domainPopularity;
-  },
-
-  getTabEntriesForDays: function(n) {
-    if (n === null) {
-      return this.get('logEntries');
-    }
-
-    var entries = this.get('logEntries');
-    var cutOffDate = moment().subtract(n, 'days').valueOf();
-
-    var latestEntries = _.filter(entries, function(entry) {
-      return entry.latestTimestamp() <= cutOffDate;
-    });
-    return latestEntries;
   },
 
   calculatePercentages: function(data) {
@@ -124,68 +83,11 @@ var CxExtension = Backbone.Model.extend({
     return countryCodes;
   },
 
-  getOpenTabEntries: function() {
-    var tabs = this.get('openTabs');
-
-    if (!_.isEmpty(tabs)) {
-      var entries = [];
-      _.each(tabs, _.bind(function(tabUrl) {
-        var logEntry = this.getLogEntry(tabUrl);
-        if (logEntry && logEntry !== -Infinity) {
-          entries.push(logEntry);
-        }
-      }, this));
-      this.set({ openTabEntries: entries });
-      this.setUpOpenTabsCitizenship();
-    } else {
-      this.set({ openTabEntries: [] });
-    }
-  },
-
-  setUpOpenTabsCitizenship: function() {
-    var tabEntries = this.get('openTabEntries');
-    var validEntries = _.reject(tabEntries, function(entry) {
-      return entry.countryCode === undefined || entry.countryCode === '';
-    });
-    var countryCodes = _.countBy(validEntries, function(entry) {
-      return entry.countryCode;
-    });
-    var openTabsCitizenship = this.calculateCitizenship(countryCodes);
-    this.set({ openTabsCitizenship: openTabsCitizenship });
-  },
-
-  toggleTimeframe: function(name) {
-    var timeframe = _.find(this.timeframes, function(tf) {
-      return tf.name === name;
-    });
-
-    var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
-    var domains = this.getDomainsForDays(this.get('timeframe').duration);
-    var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
-    this.set({
-      timeframeCitizenship: citizenship,
-      timeframeEntries: entries,
-      timeframeDomains: domains,
-      timeframe: timeframe
-    });
-  },
 
   resetValues: function() {
-    this.set({ open: false });
-    // this.set({ citizenship: [] });
-    // this.set({ tabEntries: [] });
-    this.set({ ownGeoData: '' });
-    // this.set({ entry: '' });
     this.unset('logEntries');
-    // this.unset('tabs');
-  },
-
-  open: function() {
-    this.set({ open: true });
-  },
-
-  close: function() {
-    this.set({ open: false });
+    this.set({ citizenship: [] });
+    this.set({ ownGeoData: '' });
   },
 
   eraseData: function() {
