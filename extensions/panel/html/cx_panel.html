@@ -153,7 +153,7 @@
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window', { zoomControl:false });
 			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://openstreetmap.org/copyright">Map data: © OpenStreetMap</a>'}).addTo(cexmap);
+				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
 			cextilelayer.on('tileerror', function(error, tile) {
 			    console.log(error);
 			    console.log(tile);

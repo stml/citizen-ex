@@ -129,37 +129,40 @@
 			<% }); %>
 			</table>
 		</div><!-- sites -->
-	</div><!-- tables -->
+	</div><!-- #tables .section -->
+	
+	<div id="map" class="section">
+		<h2>Your Map</h2>
+		<div id="cex_map">
+			<img id="cex_map_loading" src="" alt="Loading"/>
+			<!-- Add mapbox watermark -->
+  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
+  		</div>
+  		
+  		<script type="text/javascript">
+	    if (!_.isUndefined(window.chrome)) {
+	          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+	        } else if (safari) {
+	          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+	        }
+	  	setTimeout(function(){ cex_drawMap(); }, 1000);
+	  	function cex_drawMap() {
+			var cexmap = L.map('cex_map', { zoomControl:false });
+			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
+				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
+			cextilelayer.on('tileerror', function(error, tile) {
+			    console.log(error);
+			    console.log(tile);
+				});
+			cexmap.attributionControl.setPrefix("");
+            cexmap.setView([0,0],2);
+		    // kill loading circle
+		    $('img#cex_map_loading').hide();
+		    }
 
-<!--
-      Timeframe:
-      <%= timeframe.name %>
-      <br>
-      Timeframe duration:
-      <%= timeframe.duration %>
-      <br>
-      Timeframe citizenship
-      <br>
-      <% _.each(timeframeCitizenship, function(country) { %>
-          <tr>
-              <td class="cex_country"><%= cxPage.convertCountryCode(country.code) %></td>
-              <td class="cex_percentage"><%= country.percentage %></td>
-          </tr>
-      <% }); %>
-      <br>
-      Timeframe entries
-      <br>
-      <% _.each(timeframeEntries, function(entry) { %>
-        <%= entry.url %>
-      <% }); %>
-      <br>
-      Timeframe domains
-      <br>
-      <% _.each(timeframeDomains, function(entry) { %>
-        <%= entry.code %> | <%= entry.percentage %>
-      <% }); %>
--->
+	  	</script>
+  		
+  		
+	</div>
 
-	</div><!-- #cex_main -->
-
-</div>
+</div><!-- container -->
