@@ -204,7 +204,7 @@
 				<% if (ownGeoData.ownLat) { %>
 					// if we have city-level data
 					<% if (ownGeoData.ownCity.length > 0) { %>
-						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
+						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon, clickable: false}).addTo(cexmap);
 						cexmarkergroup.addLayer(origMarker);
 					<% } else { %>
 						var isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
@@ -213,10 +213,9 @@
 						} else if (safari) {
 	                        var origOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
 	                    }
-	                	var geojsonLayer = new L.GeoJSON.AJAX(origOutline,dataType:"jsonp"})
-	                	geojsonLayer.addStyle({"color": "#00dcdc","weight": 1,"opacity": 0.5}).addTo(cexmap);
+	                	var geojsonLayer = new L.GeoJSON.AJAX(origOutline,{"color": "#00dcdc","weight": 1,"opacity": 1,"fillOpacity":0.25});
+	                	geojsonLayer.setStyle({"color": "#00dcdc","weight": 1,"opacity": 1,"fillOpacity":0.5});
 						cexmarkergroup.addLayer(geojsonLayer);
-						cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 7});
 					<% } %>
 				<% } %>
 
@@ -224,7 +223,8 @@
 				<% if (currentEntry.lat) { %>
 					// if we have city-level data
 					<% if (currentEntry.city.length > 0) { %>
-						var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
+						var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon, clickable: false}).addTo(cexmap);
+						cexmarkergroup.addLayer(destMarker);
 					<% } else { %>
 						var isocode = '<%= cxPanel.convertIsoCode(currentEntry.countryCode) %>';
 						if (!_.isUndefined(window.chrome)) {
@@ -232,7 +232,8 @@
 						} else if (safari) {
 	                        var destOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
 	                    }
-	                	var geojsonLayer = new L.GeoJSON.AJAX(destOutline,{"color": "#fff000","weight": 1,"opacity": 0.5},{dataType:"jsonp"}).addTo(cexmap);
+	                	var geojsonLayer = new L.GeoJSON.AJAX(destOutline,{"color": "#fff000","weight": 1,"opacity": 1,"fillOpacity": 0.25});
+	                	geojsonLayer.addTo(cexmap);
 						cexmarkergroup.addLayer(geojsonLayer);
 					<% } %>				
 				<% } %>
