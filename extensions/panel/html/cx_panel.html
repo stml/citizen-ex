@@ -161,14 +161,15 @@
 			cexmap.attributionControl.setPrefix("");
             var yellowMarker;
             var cyanMarker;
+            var tabMarker;
 
             if (!_.isUndefined(window.chrome)) {
-              cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');
-              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
+              cyanMarker = chrome.extension.getURL('images/map-pin-blue.png');
+              yellowMarker = chrome.extension.getURL('images/map-pin-yellow.png');
               tabMarker = chrome.extension.getURL('images/map-marker-tab.png');
             } else if (safari) {
-              cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';
-              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
+              cyanMarker = safari.extension.baseURI + 'images/map-pin-blue.png';
+              yellowMarker = safari.extension.baseURI + 'images/map-pin-yellow.png';
               tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';
             }
 
