@@ -10,52 +10,64 @@
 .citizen-ex__pane * {
 	background: transparent;
 	background-image: none;
-	border: none;
-	border-collapse: collapse;
-	box-sizing: content-box;
-	-webkit-box-sizing: content-box;
-	-moz-box-sizing: content-box;
-	box-shadow: none;
-	color: #000;
-	font-family: "Helvetica Neue", Arial, sans-serif;
-	font-size: 12px;
-	font-style: normal;
-	font-weight: normal;
-	font-stretch: normal;
-	font-variant: normal;
-	letter-spacing: normal;
-	line-height: 1;
-	list-style: none;
+	border: none !important;
+	border-collapse: collapse !important;
+	box-sizing: content-box !important;
+	-webkit-box-sizing: content-box !important;
+	-moz-box-sizing: content-box !important;
+	box-shadow: none !important;
+	color: #000 !important;
+	font-family: "Helvetica Neue", Arial, sans-serif !important;
+	font-size: 12px !important;
+	font-style: normal !important;
+	font-weight: normal !important;
+	font-stretch: normal !important;
+	font-variant: normal !important;
+	letter-spacing: normal !important;
+	line-height: 1 !important;
+	list-style: none !important;
 	margin: 0;
 	opacity: 1;
-	outline: none;
-	padding: 0;
+	outline: none !important;
+	padding: 0 !important;
 	position: static;
-	text-align: left;
-	text-decoration: none;
+	text-align: left !important;
+	text-decoration: none !important;
 	text-indent: 0;
-	text-shadow: none;
-	text-transform: none;
+	text-shadow: none !important;
+	text-transform: none !important;
 	visibility: visible;
-	white-space: normal;
-	-webkit-text-rendering: optimizeLegibility;
-	-moz-text-rendering: optimizeLegibility;
-	-ms-text-rendering: optimizeLegibility;
-	-o-text-rendering: optimizeLegibility;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	white-space: normal !important;
+	-webkit-text-rendering: optimizeLegibility !important;
+	-moz-text-rendering: optimizeLegibility !important;
+	-ms-text-rendering: optimizeLegibility !important;
+	-o-text-rendering: optimizeLegibility !important;
+	text-rendering: optimizeLegibility !important;
+	-webkit-font-smoothing: antialiased !important;
+	-moz-osx-font-smoothing: grayscale !important;
+	}
+	
+.citizen-ex__pane #cex_header *,
+.citizen-ex__pane #cex_badge *,
+.citizen-ex__pane #cex_mapdata * {
+	background: transparent !important;
+	background-image: none !important;	
+	margin: 0 !important;
+	opacity: 1 !important;
+	position: static !important;
+	text-indent: 0 !important;
+	visibility: visible !important;
 	}
 
 .citizen-ex__pane {
-	width: 100%;
-	position: fixed;
-	left: 0;
-	top: 0;
+	width: 100% !important;
+	position: fixed !important;
+	left: 0 !important;
+	top: 0 !important;
 	display: none;
-	z-index: 9999999;
-	color: #000;
-	opacity: 0.95;
+	z-index: 9999999 !important;
+	color: #000 !important;
+	opacity: 0.95 !important;
 	}
 
 .citizen-ex__pane.open {
@@ -162,39 +174,42 @@
 	margin-bottom: 25px !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_whatmeans {
-	border-bottom: 1px solid #fff !important;
-	padding-bottom: 6px !important;
-	margin-bottom: 6px !important;
+	margin-bottom: 12px !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_whatmeans a {
 	text-decoration: none !important;
 	display: block !important;
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	width: 100% !important;
-	font-size: 18px !important;
+	font-size: 14px !important;
 	color: #fff !important;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column ul#cex_sharebuttons {
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons {
 	width: 100% !important;
-	list-style: none !important;
 	margin: 0 !important;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column ul#cex_sharebuttons li {
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	color: #fff !important;
 	font-size: 14px !important;
-	padding: 6px 0 !important;
 	border: none !important;
-	display: inline !important;
+	line-height: 1.5;
+	margin-bottom: 10px !important;
 	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column ul#cex_sharebuttons li a {
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons a {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	color: #fff !important;
 	font-size: 14px !important;
-	padding: 6px 0 !important;
+	padding: 6px 0 3px !important;
+	box-sizing: border-box !important;
 	border: none !important;
 	display: inline !important;
 	text-decoration: none !important;
+	border-bottom: 2px solid #000 !important;
+	text-transform: uppercase !important;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons a:hover {
+	border-bottom: 2px solid #fff !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
 	float: right !important;
