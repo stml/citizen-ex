@@ -501,12 +501,15 @@ var CxPage = CxExtension.extend({
   },
 
   getTabEntriesForDays: function(n) {
+    var unit = 'days';
     if (n === null) {
       return this.get('logEntries');
+    } else if (n === 1) {
+      unit = 'day';
     }
 
     var entries = this.get('logEntries');
-    var cutOffDate = moment().subtract(n, 'days').valueOf();
+    var cutOffDate = moment().subtract(n, unit).valueOf();
 
     var latestEntries = _.filter(entries, function(entry) {
       return entry.latestTimestamp() <= cutOffDate;
@@ -519,9 +522,9 @@ var CxPage = CxExtension.extend({
       return tf.name === name;
     });
 
-    var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
-    var domains = this.getDomainsForDays(this.get('timeframe').duration);
-    var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
+    var entries = this.getTabEntriesForDays(timeframe.duration);
+    var domains = this.getDomainsForDays(timeframe.duration);
+    var citizenship = this.getCitizenshipForDays(timeframe.duration);
     this.set({
       timeframeCitizenship: citizenship,
       timeframeEntries: entries,
