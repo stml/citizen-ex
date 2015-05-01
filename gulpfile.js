@@ -4,7 +4,10 @@ var rename = require('gulp-rename');
 var include_file = require('gulp-include-file');
 
 var images = ['./extensions/assets/images/*.*'];
-var flags = ['./extensions/assets/flags/*.*'];
+var countriesjson = ['./extensions/assets/countriesjson/*.*'];
+
+var pngflags = ['./extensions/assets/flags/*.png'];
+var svgflags = ['./extensions/assets/flags/*.svg'];
 
 var page = ['./extensions/page/html/cx_page.html'];
 
@@ -108,8 +111,13 @@ gulp.task('chromeImages', function () {
 });
 
 gulp.task('chromeFlags', function () {
-  gulp.src(flags)
+  gulp.src(svgflags)
     .pipe(gulp.dest('./extensions/chrome/flags/'));
+});
+
+gulp.task('chromeCountriesjson', function () {
+  gulp.src(countriesjson)
+    .pipe(gulp.dest('./extensions/chrome/countriesjson/'));
 });
 
 gulp.task('chromePanel', function () {
@@ -165,8 +173,13 @@ gulp.task('safariImages', function () {
 });
 
 gulp.task('safariFlags', function () {
-  gulp.src(flags)
-    .pipe(gulp.dest('./extensions/chrome/flags/'));
+  gulp.src(pngflags)
+    .pipe(gulp.dest('./extensions/safari.safariextension/flags/'));
+});
+
+gulp.task('safariCountriesjson', function () {
+  gulp.src(countriesjson)
+    .pipe(gulp.dest('./extensions/safari.safariextension/countriesjson/'));
 });
 
 gulp.task('safariPanel', function () {
@@ -207,6 +220,7 @@ gulp.task('watch', function() {
       'chromePageCss',
       'chromeImages',
       'chromeFlags',
+      'chromeCountriesjson',
       'chromePanel',
       'chromePageSources',
       'chromePage',
@@ -217,6 +231,7 @@ gulp.task('watch', function() {
       'safariPageCss',
       'safariImages',
       'safariFlags',
+      'safariCountriesjson',
       'safariPanel',
       'safariPageSources',
       'safariPage'
@@ -232,6 +247,7 @@ gulp.task('default',
     'chromePageCss',
     'chromeImages',
     'chromeFlags',
+    'chromeCountriesjson',
     'chromePanel',
     'chromePageSources',
     'chromePage',
@@ -242,6 +258,7 @@ gulp.task('default',
     'safariPageCss',
     'safariImages',
     'safariFlags',
+    'safariCountriesjson',
     'safariPanel',
     'safariPageSources',
     'safariPage',
