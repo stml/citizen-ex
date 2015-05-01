@@ -148,6 +148,19 @@ body#cex_page #map #cex_map .leaflet-control-attribution a {
 	font-size: 12px !important;
 	color: #fff !important;
 	}
+body#cex_page #map #cex_map .leaflet-popup-content-wrapper {
+	background: rgba(0,0,0,0.75);
+	color: #fff;
+	font-size: 12px;
+	line-height: 18px;
+	}
+body#cex_page #map #cex_map .leaflet-popup-tip-container {
+	width:15px;
+	height:15px;
+	}
+body#cex_page #map #cex_map .leaflet-popup-tip {
+	display: none;
+	}
 body#cex_page #map #cex_map .mapbox-maplogo {
 	position:absolute;
 	display:block;
