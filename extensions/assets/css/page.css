@@ -97,7 +97,6 @@ body#cex_page #tables #sites {
 	}
 body#cex_page #tables table {
 	width: 100%;
-    table-layout: fixed;
 	border-collapse: collapse;
 	}
 body#cex_page #tables table .thead {
@@ -124,7 +123,6 @@ body#cex_page #tables table td {
 	}
 body#cex_page #tables table td.second {
 	text-align: right;
-	padding-left: 20px;
 	}
 	
 body#cex_page h2 {
@@ -174,11 +172,12 @@ body#cex_page #map #cex_map img.leaflet-tile {
 body#cex_page #share p.sharelink {
 	width: 325px;
 	float: left;
+	margin-left: 25%;
 	display: table; 
 	overflow: hidden;
 	}
 body#cex_page #share p.sharelink a {
-	font-size: 16px;
+	font-size: 29px;
 	line-height: 2;
 	height: 325px;
 	width: 325px;
@@ -200,7 +199,7 @@ body#cex_page #share p.sharelink a:hover {
 	color: #000;
 	}
 body#cex_page #share p.info {
-	width: 20%;
+	width: 40%;
 	float: right;
 	font-size: 13px;
 	}
@@ -227,7 +226,7 @@ body#cex_page #about #left {
 	width: 45%;
 	float: left;
 	}
-body#cex_page #about #left {
+body#cex_page #about #right {
 	width: 45%;
 	float: right;
 	}
