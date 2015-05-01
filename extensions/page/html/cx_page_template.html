@@ -172,8 +172,11 @@
 			var cexmarkergroup = new L.featureGroup();
             
             <% if (timeframeEntries) { %>
+            	var latlngs = [];
 				<% _.each(timeframeEntries, function(entry) { %>
-					var cexmarker = L.marker([<%= entry.lat %>, <%= entry.lng %>], {icon: destIcon});
+					latlngs.push([<%= entry.lat %>,<%= entry.lng %>]);
+					var cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>], {icon: destIcon});
+/*
 					var cexpopup = L.popup({ closeButton:false }).setContent('<%= entry.domain %>');
 					cexmarker.bindPopup(cexpopup);
 					cexmarker.on('mouseover', function (e) {
@@ -182,9 +185,11 @@
 			        cexmarker.on('mouseout', function (e) {
 			            this.closePopup();
 			        	});
+*/
 					cexmarkergroup.addLayer(cexmarker);
 				<% }) %>
-				cexmarkergroup.addTo(cexmap);
+				var heat = L.heatLayer(latlngs, {radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
+/* 				cexmarkergroup.addTo(cexmap); */
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
             <% } else { %>
             	cexmap.setView([0,0],2);
