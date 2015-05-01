@@ -202,30 +202,47 @@
 			
 				// if we have a local location
 				<% if (ownGeoData.ownLat) { %>
-					var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
-					cexmarkergroup.addLayer(origMarker);
-					var isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
-					if (!_.isUndefined(window.chrome)) {
-						var origOutline = chrome.extension.getURL('countriesjson/'+isocode+'.geo.json');
-					} else if (safari) {
-                        var origOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
-                    }
-                    console.log(origOutline);
-                	var geojsonLayer = new L.GeoJSON.AJAX(origOutline);
-					cexmarkergroup.addLayer(geojsonLayer);
+					// if we have city-level data
+					<% if (ownGeoData.ownCity.length > 0) { %>
+						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
+						cexmarkergroup.addLayer(origMarker);
+					<% } else { %>
+						var isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
+						if (!_.isUndefined(window.chrome)) {
+							var origOutline = chrome.extension.getURL('countriesjson/'+isocode+'.geo.json');
+						} else if (safari) {
+	                        var origOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
+	                    }
+	                	var geojsonLayer = new L.GeoJSON.AJAX(origOutline,{"color": "#00dcdc","weight": 1,"opacity": 0.5}).addTo(cexmap);
+						cexmarkergroup.addLayer(geojsonLayer);
+						cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 7});
+					<% } %>
 				<% } %>
 
 				// if we have a remote location 
 				<% if (currentEntry.lat) { %>
-					var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
-					cexmarkergroup.addLayer(destMarker);
+					// if we have city-level data
+					<% if (currentEntry.city.length > 0) { %>
+						var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
+					<% } else { %>
+						var isocode = '<%= cxPanel.convertIsoCode(currentEntry.countryCode) %>';
+						if (!_.isUndefined(window.chrome)) {
+							var destOutline = chrome.extension.getURL('countriesjson/'+isocode+'.geo.json');
+						} else if (safari) {
+	                        var destOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
+	                    }
+	                	var geojsonLayer = new L.GeoJSON.AJAX(destOutline,{"color": "#fff000","weight": 1,"opacity": 0.5}).addTo(cexmap);
+						cexmarkergroup.addLayer(geojsonLayer);
+					<% } %>				
 				<% } %>
 				
-				// if we have both a local and a remote location
-				<% if (ownGeoData.ownLat && currentEntry.lat) { %>
-					var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+				// if we have both a local and a remote city-level location
+				<% if (ownGeoData.ownCity && currentEntry.city) { %>
+					<% if (ownGeoData.ownCity.length > 0 && currentEntry.city.length > 0) { %>
+						var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+					<% } %>
 				<% } %>
-				
+				console.log(cexmarkergroup);
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 7});
 							
 			// else if we have no location data
