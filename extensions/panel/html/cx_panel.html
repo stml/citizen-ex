@@ -151,7 +151,7 @@
         }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map_window', { zoomControl:false });
+			var cexmap = L.map('cex_map_window', { zoomControl:false, maxZoom: 12 });
 			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
 				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
 			cextilelayer.on('tileerror', function(error, tile) {
@@ -208,6 +208,7 @@
 				var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
 				cexmarkergroup.addLayer(origMarker);
 			<% } else { %>
+			
 		    <% }; %>
 			<% if (currentEntry.ip) { %>
 				var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
@@ -215,7 +216,7 @@
 		    <% } else { %>
 
 		    <% }; %>
-		    cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
+		    cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 12});
 		    // kill loading circle
 		    $('img#cex_map_loading').hide();
 		    }
