@@ -15,15 +15,15 @@ var CxPage = CxExtension.extend({
       return this.get('citizenship');
     }
     var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getPropertiesFromEntries(entries, 'countryCode');
+    var countryCodes = this.getPropertyFromEntries(entries, 'countryCode');
     var citizenship = this.calculatePercentages(countryCodes);
     return citizenship;
   },
 
   getDomainsForDays: function(n) {
     var entries = this.getTabEntriesForDays(n);
-    var domains = this.getPropertiesFromEntries(entries, 'domain');
-    var domainPopularity = this.calculatePercentages(domains);
+    var domains = this.getDomainPropertiesFromEntries(entries);
+    var domainPopularity = this.calculateDomainPercentages(domains);
     return domainPopularity;
   },
 

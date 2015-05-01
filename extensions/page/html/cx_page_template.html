@@ -13,7 +13,7 @@
             }
 		</script>
 	</div><!-- header -->
-	
+
 	<div id="badge" class="section">
 
 	<div id="toggles">
@@ -27,7 +27,7 @@
 	</div><!-- toggles -->
 
 		<canvas id="cex_badge_canvas"></canvas>
-	
+
 		<script type="text/javascript">
 				var percents = [
       			<% _.each(timeframeCitizenship, function(country) { %>
@@ -99,7 +99,7 @@
 			</script>
 	</div><!-- badge -->
 
-	<div id="tables" class="section">	
+	<div id="tables" class="section">
 		<div id="distribution">
 			<table>
 			<tr>
@@ -112,10 +112,10 @@
 					<td class="second"><%= country.percentage %></td>
 				</tr>
 			<% }); %>
-			</table>	
+			</table>
 	</div><!-- distribution -->
-			
-			
+
+
 		<div id="sites">
 			<table>
 			<tr>
@@ -124,14 +124,14 @@
 			</tr>
 			<% _.each(timeframeDomains, function(entry) { %>
 				<tr>
-					<td class="first"><%= entry.code %></td>
-					<td class="second"><%= entry.percentage %></td>
+					<td class="first"><%= entry.domain %></td>
+					<td class="second"><%= cxPage.convertCountryCode(entry.code) %></td>
 				</tr>
 			<% }); %>
 			</table>
 		</div><!-- sites -->
 	</div><!-- #tables .section -->
-	
+
 	<div id="map" class="section">
 		<h2>Your Map</h2>
 		<div id="cex_map">
@@ -139,7 +139,7 @@
 			<!-- Add mapbox watermark -->
   			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
   		</div>
-  		
+
   		<script type="text/javascript">
 	    if (!_.isUndefined(window.chrome)) {
 	          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
@@ -160,30 +160,30 @@
 	  	</script>
 
 	</div><!-- map -->
-	
+
 	<div id="share" class="section">
 	<p class="sharelink"><a href="#">Share Your Data</a></p>
 	<p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
 	</div><!-- share -->
-	
+
 	<div id="citizenship" class="section">
 	<h2>Algorithmic Citizenship</h2>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
 	</div><!-- citizenship -->
-	
+
 	<div id="about" class="section">
 		<div id="left">
 		<h2>About</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>	
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
 		</div>
 		<div id="right">
 		<h2>Privacy</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>	
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
 		</div>
 	</div><!-- about -->
-	
+
 	<div id="footer" class="section">
-	
+
 	<div class="credits">
 		<p><img id="logo" src="" width="107" height="24" /></p>
 		<p>A project by <a href="http://booktwo.org">James Bridle</a></p>
@@ -193,10 +193,10 @@
 		<p><a href="http://webfoundation.org">World Wide Web Foundation</a></p>
 		<p class="nospace"><strong>Designed and built by:</strong></p>
 		<p><a href="http://booktwo.org">James Bridle</a> / <a href="http://ntlk.net/">ntlk</a> / <a href="http://aftertheflood.co/">After the Flood</a></p>
-	
+
 	</div>
-	
+
 	</div><!-- footer -->
-	
-	
+
+
 </div><!-- container -->

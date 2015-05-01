@@ -74,14 +74,51 @@ var CxExtension = Backbone.Model.extend({
     return result.reverse();
   },
 
-  getPropertiesFromEntries: function(entries, property) {
+  calculateDomainPercentages: function(data) {
+    var counts = _.pluck(data, 'count');
+    var sum = _.reduce(counts, function(memo, num) { return memo + num; }, 0);
+    var result = [];
+    _.each(data, function(item) {
+      var percentage = (item.count / sum) * 100;
+      percentage = percentage.toFixed(2);
+      result.push({ code: item.countryCode, percentage: percentage, domain: item.domain });
+    });
+    result = _.sortBy(result, 'percentage');
+
+    return result.reverse();
+  },
+
+  getPropertyFromEntries: function(entries, property) {
     var validEntries = _.reject(entries, function(entry) {
       return entry[property] === undefined || entry[property] === '';
     });
-    var countryCodes = _.countBy(validEntries, function(entry) {
+    var data = _.countBy(validEntries, function(entry) {
       return entry[property];
     });
-    return countryCodes;
+    return data;
+  },
+
+  getDomainPropertiesFromEntries: function(entries) {
+    var properties = ['domain', 'countryCode'];
+    var validEntriesArr = [];
+    _.each(properties, function(property) {
+      validEntriesArr.push(_.reject(entries, function(entry) {
+        return entry[property] === undefined || entry[property] === '';
+      }));
+    });
+    var validEntries = _.intersection(validEntriesArr[0], validEntriesArr[1]);
+    var data = _.groupBy(validEntries, function(entry) {
+      return entry[properties[0]];
+    });
+    var structuredData = [];
+    _.each(data, function(entries) {
+      var obj = {};
+      obj.domain = entries[0].domain;
+      obj.countryCode = entries[0].countryCode;
+      obj.count = entries.length;
+      structuredData.push(obj);
+    });
+    return structuredData;
   },
 
 
