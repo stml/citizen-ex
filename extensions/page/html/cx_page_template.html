@@ -1,17 +1,20 @@
 <div id="container">
 
-	<div id="header">
+	<div id="header" class="section">
 		<img id="logo" src="" width="107" height="24" />
 		<p class="homepage"><a href="http://citizen-ex.com">citizen-ex.com &raquo;</a></p>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
-              $('#header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
-
+              $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
+			  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
             } else if (safari) {
-              $('#header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
+              $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
+              $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             }
 		</script>
-	</div>
+	</div><!-- header -->
+	
+	<div id="badge" class="section">
 
 	<div id="toggles">
 		<p>This is your Algorithmic Citizenship for:</p>
@@ -21,37 +24,179 @@
         	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>" name="week">This week</a></li>
         	<li><a href="#" class="cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>" name="day">Today</a></li>
         </ul>
-	</div>
+	</div><!-- toggles -->
 
+		<canvas id="cex_badge_canvas"></canvas>
 	
+		<script type="text/javascript">
+				var percents = [
+      			<% _.each(timeframeCitizenship, function(country) { %>
+          			["<%= country.code %>","<%= country.percentage %>"],
+      				<% }); %>];
+					// set canvas to css heights
+				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
+				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
 
-      Timeframe:
-      <%= timeframe.name %>
-      <br>
-      Timeframe duration:
-      <%= timeframe.duration %>
-      <br>
-      Timeframe citizenship
-      <br>
-      <% _.each(timeframeCitizenship, function(country) { %>
-          <tr>
-              <td class="cex_country"><%= cxPage.convertCountryCode(country.code) %></td>
-              <td class="cex_percentage"><%= country.percentage %></td>
-          </tr>
-      <% }); %>
-      <br>
-      Timeframe entries
-      <br>
-      <% _.each(timeframeEntries, function(entry) { %>
-        <%= entry.url %>
-      <% }); %>
-      <br>
-      Timeframe domains
-      <br>
-      <% _.each(timeframeDomains, function(entry) { %>
-        <%= entry.code %> | <%= entry.percentage %>
-      <% }); %>
+				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
 
-	</div><!-- #cex_main -->
+				// circle centre and radius
+				var x0 = $('#cex_badge_canvas').attr('width')/2;
+				var y0 = $('#cex_badge_canvas').attr('height')/2;
+				var r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);
 
-</div>
+				var circlepointer = 0;
+
+				$.each(percents, function() {
+					var country = this[0];
+					var value = this[1];
+					var degrees = 360*(value/100);
+					drawSegment(badge,x0,y0,r,circlepointer,country,degrees);
+					circlepointer = circlepointer + degrees;
+					});
+
+				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
+					var img = new Image();
+					img.onload = function() {
+						var flagscaledheight = badge.canvas.clientHeight;
+						var flagscaledwidth = flagscaledheight*(img.width/img.height);
+						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
+						var svgCanvas = document.createElement("canvas");
+				    	svgCanvas.height = flagscaledheight;
+				    	svgCanvas.width = flagscaledwidth;
+				    	var svgCtx = svgCanvas.getContext("2d");
+				    	svgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);
+				    	var pattern = badge.createPattern(svgCanvas, 'repeat');
+				    	badge.fillStyle = pattern;
+						badge.beginPath();
+						badge.moveTo(x0, y0);
+						var xy = circleCoords(x0,y0,r,circlepointer);
+						badge.lineTo(xy[0],xy[1]);
+						for (i = 0; i < degrees; i=i+20) {
+							xy = circleCoords(x0,y0,r,circlepointer+i);
+							badge.lineTo(xy[0],xy[1]);
+							}
+						xy = circleCoords(x0,y0,r,circlepointer+degrees);
+						badge.lineTo(xy[0],xy[1]);
+						badge.closePath();
+						badge.lineWidth=1;
+						badge.strokeStyle="#888";
+						badge.stroke();
+						badge.fill();
+				      	};
+                      if (!_.isUndefined(window.chrome)) {
+                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      } else if (safari) {
+                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';
+                      }
+					}
+
+				function circleCoords(x0,y0,r,theta) {
+					var x = x0 + r * Math.cos(theta * Math.PI / 180);
+					var y = y0 + r * Math.sin(theta * Math.PI / 180);
+					return [x,y];
+					}
+
+			</script>
+	</div><!-- badge -->
+
+	<div id="tables" class="section">	
+		<div id="distribution">
+			<table>
+			<tr>
+				<td class="thead first">Your Distribution</td>
+				<td class="thead second">%</td>
+			</tr>
+			<% _.each(timeframeCitizenship, function(country) { %>
+				<tr>
+					<td class="first"><%= cxPage.convertCountryCode(country.code) %></td>
+					<td class="second"><%= country.percentage %></td>
+				</tr>
+			<% }); %>
+			</table>	
+	</div><!-- distribution -->
+			
+			
+		<div id="sites">
+			<table>
+			<tr>
+				<td class="thead first">Most Visited Sites</td>
+				<td class="thead second">Country</td>
+			</tr>
+			<% _.each(timeframeDomains, function(entry) { %>
+				<tr>
+					<td class="first"><%= entry.code %></td>
+					<td class="second"><%= entry.percentage %></td>
+				</tr>
+			<% }); %>
+			</table>
+		</div><!-- sites -->
+	</div><!-- #tables .section -->
+	
+	<div id="map" class="section">
+		<h2>Your Map</h2>
+		<div id="cex_map">
+			<img id="cex_map_loading" src="" alt="Loading"/>
+			<!-- Add mapbox watermark -->
+  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
+  		</div>
+  		
+  		<script type="text/javascript">
+	    if (!_.isUndefined(window.chrome)) {
+	          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+	        } else if (safari) {
+	          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+	        }
+	  	setTimeout(function(){ cex_drawMap(); }, 1000);
+	  	function cex_drawMap() {
+			var cexmap = L.map('cex_map', { zoomControl:false });
+			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
+				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
+			cexmap.attributionControl.setPrefix("");
+            cexmap.setView([0,0],2);
+		    // kill loading circle
+		    $('img#cex_map_loading').hide();
+		    }
+
+	  	</script>
+
+	</div><!-- map -->
+	
+	<div id="share" class="section">
+	<p class="sharelink"><a href="#">Share Your Data</a></p>
+	<p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+	</div><!-- share -->
+	
+	<div id="citizenship" class="section">
+	<h2>Algorithmic Citizenship</h2>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+	</div><!-- citizenship -->
+	
+	<div id="about" class="section">
+		<div id="left">
+		<h2>About</h2>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>	
+		</div>
+		<div id="right">
+		<h2>Privacy</h2>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>	
+		</div>
+	</div><!-- about -->
+	
+	<div id="footer" class="section">
+	
+	<div class="credits">
+		<p><img id="logo" src="" width="107" height="24" /></p>
+		<p>A project by <a href="http://booktwo.org">James Bridle</a></p>
+		<p class="nospace"><strong>Made possible with funding from:</strong></p>
+		<p class="nospace"><a href="http://www.southbankcentre.co.uk">Southbank Centre</a></p>
+		<p class="nospace"><a href="http://www.thespace.org">The Space</a></p>
+		<p><a href="http://webfoundation.org">World Wide Web Foundation</a></p>
+		<p class="nospace"><strong>Designed and built by:</strong></p>
+		<p><a href="http://booktwo.org">James Bridle</a> / <a href="http://ntlk.net/">ntlk</a> / <a href="http://aftertheflood.co/">After the Flood</a></p>
+	
+	</div>
+	
+	</div><!-- footer -->
+	
+	
+</div><!-- container -->

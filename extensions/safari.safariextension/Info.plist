@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>James Bridle</string>
 	<key>Builder Version</key>
-	<string>10600.4.10.7</string>
+	<string>9537.75.14</string>
 	<key>CFBundleDisplayName</key>
 	<string>Citizen Ex</string>
 	<key>CFBundleIdentifier</key>
@@ -30,7 +30,7 @@
 				<key>Identifier</key>
 				<string>toggle</string>
 				<key>Image</key>
-				<string>icon16.png</string>
+				<string>icon64-complete.png</string>
 				<key>Label</key>
 				<string>Toggle</string>
 				<key>Tool Tip</key>
