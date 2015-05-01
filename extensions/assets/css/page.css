@@ -224,6 +224,14 @@ body#cex_page #citizenship h2,
 body#cex_page #citizenship p {
 	color: #000;
 	}
+body#cex_page #citizenship a {
+	color: #000;
+	border-bottom: 1px solid #000;
+	}
+body#cex_page #citizenship a:hover {
+	color: #fff;
+	border-bottom: 1px solid #fff;
+	}
 	
 body#cex_page #about {
 	background: #fff;
@@ -242,6 +250,14 @@ body#cex_page #about #left {
 body#cex_page #about #right {
 	width: 45%;
 	float: right;
+	}
+body#cex_page #about a {
+	text-decoration: none;
+	color: #00dcdc;
+	border-bottom: 1px solid transparent;
+	}
+body#cex_page #about a:hover {
+	border-bottom: 1px solid #00dcdc;
 	}
 	
 body#cex_page #footer {
