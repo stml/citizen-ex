@@ -63,6 +63,7 @@ var panelSources = [
   './extensions/core/js/storage.js',
   './extensions/core/js/message.js',
   './extensions/shared/js/log_entry.js',
+  './extensions/panel/js/leaflet.ajax.js',
   './extensions/shared/js/cx_extension.js',
   './extensions/panel/js/cx_panel.js',
   './extensions/panel/js/cx_panel_view.js',

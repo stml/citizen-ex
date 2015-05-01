@@ -24,6 +24,7 @@
   "options_page": "page/page.html",
   "web_accessible_resources": [
     "flags/*.svg",
+    "countriesjson/*.*",
     "images/*",
     "page/page.html"
   	],
