@@ -227,6 +227,7 @@ body#cex_page #citizenship p {
 body#cex_page #citizenship a {
 	color: #000;
 	border-bottom: 1px solid #000;
+	text-decoration: none;
 	}
 body#cex_page #citizenship a:hover {
 	color: #fff;
