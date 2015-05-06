@@ -1,7 +1,8 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var include_file = require('gulp-include-file');
+var include_file = require('gulp-include-file'); // as a string
+var fileinclude = require('gulp-file-include'); // not as a string
 
 var images = ['./extensions/assets/images/*.*'];
 var flags = ['./extensions/assets/flags/*.*'];
@@ -42,6 +43,15 @@ var safariInit = [
   './extensions/core/js/safari/init.js'
 ];
 
+var firefoxInit = [
+  './extensions/core/js/firefox/utils.js',
+  './extensions/core/js/firefox/init.js'
+];
+
+var firefoxIncludes = [
+  './extensions/core/js/firefox/includes.js'
+];
+
 var coreSources = [
   './extensions/shared/js/overwrite_warning.js',
   './extensions/core/js/browser.js',
@@ -68,11 +78,16 @@ var panelSources = [
 var chromeCore = coreSources.concat(chromeInit);
 var safariCore = coreSources.concat(safariInit);
 
+var fxSources = firefoxIncludes.concat(coreSources);
+var firefoxCore = fxSources.concat(firefoxInit);
+
 var chromePanel = panelSources.concat(['./extensions/panel/js/init_chrome.js']);
 var safariPanel = panelSources.concat(['./extensions/panel/js/init_safari.js']);
+var firefoxPanel = panelSources.concat(['./extensions/panel/js/init_firefox.js']);
 
 var chromePage = pageSources.concat(['./extensions/page/js/init_chrome.js']);
 var safariPage = pageSources.concat(['./extensions/page/js/init_safari.js']);
+var firefoxPage = pageSources.concat(['./extensions/page/js/init_firefox.js']);
 
 
 // Chrome tasks
@@ -189,6 +204,67 @@ gulp.task('safariPage', function () {
 });
 
 
+
+// Firefox
+
+gulp.task('firefoxCore', function () {
+  gulp.src(firefoxCore)
+    .pipe(fileinclude({
+      prefix: '@@',
+      basepath: '@file'
+    }))
+    .pipe(include_file())
+    .pipe(concat('main.js'))
+    .pipe(gulp.dest('./extensions/firefox/lib/'));
+});
+
+gulp.task('firefoxLib', function () {
+  gulp.src(['./extensions/core/lib/*'])
+    .pipe(gulp.dest('./extensions/firefox/lib/lib'));
+});
+
+gulp.task('firefoxPanelCss', function () {
+  gulp.src(panelCssSources)
+    .pipe(concat('panel.css'))
+    .pipe(gulp.dest('./extensions/firefox/data/panel/'));
+});
+
+gulp.task('firefoxPageCss', function () {
+  gulp.src(pageCssSources)
+    .pipe(concat('page.css'))
+    .pipe(gulp.dest('./extensions/firefox/data/page/'));
+});
+
+gulp.task('firefoxImages', function() {
+  gulp.src(images)
+    .pipe(gulp.dest('./extensions/firefox/data/images/'));
+});
+
+gulp.task('firefoxFlags', function() {
+  gulp.src(flags)
+    .pipe(gulp.dest('./extensions/firefox/data/flags/'));
+});
+
+gulp.task('firefoxPanel', function () {
+  gulp.src(firefoxPanel)
+    .pipe(include_file())
+    .pipe(concat('panel.js'))
+    .pipe(gulp.dest('./extensions/firefox/data/panel/'));
+});
+
+gulp.task('firefoxPageSources', function () {
+  gulp.src(firefoxPage)
+    .pipe(include_file())
+    .pipe(concat('page.js'))
+    .pipe(gulp.dest('./extensions/firefox/data/page/'));
+});
+
+gulp.task('firefoxPage', function () {
+  gulp.src(page)
+    .pipe(rename('page.html'))
+    .pipe(gulp.dest('./extensions/firefox/data/page/'));
+});
+
 // Set up watch
 
 gulp.task('watch', function() {
@@ -218,7 +294,17 @@ gulp.task('watch', function() {
       'safariFlags',
       'safariPanel',
       'safariPageSources',
-      'safariPage'
+      'safariPage',
+
+      'firefoxCore',
+      'firefoxLib',
+      'firefoxPanelCss',
+      'firefoxPageCss',
+      'firefoxImages',
+      'firefoxFlags',
+      'firefoxPanel',
+      'firefoxPageSources',
+      'firefoxPage'
     ]
   );
 });
@@ -244,6 +330,16 @@ gulp.task('default',
     'safariPanel',
     'safariPageSources',
     'safariPage',
+
+    'firefoxCore',
+    'firefoxLib',
+    'firefoxPanelCss',
+    'firefoxPageCss',
+    'firefoxImages',
+    'firefoxFlags',
+    'firefoxPanel',
+    'firefoxPageSources',
+    'firefoxPage',
 
     'watch'
   ]
