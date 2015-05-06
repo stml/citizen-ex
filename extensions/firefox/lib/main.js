@@ -682,18 +682,31 @@ tabs.on('ready', function(tab) {
       self.data.url('./lib/backbone.js'),
       self.data.url('./panel/panel.js'),
     ],
-    contentStyleFile: self.data.url('./panel/panel.css')
+    contentStyleFile: self.data.url('./panel/panel.css'),
+    contentScriptOptions: {
+      logo: self.data.url('images/logo-small-white.svg'),
+      close: self.data.url('images/close.png'),
+      page: self.data.url('page/page.html'),
+      flagsDir: self.data.url('flags'),
+      baseURI: self.data.url('./')
+    }
   });
 
-  worker.port.on('ownGeoData', function(worker) {
+  worker.port.on('ownGeoData', function() {
     sendOwnGeoData(worker);
   });
-  worker.port.on('activeTab', function(worker, tab) {
+  worker.port.on('activeTab', function() {
     sendActiveTab(worker, tab.url);
   });
-  worker.port.on('allTabs', sendAllTabs);
-  worker.port.on('countryLog', sendCountryLog);
-  worker.port.on('allLogEntries', sendAllLogEntries);
+  worker.port.on('allTabs', function() {
+    sendAllTabs(worker);
+  });
+  worker.port.on('countryLog', function() {
+    sendCountryLog(worker);
+  });
+  worker.port.on('allLogEntries', function() {
+    sendAllLogEntries(worker);
+  });
 });
 
 var sendOwnGeoData = function(worker) {
@@ -707,6 +720,7 @@ var sendActiveTab = function(worker, url) {
 var sendAllTabs = function(worker) {
   var urls = _.pluck(tabs, 'url');
 
+  console.log(worker);
   worker.port.emit('allTabs', urls);
 };
 

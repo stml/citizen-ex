@@ -9,11 +9,18 @@
               $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
               $('.cex_more').attr('href',chrome.extension.getURL('page/page.html'));
 
-            } else if (safari) {
+            } else if (typeof safari !== 'undefined') {
+              console.log('using safari')
               $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
-              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');
+              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'page/page.html');
               $('.cex_more').attr('href',safari.extension.baseURI + 'page/page.html');
+            } else {
+              console.log('using firefox')
+              $('#cex_header #cex_logo').attr('src', logo);
+              $('#cex_header #cex_close').attr('src', close);
+              $('#cex_header .cex_close').attr('href', page);
+              $('.cex_more').attr('href', page);
             }
 		</script>
 	</div>
@@ -116,8 +123,11 @@
 				      	};
                       if (!_.isUndefined(window.chrome)) {
                         img.src = chrome.extension.getURL('flags/'+country+'.svg');
-                      } else if (safari) {
+                      } else if (typeof safari !== 'undefined') {
                         img.src = safari.extension.baseURI + 'flags/'+country+'.png';
+                      } else {
+                        img.src = flagsDir +country+'.png';
+
                       }
 					}
 
@@ -146,9 +156,12 @@
 	  	<script type="text/javascript">
         if (!_.isUndefined(window.chrome)) {
           $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
-        } else if (safari) {
+        } else if (typeof safari !== 'undefined') {
           $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+        } else {
+          $('img#cex_map_loading').attr('src', baseURI + 'images/loading.gif');
         }
+
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			var cexmap = L.map('cex_map_window', { zoomControl:false });
@@ -166,10 +179,14 @@
               cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');
               yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
               tabMarker = chrome.extension.getURL('images/map-marker-tab.png');
-            } else if (safari) {
+            } else if (typeof safari !== 'undefined') {
               cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';
               yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
               tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';
+            } else {
+              cyanMarker = baseURI + 'images/map-marker-cyan.png';
+              yellowMarker = baseURI + 'images/map-marker-yellow.png';
+              tabMarker = baseURI + 'images/map-marker-tab.png';
             }
 
 			var destIcon = L.icon({
