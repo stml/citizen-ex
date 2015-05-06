@@ -2,7 +2,7 @@
 
 var CxPage = CxExtension.extend({
   initialize: function(browser, timeframes) {
-    CxExtension.prototype.initialize.apply(this, browser);
+    CxExtension.prototype.initialize.call(this, browser);
     this.timeframes = timeframes;
     this.set({ currentEntry: '' })
 

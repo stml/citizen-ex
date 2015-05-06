@@ -677,6 +677,7 @@ var button = buttons.ActionButton({
     });
     worker.port.on('openCxPanel', function() {
       globalWorker.port.emit('openCxPanel', true);
+      // tabs.open(self.data.url('./page/page.html'));
     });
   }
 });
@@ -695,6 +696,7 @@ tabs.on('ready', function(tab) {
       self.data.url('./lib/underscore.js'),
       self.data.url('./lib/jquery.js'),
       self.data.url('./lib/backbone.js'),
+      self.data.url('./lib/mapbox.js'),
       self.data.url('./panel/panel.js')
     ],
     contentScriptOptions: {
@@ -718,8 +720,11 @@ tabs.on('ready', function(tab) {
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
   });
-  worker.port.on('openCxPanel', function() {
-    console.log('opening the panel1');
+  worker.port.on('page', function() {
+    tabs.open({
+      url: self.data.url('./page/page.html'),
+      inNewTab: true
+    });
   });
 });
 

@@ -2,7 +2,7 @@
 
 var CxPanel = CxExtension.extend({
   initialize: function(browser) {
-    CxExtension.prototype.initialize.apply(this, browser);
+    CxExtension.prototype.initialize.call(this, browser);
 
     this.requestActiveTab();
     this.requestOpenTabs();
@@ -10,6 +10,10 @@ var CxPanel = CxExtension.extend({
 
   requestActiveTab: function() {
     message.send({ activeTab: true });
+  },
+
+  requestPage: function() {
+    message.send({ page: true });
   },
 
   requestOpenTabs: function() {

@@ -19,7 +19,6 @@ CxMessage.prototype.send = function(message) {
 
   } else if (this.browser.firefox()) {
     self.port.emit(key, message);
-    console.log('emitting a message');
   } else {
     throw 'Unknown browser';
   }

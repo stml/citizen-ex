@@ -7,7 +7,8 @@ var CxPanelView = Backbone.View.extend({
 
   events: {
     'click .cex_erase': 'eraseData',
-    'click .cex_close': 'close'
+    'click .cex_close': 'close',
+    'click .cex_more': 'openPage'
   },
 
   initialize: function(options) {
@@ -40,6 +41,13 @@ var CxPanelView = Backbone.View.extend({
   close: function(event) {
     event.preventDefault();
     this.model.close();
+  },
+
+  openPage: function(event) {
+    if (this.model.browser && this.model.browser.firefox()) {
+      event.preventDefault();
+      this.model.requestPage();
+    }
   },
 
   eraseData: function(event) {

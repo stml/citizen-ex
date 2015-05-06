@@ -117,7 +117,6 @@ CxMessage.prototype.send = function(message) {
 
   } else if (this.browser.firefox()) {
     self.port.emit(key, message);
-    console.log('emitting a message');
   } else {
     throw 'Unknown browser';
   }
@@ -500,7 +499,7 @@ var CxExtension = Backbone.Model.extend({
 
 var CxPage = CxExtension.extend({
   initialize: function(browser, timeframes) {
-    CxExtension.prototype.initialize.apply(this, browser);
+    CxExtension.prototype.initialize.call(this, browser);
     this.timeframes = timeframes;
     this.set({ currentEntry: '' })
 
