@@ -9,11 +9,19 @@
 
 var CxBrowser = function() {
   this.name = 'unknown';
-  var notChrome = _.isUndefined(window.chrome);
-  if (!notChrome) {
-    this.name = 'chrome';
+  if (typeof window !== 'undefined') {
+    var notChrome = _.isUndefined(window.chrome);
+    if (!notChrome) {
+      this.name = 'chrome';
+    } else {
+      if (typeof safari !== 'undefined') {
+        this.name = 'safari';
+      } else {
+        this.name = 'firefox';
+      }
+    }
   } else {
-    this.name = 'safari';
+    this.name = 'firefox';
   }
 };
 
@@ -23,6 +31,10 @@ CxBrowser.prototype.chrome = function() {
 
 CxBrowser.prototype.safari = function() {
   return this.name === 'safari';
+};
+
+CxBrowser.prototype.firefox = function() {
+  return this.name === 'firefox';
 };
 
 var CxStorage = function(browser) {
@@ -41,6 +53,8 @@ CxStorage.prototype.set = function(property, value) {
     chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
+  } else if (this.browser.firefox()) {
+    ss[property] = json;
   } else {
     throw 'Unknown browser';
   }
@@ -59,6 +73,12 @@ CxStorage.prototype.get = function(property, callback) {
     var data = undefined;
     if (localStorage[property]) {
       var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
+  } else if (this.browser.firefox()) {
+    var data = undefined;
+    if (ss[property]) {
+      var data = JSON.parse(ss[property]);
     }
     callback(data);
   } else {
@@ -159,16 +179,26 @@ Utils.prototype.log = function(thing) {
 };
 
 Utils.prototype.get = function(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-     callback(xhr.responseText);
-    } else if (xhr.readyState == 4) {
-      console.log('Error getting response data from ' + url);
+  if (this.browser.firefox()) {
+    var request = Request({
+      url: url,
+      onComplete: function(response) {
+        callback(response.text);
+      }
+    });
+    request.get();
+  } else {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+       callback(xhr.responseText);
+      } else if (xhr.readyState == 4) {
+        console.log('Error getting response data from ' + url);
+      }
     }
+    xhr.send();
   }
-  xhr.send();
 };
 
 Utils.prototype.reset = function() {

@@ -81,16 +81,26 @@ Utils.prototype.log = function(thing) {
 };
 
 Utils.prototype.get = function(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-     callback(xhr.responseText);
-    } else if (xhr.readyState == 4) {
-      console.log('Error getting response data from ' + url);
+  if (this.browser.firefox()) {
+    var request = Request({
+      url: url,
+      onComplete: function(response) {
+        callback(response.text);
+      }
+    });
+    request.get();
+  } else {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+       callback(xhr.responseText);
+      } else if (xhr.readyState == 4) {
+        console.log('Error getting response data from ' + url);
+      }
     }
+    xhr.send();
   }
-  xhr.send();
 };
 
 Utils.prototype.reset = function() {

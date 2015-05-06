@@ -9,11 +9,19 @@
 
 var CxBrowser = function() {
   this.name = 'unknown';
-  var notChrome = _.isUndefined(window.chrome);
-  if (!notChrome) {
-    this.name = 'chrome';
+  if (typeof window !== 'undefined') {
+    var notChrome = _.isUndefined(window.chrome);
+    if (!notChrome) {
+      this.name = 'chrome';
+    } else {
+      if (typeof safari !== 'undefined') {
+        this.name = 'safari';
+      } else {
+        this.name = 'firefox';
+      }
+    }
   } else {
-    this.name = 'safari';
+    this.name = 'firefox';
   }
 };
 
@@ -23,6 +31,10 @@ CxBrowser.prototype.chrome = function() {
 
 CxBrowser.prototype.safari = function() {
   return this.name === 'safari';
+};
+
+CxBrowser.prototype.firefox = function() {
+  return this.name === 'firefox';
 };
 
 var CxStorage = function(browser) {
@@ -41,6 +53,8 @@ CxStorage.prototype.set = function(property, value) {
     chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
+  } else if (this.browser.firefox()) {
+    ss[property] = json;
   } else {
     throw 'Unknown browser';
   }
@@ -59,6 +73,12 @@ CxStorage.prototype.get = function(property, callback) {
     var data = undefined;
     if (localStorage[property]) {
       var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
+  } else if (this.browser.firefox()) {
+    var data = undefined;
+    if (ss[property]) {
+      var data = JSON.parse(ss[property]);
     }
     callback(data);
   } else {
@@ -81,18 +101,23 @@ var CxMessage = function(browser) {
 };
 
 CxMessage.prototype.send = function(message) {
+  var key;
+
+  _.each(message, function (v, k) {
+    if (v) {
+      key = k;
+    }
+  });
+
   if (this.browser.chrome()) {
     chrome.runtime.sendMessage(message);
   } else if (this.browser.safari()) {
 
-    var key;
-
-    _.each(message, function (v, k) {
-      if (v) {
-        key = k;
-      }
-    });
     safari.self.tab.dispatchMessage(key, message, false);
+
+  } else if (this.browser.firefox()) {
+    self.port.emit(key, message);
+    console.log('emitting a message');
   } else {
     throw 'Unknown browser';
   }
