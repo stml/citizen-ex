@@ -23,5 +23,6 @@ self.port.on('ownGeoData', function(message) {
   cxPanel.receiveOwnGeoData(message);
 });
 
-
-cxPanel.toggle();
+self.port.on('openCxPanel', function(message) {
+  cxPanel.toggle();
+});

@@ -670,9 +670,24 @@ var button = buttons.ActionButton({
     '16': './icon16.png'
   },
   onClick: function(state) {
-    console.log('clicked the toolbar button');
+    var worker = tabs.activeTab.attach({
+      contentScriptFile: [
+        self.data.url('./panel/panel_trigger.js')
+      ],
+    });
+    worker.port.on('openCxPanel', function() {
+      globalWorker.port.emit('openCxPanel', true);
+    });
   }
 });
+
+pageMod.PageMod({
+  include: '*',
+  contentStyleFile: self.data.url('./panel/panel.css')
+});
+
+var globalWorker;
+var baseURI = self.data.url('./');
 
 tabs.on('ready', function(tab) {
   var worker = tab.attach({
@@ -680,17 +695,13 @@ tabs.on('ready', function(tab) {
       self.data.url('./lib/underscore.js'),
       self.data.url('./lib/jquery.js'),
       self.data.url('./lib/backbone.js'),
-      self.data.url('./panel/panel.js'),
+      self.data.url('./panel/panel.js')
     ],
-    contentStyleFile: self.data.url('./panel/panel.css'),
     contentScriptOptions: {
-      logo: self.data.url('images/logo-small-white.svg'),
-      close: self.data.url('images/close.png'),
-      page: self.data.url('page/page.html'),
-      flagsDir: self.data.url('flags'),
-      baseURI: self.data.url('./')
+      'baseURI': baseURI
     }
   });
+  globalWorker = worker;
 
   worker.port.on('ownGeoData', function() {
     sendOwnGeoData(worker);
@@ -707,6 +718,9 @@ tabs.on('ready', function(tab) {
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
   });
+  worker.port.on('openCxPanel', function() {
+    console.log('opening the panel1');
+  });
 });
 
 var sendOwnGeoData = function(worker) {
@@ -720,7 +734,6 @@ var sendActiveTab = function(worker, url) {
 var sendAllTabs = function(worker) {
   var urls = _.pluck(tabs, 'url');
 
-  console.log(worker);
   worker.port.emit('allTabs', urls);
 };
 
