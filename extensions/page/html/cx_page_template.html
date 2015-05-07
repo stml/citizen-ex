@@ -122,7 +122,7 @@
 				<td class="thead first">Most Visited Sites</td>
 				<td class="thead second">Country</td>
 			</tr>
-			<% _.each(timeframeDomains, function(entry) { %>
+			<% _.each(timeframeDomains.slice(0,10), function(entry) { %>
 				<tr>
 					<td class="first"><%= entry.code %></td>
 					<td class="second"><%= entry.percentage %></td>
@@ -148,48 +148,17 @@
 	        }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map', { zoomControl:false });
-			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
+			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
+	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });
 			cexmap.attributionControl.setPrefix("");
-			
-			            var yellowMarker;
-            var cyanMarker;
-            var tabMarker;
-
-            if (!_.isUndefined(window.chrome)) {
-              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
-            } else if (safari) {
-              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
-            }
-
-			var destIcon = L.icon({
-				iconUrl: yellowMarker,
-				iconSize:     [41,41], // size of the icon
-				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
-				});
-
-			var cexmarkergroup = new L.featureGroup();
-            
+			var heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
+			var cexmarkergroup = L.mapbox.featureLayer();
             <% if (timeframeEntries) { %>
-            	var latlngs = [];
 				<% _.each(timeframeEntries, function(entry) { %>
-					latlngs.push([<%= entry.lat %>,<%= entry.lng %>]);
-					var cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>], {icon: destIcon});
-/*
-					var cexpopup = L.popup({ closeButton:false }).setContent('<%= entry.domain %>');
-					cexmarker.bindPopup(cexpopup);
-					cexmarker.on('mouseover', function (e) {
-			            this.openPopup();
-			        	});
-			        cexmarker.on('mouseout', function (e) {
-			            this.closePopup();
-			        	});
-*/
+					var cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>]);	
 					cexmarkergroup.addLayer(cexmarker);
+					heat.addLatLng(L.latLng(<%= entry.lat %>,<%= entry.lng %>));
 				<% }) %>
-				var heat = L.heatLayer(latlngs, {radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
-/* 				cexmarkergroup.addTo(cexmap); */
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
             <% } else { %>
             	cexmap.setView([0,0],2);

@@ -20,7 +20,8 @@ var pageSources = [
   './extensions/shared/js/cx_extension.js',
   './extensions/page/js/cx_page.js',
   './extensions/page/js/cx_page_view.js',
-  './extensions/page/js/init_shared.js'
+  './extensions/page/js/init_shared.js',
+  './extensions/page/js/leaflet-heat.js'
 ];
 
 var panelCssSources = [
