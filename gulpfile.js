@@ -209,6 +209,7 @@ gulp.task('safariPage', function () {
 gulp.task('watch', function() {
   gulp.watch(
     [
+      './extensions/assets/**/*.*',
       './extensions/page/**/*.*',
       './extensions/panel/**/*.*',
       './extensions/core/**/*.js',
