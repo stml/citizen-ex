@@ -33,11 +33,14 @@
 				<canvas id="cex_badge_canvas"></canvas>
 
 				<p id="cex_whatmeans"><a href="http://citizen-ex.com/citizenship/" target="_blank">What does this mean?</a></p>
-				<p id="cex_sharebuttons">Share Via:<p>
+<!-- 				<p id="cex_sharebuttons">Share Via:<p> -->
 				<p id="cex_sharebuttons">
+					<a href="#" class="cex_share_badge">Save your badge</a>&nbsp;&nbsp;&nbsp;
+<!--
 					<a href="#" class="cex_share_facebook">Facebook</a>&nbsp;&nbsp;&nbsp;
 					<a href="#" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
 					<a href="#" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
+-->
 				</p>
 
 			</div><!-- cex_badge_column -->
@@ -68,8 +71,8 @@
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
 
-				var canvas = $("#cex_badge_canvas").get(0);
-				var badge = canvas.getContext("2d");
+				var cex_canvas = $("#cex_badge_canvas").get(0);
+				var badge = cex_canvas.getContext("2d");
 
 				// circle centre and radius
 				var x0 = $('#cex_badge_canvas').attr('width')/2;
@@ -90,10 +93,24 @@
 				var summary = encodeURIComponent("This is my Algorithmic Citizenship. What's yours?");
 				var url = encodeURIComponent('http://citizen-ex.com');
 					
-				$('.cex_share_facebook').click(function () {
-					var image = canvas.toDataURL();
-					var facebook_url = "http://www.facebook.com/sharer.php?s=100&p[title]="+title+"&p[summary]="+summary+"&p[url]="+url+"&p[images][0]="+image;
-					window.open(facebook_url);
+				$('.cex_share_badge').click(function () {
+					var badgeImg = new Image();
+					badgeImg.crossOrigin = "anonymous";
+					badgeImg.onload = function() {
+						var badgeCanvas = document.createElement("canvas");
+					    badgeCanvas.width = 350;
+						badgeCanvas.height = 600;
+					    var badgeContext = badgeCanvas.getContext("2d");
+	  					badgeContext.drawImage(badgeImg, 0, 0);
+	  					badgeContext.drawImage(cex_canvas, 50, 50);
+						var badgeImage = badgeCanvas.toDataURL();
+						window.open(badgeImage);
+						};
+					if (!_.isUndefined(window.chrome)) {
+						badgeImg.src = chrome.extension.getURL('images/share-card.png');
+					} else if (safari) {
+						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
+						}
 					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
