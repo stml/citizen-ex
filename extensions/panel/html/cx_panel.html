@@ -68,7 +68,8 @@
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
 
-				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
+				var canvas = $("#cex_badge_canvas").get(0);
+				var badge = canvas.getContext("2d");
 
 				// circle centre and radius
 				var x0 = $('#cex_badge_canvas').attr('width')/2;
@@ -84,9 +85,20 @@
 					drawSegment(badge,x0,y0,r,circlepointer,country,degrees);
 					circlepointer = circlepointer + degrees;
 					});
+					
+				var title = encodeURIComponent('Citizen Ex');
+				var summary = encodeURIComponent("This is my Algorithmic Citizenship. What's yours?");
+				var url = encodeURIComponent('http://citizen-ex.com');
+					
+				$('.cex_share_facebook').click(function () {
+					var image = canvas.toDataURL();
+					var facebook_url = "http://www.facebook.com/sharer.php?s=100&p[title]="+title+"&p[summary]="+summary+"&p[url]="+url+"&p[images][0]="+image;
+					window.open(facebook_url);
+					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
+					img.crossOrigin = "anonymous";
 					img.onload = function() {
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
@@ -237,7 +249,6 @@
 						var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
 					<% } %>
 				<% } %>
-				console.log(cexmarkergroup);
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 9});
 							
 			// else if we have no location data
