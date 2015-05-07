@@ -139,8 +139,6 @@
 
 		<div id="cex_map_window" class="dark">
 			<img id="cex_map_loading" src="" alt="Loading"/>
-			<!-- Add mapbox watermark -->
-  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
   		</div>
 
 	  	<script type="text/javascript">
@@ -151,9 +149,8 @@
         }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map_window', { zoomControl:false, maxZoom: 12 });
-			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
+	  		L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
+	  		var cexmap = L.mapbox.map('cex_map_window', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });
 			cexmap.attributionControl.setPrefix("");
             var yellowMarker;
             var cyanMarker;
@@ -207,14 +204,12 @@
 						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon, clickable: false}).addTo(cexmap);
 						cexmarkergroup.addLayer(origMarker);
 					<% } else { %>
-						var isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
-						if (!_.isUndefined(window.chrome)) {
-							var origOutline = chrome.extension.getURL('countriesjson/'+isocode+'.geo.json');
-						} else if (safari) {
-	                        var origOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
-	                    }
-	                	var geojsonLayer = new L.GeoJSON.AJAX(origOutline,{"color": "#00dcdc","weight": 1,"opacity": 1,"fillOpacity":0.25});
-	                	geojsonLayer.setStyle({"color": "#00dcdc","weight": 1,"opacity": 1,"fillOpacity":0.5});
+						var isocode = 'cex_country_'+'<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
+						var cex_outline = window['cex_country_'+isocode];
+	                	var geojsonLayer = L.mapbox.featureLayer()
+	                		.setGeoJSON(cex_outline)
+	                		.setStyle({"color": "#00dcdc","weight": 1,"opacity": 1,"fillColor":"#00dcdc","fillOpacity":0.25})
+	                		.addTo(cexmap);
 						cexmarkergroup.addLayer(geojsonLayer);
 					<% } %>
 				<% } %>
@@ -227,13 +222,11 @@
 						cexmarkergroup.addLayer(destMarker);
 					<% } else { %>
 						var isocode = '<%= cxPanel.convertIsoCode(currentEntry.countryCode) %>';
-						if (!_.isUndefined(window.chrome)) {
-							var destOutline = chrome.extension.getURL('countriesjson/'+isocode+'.geo.json');
-						} else if (safari) {
-	                        var destOutline = safari.extension.baseURI + 'countriesjson/'+isocode+'.geo.json';
-	                    }
-	                	var geojsonLayer = new L.GeoJSON.AJAX(destOutline,{"color": "#fff000","weight": 1,"opacity": 1,"fillOpacity": 0.25});
-	                	geojsonLayer.addTo(cexmap);
+						var cex_outline = window['cex_country_'+isocode];
+	                	var geojsonLayer = L.mapbox.featureLayer()
+	                		.setGeoJSON(cex_outline)
+	                		.setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":0.25})
+	                		.addTo(cexmap);
 						cexmarkergroup.addLayer(geojsonLayer);
 					<% } %>				
 				<% } %>

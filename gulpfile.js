@@ -18,7 +18,6 @@ var pageSources = [
   './extensions/core/js/message.js',
   './extensions/shared/js/log_entry.js',
   './extensions/shared/js/cx_extension.js',
-  './extensions/page/js/leaflet-heat.js',
   './extensions/page/js/cx_page.js',
   './extensions/page/js/cx_page_view.js',
   './extensions/page/js/init_shared.js'
@@ -27,13 +26,13 @@ var pageSources = [
 var panelCssSources = [
  './extensions/assets/css/overwrite_warning.css',
  './extensions/assets/css/panel.css',
- './extensions/assets/css/leaflet.css'
+ './extensions/assets/css/mapbox.css'
 ];
 
 var pageCssSources = [
  './extensions/assets/css/overwrite_warning.css',
  './extensions/assets/css/page.css',
- './extensions/assets/css/leaflet.css'
+ './extensions/assets/css/mapbox.css'
 ];
 
 var chromeInit = [
@@ -63,7 +62,7 @@ var panelSources = [
   './extensions/core/js/storage.js',
   './extensions/core/js/message.js',
   './extensions/shared/js/log_entry.js',
-  './extensions/panel/js/leaflet.ajax.js',
+  './extensions/panel/js/countries.js',
   './extensions/shared/js/cx_extension.js',
   './extensions/panel/js/cx_panel.js',
   './extensions/panel/js/cx_panel_view.js',

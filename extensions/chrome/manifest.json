@@ -24,9 +24,9 @@
   "options_page": "page/page.html",
   "web_accessible_resources": [
     "flags/*.svg",
-    "countriesjson/*.*",
     "images/*",
-    "page/page.html"
+    "page/page.html",
+    "panel/*"
   	],
   "content_scripts": [
     {
@@ -37,7 +37,7 @@
         "lib/jquery.js",
         "lib/backbone.js",
         "lib/moment.js",
-        "lib/leaflet.js",
+        "lib/mapbox.js",
         "panel/panel.js"
       ]
     }
