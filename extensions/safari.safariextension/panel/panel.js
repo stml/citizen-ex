@@ -1436,7 +1436,12 @@ var CxPanelView = Backbone.View.extend({
 
   appendToBody: function() {
     var body = $('body');
-    this.$el.appendTo(body);
+    if (body.length > 0) {
+      this.$el.appendTo(body);
+    } else {
+      var html = $('html');
+      html.append(this.$el);
+    }
   },
 
   close: function(event) {
