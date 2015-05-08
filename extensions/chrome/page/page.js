@@ -861,16 +861,16 @@ var CxPage = CxExtension.extend({
   },
 
   resetValues: function() {
-    this.set({
-      timeframeCitizenship: [],
-      timeframeEntries: [],
-      timeframeDomains: [],
-      timeframe: null
-    });
-
     if (this.timeframes) {
       this.toggleTimeframe(this.timeframes[0].name);
     }
+
+    this.set({
+      timeframeCitizenship: [],
+      timeframeEntries: [],
+      timeframeDomains: []
+    });
+
 
     CxExtension.prototype.resetValues.call(this);
   },
@@ -927,14 +927,15 @@ var CxPageView = Backbone.View.extend({
   },
 
   triggerTimeframe: function() {
-    this.model.toggleTimeframe(this.model.get('timeframe').name);
+    if (this.model.get('timeframe') && this.model.get('timeframe').name) {
+      this.model.toggleTimeframe(this.model.get('timeframe').name);
+    }
   },
 
   eraseData: function(event) {
     event.preventDefault();
     this.model.eraseData();
   }
-
 });
 
 

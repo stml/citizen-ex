@@ -61,16 +61,16 @@ var CxPage = CxExtension.extend({
   },
 
   resetValues: function() {
-    this.set({
-      timeframeCitizenship: [],
-      timeframeEntries: [],
-      timeframeDomains: [],
-      timeframe: null
-    });
-
     if (this.timeframes) {
       this.toggleTimeframe(this.timeframes[0].name);
     }
+
+    this.set({
+      timeframeCitizenship: [],
+      timeframeEntries: [],
+      timeframeDomains: []
+    });
+
 
     CxExtension.prototype.resetValues.call(this);
   },
