@@ -47,6 +47,11 @@
 	-moz-osx-font-smoothing: grayscale !important;
 	}
 	
+a:before,
+a:after {
+	content: '' !important;
+	}
+	
 .citizen-ex__pane #cex_header *,
 .citizen-ex__pane #cex_badge *,
 .citizen-ex__pane #cex_mapdata * {
