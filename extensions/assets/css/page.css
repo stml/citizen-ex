@@ -12,7 +12,7 @@ body#cex_page {
 	-moz-osx-font-smoothing: grayscale;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
-	letter-spacing: 0.1rem;
+	letter-spacing: 0.06rem;
 	margin: 0;
 	padding: 0;
 	}
@@ -24,13 +24,15 @@ body#cex_page .section {
 	position: relative;
 	padding: 25px 50px;
 	box-sizing: border-box;
+	font-size: 20px;
 	}
-
+	@media (max-width: 1100px) { body#cex_page .section { font-size: 16px;} }
+	@media (max-width: 820px) { body#cex_page .section { font-size: 14px;} }
 body#cex_page h2 {
 	text-transform: uppercase;
 	font-weight: normal;
-	font-size: 20px;
-	letter-spacing: 0.3rem;
+	font-size: 1em;
+	letter-spacing: 0.25em;
 	}
 
 
@@ -47,9 +49,9 @@ body#cex_page #header #logo {
 body#cex_page #header p.homepage {
 	float: right;
 	margin: 0;
-	font-size: 16px;
-	letter-spacing: 0.2rem;
-	line-height: 1rem;
+	font-size: 0.75em;
+	letter-spacing: 0.3em;
+	line-height: 1em;
 	text-transform: uppercase;
 	color: #fff;
 	}
@@ -70,14 +72,14 @@ body#cex_page #header p.homepage a:hover {
 /* The Toggles
 ----------------------------------------------------------------------------- */
 body#cex_page #toggles {
-	width: 25%;
+	width: 20%;
 	float: left;
-	max-width: 330px;
+	/*max-width: 300px;*/
 	position: absolute;
+	font-size: 1.5em;
+	line-height: 1.3em;
 	}
 body#cex_page #toggles p {
-	font-size: 30px;
-	line-height: 1.33;
 	margin-bottom: 20px;
 	color: #fff;
 	}
@@ -86,10 +88,9 @@ body#cex_page #toggles ul {
 	padding: 0;
 	}
 body#cex_page #toggles ul li {
-	line-height: 1.33;
+	/*line-height: 1.33;*/
 	}
 body#cex_page #toggles ul li a {
-	font-size: 30px;
 	color: #b3b3b3;
 	text-decoration: none;
 	}
@@ -112,8 +113,9 @@ body#cex_page canvas#cex_badge_canvas {
 	margin: 35px auto 25px auto;
 	display: block;
 	}
-
-
+	@media (max-width: 1100px) { body#cex_page canvas#cex_badge_canvas { width: 450px; height: 450px; } }
+	@media (max-width: 820px) { body#cex_page canvas#cex_badge_canvas { width: 350px; height: 350px; } }
+	@media (max-width: 500px) { body#cex_page canvas#cex_badge_canvas { width: 275px; height: 275px; } }
 
 
 /* The Distribution Tables
@@ -136,7 +138,7 @@ body#cex_page #tables table .thead {
 	letter-spacing: 0.3rem;
 	}
 body#cex_page #tables table tr {
-	border-top: 1px solid #999;
+	border-top: 1px solid #888;
 	}
 body#cex_page #tables table tr:first-child {
 	border-top: none;
@@ -148,7 +150,7 @@ body#cex_page #tables table tr:first-child td {
 body#cex_page #tables table td {
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
-	font-size: 20px;
+	font-size: 1em;
 	padding: 6px 0 9px 0;
 	border: none;
 	}
@@ -221,29 +223,26 @@ body#cex_page #map #cex_map img.leaflet-tile {
 
 /* The Sharing Button, etc.
 ----------------------------------------------------------------------------- */
-body#cex_page #share {
+body#cex_page #share,
+body#cex_page #delete {
 	margin-top: 50px;
 	}
-body#cex_page #share p.sharelink {
+body#cex_page #share p.sharelink,
+body#cex_page #delete p.deletelink {
 	margin: 0 0 75px 0;
-	/*width: 325px;*/
-	/*float: left;*/
-	/*display: table;*/
-	/*overflow: hidden;*/
 	}
-body#cex_page #share p.sharelink a {
+body#cex_page #share p.sharelink a,
+body#cex_page #delete p.deletelink a {
 	margin: 0 auto 0 auto;
 	position: relative;
 	display: block;
-	font-size: 29px;
-	line-height: 3rem;
+	font-size: 1.5em;
+	line-height: 1.5em;
 	height: 325px;
 	width: 325px;
 	padding: 95px 0 0 0;
-	/*display: table-cell;*/
 	vertical-align: middle;
 	text-align: center;
-	border: 16px solid #fff000;
 	border-radius: 100%;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
@@ -251,23 +250,28 @@ body#cex_page #share p.sharelink a {
 	color: #fff;
 	text-decoration: none;
 	text-transform: uppercase;
-	letter-spacing: 0.2rem;
+	letter-spacing: 0.2em;
 	}
+body#cex_page #share p.sharelink a	{ border: 16px solid #fff000; }
+body#cex_page #delete p.deletelink a { border: 16px solid #ff0033; }
 body#cex_page #share p.sharelink a:hover {
 	background: #fff000;
 	color: #000;
 	}
-
-/* the info blurb */
-body#cex_page #share p.info {
+body#cex_page #delete p.deletelink a:hover {
+	background: #ff0033;
+	color: #fff;
+	}
+body#cex_page #share p.info,
+body#cex_page #delete p.info {
 	margin: 7px 0 0 0;
 	width: 25%;
 	float: left;
-	font-size: 15px;
-	line-height: 1.3rem;
-	letter-spacing: 0.05rem;
+	font-size: 0.75em;
+	line-height: 1.5em;
+	letter-spacing: 0.05em;
 	position: absolute;
-	}
+	} /* the info blurb */
 
 
 
@@ -276,19 +280,34 @@ body#cex_page #share p.info {
 ----------------------------------------------------------------------------- */
 body#cex_page #citizenship {
 	background: #00dcdc;
+	padding-bottom: 25px;
+	}
+body#cex_page #citizenship-wrapper {
+	width: 80%;
+	max-width: 850px;
 	}
 body#cex_page #citizenship h2,
 body#cex_page #citizenship p {
 	color: #000;
 	}
+body#cex_page #citizenship h2 {
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 1.5em;
+	letter-spacing: 0.3em;
+	}
+body#cex_page #citizenship p {
+	font-size: 1.5em;
+	line-height: 1.3em;
+	}
 body#cex_page #citizenship a {
 	color: #000;
-	border-bottom: 1px solid #000;
+	border-bottom: 3px solid #fff;
 	text-decoration: none;
 	}
 body#cex_page #citizenship a:hover {
 	color: #fff;
-	border-bottom: 1px solid #fff;
+	border-bottom: 3px solid #fff;
 	}
 
 
@@ -304,23 +323,26 @@ body#cex_page #about p {
 	color: #000;
 	}
 body#cex_page #about p {
-	font-size: 20px;
+	font-size: 1em;
+	letter-spacing: 0.03em;
+	line-height: 1.4em;
 	}
 body#cex_page #about #left {
-	width: 45%;
+	width: 48.5%;
 	float: left;
 	}
 body#cex_page #about #right {
-	width: 45%;
+	width: 48.5%;
 	float: right;
 	}
 body#cex_page #about a {
 	text-decoration: none;
-	color: #00dcdc;
-	border-bottom: 1px solid transparent;
+	color: #000;
+	border-bottom: 2px solid #00dcdc;
 	}
 body#cex_page #about a:hover {
-	border-bottom: 1px solid #00dcdc;
+	color: #00dcdc;
+	border-bottom: 2px solid #00dcdc;
 	}
 
 
@@ -330,6 +352,8 @@ body#cex_page #about a:hover {
 ----------------------------------------------------------------------------- */
 body#cex_page #footer {
 	background: #000;
+	padding-top: 50px;
+	padding-bottom: 50px;
 	}
 #footer .credits {
 	float: left;
@@ -343,7 +367,7 @@ body#cex_page #footer {
 	}
 #footer .nav ul li {
 	display: inline;
-	font-size: 16px;
+	font-size: 0.75em;
 	margin-left: 20px;
 	text-transform: uppercase;
 	}
@@ -353,22 +377,25 @@ body#cex_page #footer {
 	width: 433px;
 	height: 32px;
 	background-size: auto 32px;
+	margin-bottom: 200px !important;
+	}
+#footer .additional-credit {
+	margin-top: 75px;
+	}
+#footer p.subhead {
+	margin: 25px 0 0 0;
 	}
 #footer p {
-	font-size: 20px;
-	}
-#footer p.nospace {
-	margin-bottom: 0;
+	font-size: 1em;
+	margin: 0;
+	line-height: 1.5em;
 	}
 #footer a {
 	color: #fff;
 	text-decoration: none;
-	border-bottom: 1px solid transparent;
+	border-bottom: 2px solid transparent;
 	}
 #footer a:hover {
 	color: #fff000;
-	border-bottom: 1px solid #fff000;
-	}
-#footer p.nospace {
-	margin-bottom: 0;
+	border-bottom: 2px solid #fff000;
 	}
