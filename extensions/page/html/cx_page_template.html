@@ -118,16 +118,16 @@
 
 		<div id="sites">
 			<table>
-			<tr>
-				<td class="thead first">Most Visited Sites</td>
-				<td class="thead second">Country</td>
-			</tr>
-			<% _.each(timeframeDomains.slice(0,10), function(entry) { %>
 				<tr>
-					<td class="first"><%= entry.domain %></td>
-					<td class="second"><%= cxPage.convertCountryCode(entry.code) %></td>
+					<td class="thead first">Most Visited Sites</td>
+					<td class="thead second">Country</td>
 				</tr>
-			<% }); %>
+				<% _.each(timeframeDomains.slice(0,10), function(entry) { %>
+					<tr>
+						<td class="first"><%= entry.domain %></td>
+						<td class="second"><%= cxPage.convertCountryCode(entry.code) %></td>
+					</tr>
+				<% }); %>
 			</table>
 		</div><!-- sites -->
 	</div><!-- #tables .section -->
@@ -185,38 +185,37 @@
 
 	<div id="about" class="section">
 		<div id="left">
-		<h2>Accuracy</h2>
-		<p>The extension attempts to work out where a website is, but it will rarely be the real, or exact, location. The location is based on the website's IP address, a string of four digits (e.g. 74.125.226.31) which is the digital form of an address like google.com. These IP addresses are registered in blocks, and do not always correspond to the location of an individual website. In addition, many websites are served via Content Delivery Networks (CDNs) which take the website's content, and serve it from another location to ensure reliability. Those CDNs might have many locations, but the IP address will only tell us where the CDN itself is located. This is true of many large websites, and so the locations the extension provides should be taken only as a guide. To look up the full details about a website's registered address, you can use a service like <a href="http://whois.icann.org/">ICANN</a> or <a href="https://who.is/">Who.is</a>. The extension can't tell you any more than they can.</p>
-		<p>The extension uses the same process to work out your location. Every time you use the internet, you are given an address - another IP number. This doesn't necessarily point to your house, or even your city: it depends on how you access the internet, and will probably point to the registered location of your internet service provider. As with websites, the registered address is only a guide to the real location. Some websites may ask permission to use your real location, which can be determined by your computer from GPS and wifi signals. The extension does not do this. The way it sees you and the way it sees other websites is the way the internet sees you, every time you connect.</p>
+			<h2>Accuracy</h2>
+			<p>The extension attempts to work out where a website is, but it will rarely be the real, or exact, location. The location is based on the website's IP address, a string of four digits (e.g. 74.125.226.31) which is the digital form of an address like google.com. These IP addresses are registered in blocks, and do not always correspond to the location of an individual website. In addition, many websites are served via Content Delivery Networks (CDNs) which take the website's content, and serve it from another location to ensure reliability. Those CDNs might have many locations, but the IP address will only tell us where the CDN itself is located. This is true of many large websites, and so the locations the extension provides should be taken only as a guide. To look up the full details about a website's registered address, you can use a service like <a href="http://whois.icann.org/">ICANN</a> or <a href="https://who.is/">Who.is</a>. The extension can't tell you any more than they can.</p>
+			<p>The extension uses the same process to work out your location. Every time you use the internet, you are given an address - another IP number. This doesn't necessarily point to your house, or even your city: it depends on how you access the internet, and will probably point to the registered location of your internet service provider. As with websites, the registered address is only a guide to the real location. Some websites may ask permission to use your real location, which can be determined by your computer from GPS and wifi signals. The extension does not do this. The way it sees you and the way it sees other websites is the way the internet sees you, every time you connect.</p>
 		</div>
 		<div id="right">
-		<h2>Privacy</h2>
-		<p>The Citizen Extension is software running on <em>your</em> computer, inside <em>your</em> browser. The data that it gathers is <em>your</em> data. This data is stored by your browser on your computer and isn't stored or sent anywhere else without your express permission.</p>
-		<p>If you choose to share data with Citizen Ex via the "Share Data" button above, no personal information is included: just the locations of the websites you visit (and not their names or IP addresses). If you share your Algorithmic Citizenship badge, this only includes a graphical representation of the countries you visit, and it does not include your location, or any data about the websites you visit.</p>
-		<p>The developers built this extension, and took these decisions about how data is stored, because we believe that personal privacy is important, and people who use computers and software should be aware of, and responsible for, their own data and privacy. The extension code is open source so that anyone can inspect it.</p>
-		<p>For an introduction to online privacy issues, visit <a href="https://www.cyberstreetwise.com/">Cyber Street</a>. For more advanced tools, see the EFF's <a href="https://ssd.eff.org">Surveillance Self-Defense</a>.</p>
+			<h2>Privacy</h2>
+			<p>The Citizen Extension is software running on <em>your</em> computer, inside <em>your</em> browser. The data that it gathers is <em>your</em> data. This data is stored by your browser on your computer and isn't stored or sent anywhere else without your express permission.</p>
+			<p>If you choose to share data with Citizen Ex via the "Share Data" button above, no personal information is included: just the locations of the websites you visit (and not their names or IP addresses). If you share your Algorithmic Citizenship badge, this only includes a graphical representation of the countries you visit, and it does not include your location, or any data about the websites you visit.</p>
+			<p>The developers built this extension, and took these decisions about how data is stored, because we believe that personal privacy is important, and people who use computers and software should be aware of, and responsible for, their own data and privacy. The extension code is open source so that anyone can inspect it.</p>
+			<p>For an introduction to online privacy issues, visit <a href="https://www.cyberstreetwise.com/">Cyber Street</a>. For more advanced tools, see the EFF's <a href="https://ssd.eff.org">Surveillance Self-Defense</a>.</p>
 		</div>
 	</div><!-- about -->
-	
+
 	<div id="delete" class="section">
 		<p class="info">Had enough of storing your data? It is only stored on your computer, but if you want to do a complete wipe and start over, clicking this button will remove your complete history. This cannot be undone.</p>
 		<p class="deletelink"><a class="cex_deletedata" href="#">Delete<br />Your Data</a></p>
 	</div><!-- delete -->
 
 	<div id="footer" class="section">
-
-	<div class="credits">
 		<p><img id="logo" src="" width="107" height="24" /></p>
-		<p>A project by <a href="http://booktwo.org">James Bridle</a></p>
-		<p class="nospace"><strong>Made possible with funding from:</strong></p>
-		<p class="nospace"><a href="http://www.southbankcentre.co.uk">Southbank Centre</a></p>
-		<p class="nospace"><a href="http://www.thespace.org">The Space</a></p>
-		<p><a href="http://webfoundation.org">World Wide Web Foundation</a></p>
-		<p class="nospace"><strong>Designed and built by:</strong></p>
-		<p><a href="http://booktwo.org">James Bridle</a> / <a href="http://ntlk.net/">ntlk</a> / <a href="http://aftertheflood.co/">After the Flood</a></p>
-
-	</div>
-
+		<div class="credits">
+			<p class="subhead">A project by <a href="http://booktwo.org">James Bridle</a></p>
+			<div class="additional-credit">
+				<p class="subhead"><strong>Made possible with funding from:</strong></p>
+				<p><a href="http://www.southbankcentre.co.uk">Southbank Centre</a></p>
+				<p><a href="http://www.thespace.org">The Space</a></p>
+				<p><a href="http://webfoundation.org">World Wide Web Foundation</a></p>
+				<p class="subhead"><strong>Designed and built by:</strong></p>
+				<p><a href="http://booktwo.org">James Bridle</a> / <a href="http://ntlk.net/">ntlk</a> / <a href="http://aftertheflood.co/">After the Flood</a></p>
+			</div>
+		</div>
 	</div><!-- footer -->
 
 

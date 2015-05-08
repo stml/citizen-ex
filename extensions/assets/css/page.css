@@ -136,7 +136,7 @@ body#cex_page #tables table .thead {
 	letter-spacing: 0.4rem;
 	}
 body#cex_page #tables table tr {
-	border-top: 1px solid #999;
+	border-top: 1px solid #888;
 	}
 body#cex_page #tables table tr:first-child {
 	border-top: none;
@@ -382,6 +382,8 @@ body#cex_page #delete p.deletelink a:hover {
 ----------------------------------------------------------------------------- */
 body#cex_page #footer {
 	background: #000;
+	padding-top: 50px;
+	padding-bottom: 50px;
 	}
 #footer .credits {
 	float: left;
@@ -405,22 +407,25 @@ body#cex_page #footer {
 	width: 433px;
 	height: 32px;
 	background-size: auto 32px;
+	margin-bottom: 200px !important;
+	}
+#footer .additional-credit {
+	margin-top: 75px;
+	}
+#footer p.subhead {
+	margin: 25px 0 0 0;
 	}
 #footer p {
 	font-size: 20px;
-	}
-#footer p.nospace {
-	margin-bottom: 0;
+	margin: 0;
+	line-height: 1.75rem;
 	}
 #footer a {
 	color: #fff;
 	text-decoration: none;
-	border-bottom: 1px solid transparent;
+	border-bottom: 2px solid transparent;
 	}
 #footer a:hover {
 	color: #fff000;
-	border-bottom: 1px solid #fff000;
-	}
-#footer p.nospace {
-	margin-bottom: 0;
+	border-bottom: 2px solid #fff000;
 	}
