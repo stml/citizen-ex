@@ -35,6 +35,13 @@ body#cex_page .section {
 	box-sizing: border-box;
 	}
 
+body#cex_page h2 {
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 20px;
+	letter-spacing: 0.3rem;
+	}
+
 
 
 
@@ -111,7 +118,7 @@ body#cex_page canvas#cex_badge_canvas {
 	width: 550px;
 	height: 550px;
 	position: relative;
-	margin: 0 auto 25px auto;
+	margin: 35px auto 25px auto;
 	display: block;
 	}
 
@@ -151,7 +158,7 @@ body#cex_page #tables table td {
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
 	font-size: 20px;
-	padding: 6px 0;
+	padding: 6px 0 9px 0;
 	border: none;
 	}
 .body#cex_page #tables table td.first {
@@ -164,17 +171,8 @@ body#cex_page #tables table td.second {
 
 
 
-
-
-
-
-body#cex_page h2 {
-	text-transform: uppercase;
-	font-weight: normal;
-	font-size: 20px;
-	letter-spacing: 0.3rem;
-	}
-
+/* The Map
+----------------------------------------------------------------------------- */
 body#cex_page #map #cex_map {
 	width: 100%;
 	height: 550px;
@@ -227,41 +225,64 @@ body#cex_page #map #cex_map img.leaflet-tile {
     filter: grayscale(1) !important; /* W3C */
   	}
 
+
+
+
+/* The Sharing Button, etc.
+----------------------------------------------------------------------------- */
+body#cex_page #share {
+	margin-top: 50px;
+	}
 body#cex_page #share p.sharelink {
-	width: 325px;
-	float: left;
-	margin-left: 25%;
-	display: table;
-	overflow: hidden;
+	margin: 0 0 75px 0;
+	/*width: 325px;*/
+	/*float: left;*/
+	/*display: table;*/
+	/*overflow: hidden;*/
 	}
 body#cex_page #share p.sharelink a {
+	margin: 0 auto 0 auto;
+	position: relative;
+	display: block;
 	font-size: 29px;
-	line-height: 2;
+	line-height: 3rem;
 	height: 325px;
 	width: 325px;
-	display: table-cell;
+	padding: 95px 0 0 0;
+	/*display: table-cell;*/
 	vertical-align: middle;
 	text-align: center;
 	border: 16px solid #fff000;
 	border-radius: 100%;
 	box-sizing:border-box;
-  	-moz-box-sizing:border-box;
-  	-webkit-box-sizing:border-box;
-  	color: #fff;
-  	text-decoration: none;
-  	text-transform: uppercase;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	color: #fff;
+	text-decoration: none;
+	text-transform: uppercase;
 	letter-spacing: 0.2rem;
 	}
 body#cex_page #share p.sharelink a:hover {
 	background: #fff000;
 	color: #000;
 	}
+
+/* the info blurb */
 body#cex_page #share p.info {
-	width: 40%;
-	float: right;
-	font-size: 13px;
+	margin: 7px 0 0 0;
+	width: 25%;
+	float: left;
+	font-size: 15px;
+	line-height: 1.3rem;
+	letter-spacing: 0.05rem;
+	position: absolute;
 	}
 
+
+
+
+/* Citizenship
+----------------------------------------------------------------------------- */
 body#cex_page #citizenship {
 	background: #00dcdc;
 	}
@@ -279,6 +300,11 @@ body#cex_page #citizenship a:hover {
 	border-bottom: 1px solid #fff;
 	}
 
+
+
+
+/* About
+----------------------------------------------------------------------------- */
 body#cex_page #about {
 	background: #fff;
 	}
@@ -306,6 +332,11 @@ body#cex_page #about a:hover {
 	border-bottom: 1px solid #00dcdc;
 	}
 
+
+
+
+/* The Footer
+----------------------------------------------------------------------------- */
 body#cex_page #footer {
 	background: #000;
 	}
