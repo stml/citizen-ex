@@ -35,7 +35,8 @@ body#cex_page .section {
 	box-sizing: border-box;
 	font-size: 20px;
 	}
-
+	@media (max-width: 1100px) { body#cex_page .section { font-size: 16px;} }
+	@media (max-width: 820px) { body#cex_page .section { font-size: 14px;} }
 body#cex_page h2 {
 	text-transform: uppercase;
 	font-weight: normal;
@@ -80,19 +81,13 @@ body#cex_page #header p.homepage a:hover {
 /* The Toggles
 ----------------------------------------------------------------------------- */
 body#cex_page #toggles {
-	width: 25%;
+	width: 20%;
 	float: left;
-	max-width: 300px;
+	/*max-width: 300px;*/
 	position: absolute;
 	font-size: 1.5em;
 	line-height: 1.3em;
 	}
-/*	@media (max-width: 1100px) {
-		body#cex_page #toggles {
-			max-width: 250px;
-			font-size: 24px;
-		}}
-*/
 body#cex_page #toggles p {
 	margin-bottom: 20px;
 	color: #fff;
@@ -127,8 +122,9 @@ body#cex_page canvas#cex_badge_canvas {
 	margin: 35px auto 25px auto;
 	display: block;
 	}
-
-
+	@media (max-width: 1100px) { body#cex_page canvas#cex_badge_canvas { width: 450px; height: 450px; } }
+	@media (max-width: 820px) { body#cex_page canvas#cex_badge_canvas { width: 350px; height: 350px; } }
+	@media (max-width: 500px) { body#cex_page canvas#cex_badge_canvas { width: 275px; height: 275px; } }
 
 
 /* The Distribution Tables
