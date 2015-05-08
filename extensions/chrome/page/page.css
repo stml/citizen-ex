@@ -268,7 +268,8 @@ body#cex_page #share p.sharelink a:hover {
 	}
 
 /* the info blurb */
-body#cex_page #share p.info {
+body#cex_page #share p.info,
+body#cex_page #delete p.info {
 	margin: 7px 0 0 0;
 	width: 25%;
 	float: left;
@@ -349,8 +350,44 @@ body#cex_page #about a:hover {
 	border-bottom: 2px solid #00dcdc;
 	}
 
-
-
+/* The Delete Button
+----------------------------------------------------------------------------- */
+body#cex_page #delete {
+	margin-top: 50px;
+	}
+body#cex_page #delete p.deletelink {
+	margin: 0 0 75px 0;
+	/*width: 325px;*/
+	/*float: left;*/
+	/*display: table;*/
+	/*overflow: hidden;*/
+	}
+body#cex_page #delete p.deletelink a {
+	margin: 0 auto 0 auto;
+	position: relative;
+	display: block;
+	font-size: 29px;
+	line-height: 3rem;
+	height: 325px;
+	width: 325px;
+	padding: 95px 0 0 0;
+	/*display: table-cell;*/
+	vertical-align: middle;
+	text-align: center;
+	border: 16px solid #ff0000;
+	border-radius: 100%;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	color: #fff;
+	text-decoration: none;
+	text-transform: uppercase;
+	letter-spacing: 0.2rem;
+	}
+body#cex_page #delete p.deletelink a:hover {
+	background: #ff0000;
+	color: #fff;
+	}
 
 /* The Footer
 ----------------------------------------------------------------------------- */
