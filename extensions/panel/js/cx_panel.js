@@ -13,7 +13,11 @@ var CxPanel = CxExtension.extend({
   },
 
   requestPage: function() {
-    message.send({ page: true });
+    if (this.browser.firefox()) {
+      cxPage.open();
+    } else {
+      message.send({ page: true });
+    }
   },
 
   requestOpenTabs: function() {
@@ -66,30 +70,13 @@ var CxPanel = CxExtension.extend({
     this.set({ openTabsCitizenship: openTabsCitizenship });
   },
 
-  open: function() {
-    this.set({ open: true });
-  },
-
-  close: function() {
-    this.set({ open: false });
-  },
-
-  toggle: function() {
-    if (this.get('open')) {
-      this.close();
-    } else {
-      this.open();
-    }
-  },
 
   resetValues: function() {
-    this.set({ open: false });
-
     this.set({ currentEntry: '' });
     this.set({ openTabEntries: [] });
     this.set({ openTabsCitizenship: [] });
 
-    CxExtension.prototype.resetValues.apply(this);
+    CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {

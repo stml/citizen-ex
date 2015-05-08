@@ -3,6 +3,9 @@ var tabs = require('sdk/tabs');
 var self = require('sdk/self');
 var pageMod = require('sdk/page-mod');
 
+var globalWorker;
+var baseURI = self.data.url('./');
+
 var button = buttons.ActionButton({
   id: 'openCxPanel',
   label: 'Citizen Ex',
@@ -11,24 +14,21 @@ var button = buttons.ActionButton({
   },
   onClick: function(state) {
     var worker = tabs.activeTab.attach({
-      contentScriptFile: [
-        self.data.url('./panel/panel_trigger.js')
-      ],
+      contentScriptFile: self.data.url('./panel/panel_trigger.js'),
     });
     worker.port.on('openCxPanel', function() {
       globalWorker.port.emit('openCxPanel', true);
-      // tabs.open(self.data.url('./page/page.html'));
     });
   }
 });
 
 pageMod.PageMod({
   include: '*',
-  contentStyleFile: self.data.url('./panel/panel.css')
+  contentStyleFile: [
+    self.data.url('./panel/panel.css'),
+    self.data.url('./page/page.css')
+  ]
 });
-
-var globalWorker;
-var baseURI = self.data.url('./');
 
 tabs.on('ready', function(tab) {
   var worker = tab.attach({
@@ -37,7 +37,9 @@ tabs.on('ready', function(tab) {
       self.data.url('./lib/jquery.js'),
       self.data.url('./lib/backbone.js'),
       self.data.url('./lib/mapbox.js'),
-      self.data.url('./panel/panel.js')
+      self.data.url('./lib/moment.js'),
+      self.data.url('./panel/panel.js'),
+      self.data.url('./page/page.js')
     ],
     contentScriptOptions: {
       'baseURI': baseURI
@@ -59,12 +61,6 @@ tabs.on('ready', function(tab) {
   });
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
-  });
-  worker.port.on('page', function() {
-    tabs.open({
-      url: self.data.url('./page/page.html'),
-      inNewTab: true
-    });
   });
 });
 
@@ -89,4 +85,5 @@ var sendCountryLog = function(worker) {
 var sendAllLogEntries = function(worker) {
   worker.port.emit('allLogEntries', logEntries);
 };
+
 

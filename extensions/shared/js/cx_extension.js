@@ -84,8 +84,25 @@ var CxExtension = Backbone.Model.extend({
     return countryCodes;
   },
 
+  open: function() {
+    this.set({ open: true });
+  },
+
+  close: function() {
+    this.set({ open: false });
+  },
+
+  toggle: function() {
+    if (this.get('open')) {
+      this.close();
+    } else {
+      this.open();
+    }
+  },
 
   resetValues: function() {
+    this.set({ open: false });
+
     this.unset('logEntries');
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
