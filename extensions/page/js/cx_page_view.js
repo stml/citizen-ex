@@ -7,7 +7,8 @@ var CxPageView = Backbone.View.extend({
 
   events: {
     'click .cex_erase': 'eraseData',
-    'click .cex_toggle': 'toggleTimeframe'
+    'click .cex_toggle': 'toggleTimeframe',
+    'click .cex_sharedata': 'toggleAllTime'
   },
 
   initialize: function(options) {
@@ -33,6 +34,11 @@ var CxPageView = Backbone.View.extend({
   toggleTimeframe: function(event) {
     event.preventDefault();
     this.model.toggleTimeframe(event.target.name);
+  },
+
+  toggleAllTime: function(event) {
+    event.preventDefault();
+    this.model.toggleTimeframe('all-time');
   },
 
   triggerTimeframe: function() {
