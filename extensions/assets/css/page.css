@@ -24,13 +24,14 @@ body#cex_page .section {
 	position: relative;
 	padding: 25px 50px;
 	box-sizing: border-box;
+	font-size: 20px;
 	}
 
 body#cex_page h2 {
 	text-transform: uppercase;
 	font-weight: normal;
-	font-size: 20px;
-	letter-spacing: 0.3rem;
+	font-size: 1em;
+	letter-spacing: 0.25em;
 	}
 
 
@@ -47,9 +48,9 @@ body#cex_page #header #logo {
 body#cex_page #header p.homepage {
 	float: right;
 	margin: 0;
-	font-size: 16px;
-	letter-spacing: 0.3rem;
-	line-height: 1rem;
+	font-size: 0.75em;
+	letter-spacing: 0.3em;
+	line-height: 1em;
 	text-transform: uppercase;
 	color: #fff;
 	}
@@ -74,14 +75,15 @@ body#cex_page #toggles {
 	float: left;
 	max-width: 300px;
 	position: absolute;
-	font-size: 30px;
-	line-height: 1.33;
+	font-size: 1.5em;
+	line-height: 1.3em;
 	}
-	@media (max-width: 1100px) {
+/*	@media (max-width: 1100px) {
 		body#cex_page #toggles {
 			max-width: 250px;
 			font-size: 24px;
 		}}
+*/
 body#cex_page #toggles p {
 	margin-bottom: 20px;
 	color: #fff;
@@ -94,7 +96,6 @@ body#cex_page #toggles ul li {
 	/*line-height: 1.33;*/
 	}
 body#cex_page #toggles ul li a {
-	/*font-size: 30px;*/
 	color: #b3b3b3;
 	text-decoration: none;
 	}
@@ -153,7 +154,7 @@ body#cex_page #tables table tr:first-child td {
 body#cex_page #tables table td {
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	color: #fff;
-	font-size: 20px;
+	font-size: 1em;
 	padding: 6px 0 9px 0;
 	border: none;
 	}
@@ -226,25 +227,26 @@ body#cex_page #map #cex_map img.leaflet-tile {
 
 /* The Sharing Button, etc.
 ----------------------------------------------------------------------------- */
-body#cex_page #share {
+body#cex_page #share,
+body#cex_page #delete {
 	margin-top: 50px;
 	}
-body#cex_page #share p.sharelink {
+body#cex_page #share p.sharelink,
+body#cex_page #delete p.deletelink {
 	margin: 0 0 75px 0;
 	}
-body#cex_page #share p.sharelink a {
+body#cex_page #share p.sharelink a,
+body#cex_page #delete p.deletelink a {
 	margin: 0 auto 0 auto;
 	position: relative;
 	display: block;
-	font-size: 29px;
-	line-height: 3rem;
+	font-size: 1.5em;
+	line-height: 1.5em;
 	height: 325px;
 	width: 325px;
 	padding: 95px 0 0 0;
-	/*display: table-cell;*/
 	vertical-align: middle;
 	text-align: center;
-	border: 16px solid #fff000;
 	border-radius: 100%;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
@@ -252,24 +254,28 @@ body#cex_page #share p.sharelink a {
 	color: #fff;
 	text-decoration: none;
 	text-transform: uppercase;
-	letter-spacing: 0.3rem;
+	letter-spacing: 0.2em;
 	}
+body#cex_page #share p.sharelink a	{ border: 16px solid #fff000; }
+body#cex_page #delete p.deletelink a { border: 16px solid #ff0033; }
 body#cex_page #share p.sharelink a:hover {
 	background: #fff000;
 	color: #000;
 	}
-
-/* the info blurb */
+body#cex_page #delete p.deletelink a:hover {
+	background: #ff0033;
+	color: #fff;
+	}
 body#cex_page #share p.info,
 body#cex_page #delete p.info {
 	margin: 7px 0 0 0;
 	width: 25%;
 	float: left;
-	font-size: 15px;
-	line-height: 1.3rem;
-	letter-spacing: 0.05rem;
+	font-size: 0.75em;
+	line-height: 1.5em;
+	letter-spacing: 0.05em;
 	position: absolute;
-	}
+	} /* the info blurb */
 
 
 
@@ -291,10 +297,11 @@ body#cex_page #citizenship p {
 body#cex_page #citizenship h2 {
 	text-transform: uppercase;
 	font-weight: normal;
-	font-size: 30px;
-	letter-spacing: 0.3rem;
+	font-size: 1.5em;
+	letter-spacing: 0.3em;
 	}
 body#cex_page #citizenship p {
+	font-size: 1.5em;
 	line-height: 1.3em;
 	}
 body#cex_page #citizenship a {
@@ -320,8 +327,8 @@ body#cex_page #about p {
 	color: #000;
 	}
 body#cex_page #about p {
-	font-size: 20px;
-	letter-spacing: 0.03rem;
+	font-size: 1em;
+	letter-spacing: 0.03em;
 	line-height: 1.4em;
 	}
 body#cex_page #about #left {
@@ -340,44 +347,6 @@ body#cex_page #about a {
 body#cex_page #about a:hover {
 	color: #00dcdc;
 	border-bottom: 2px solid #00dcdc;
-	}
-
-
-
-
-/* The Delete Button
------------------------------------------------------------------------------ */
-body#cex_page #delete {
-	margin-top: 50px;
-	}
-body#cex_page #delete p.deletelink {
-	margin: 0 0 75px 0;
-	}
-body#cex_page #delete p.deletelink a {
-	margin: 0 auto 0 auto;
-	position: relative;
-	display: block;
-	font-size: 29px;
-	line-height: 3rem;
-	height: 325px;
-	width: 325px;
-	padding: 95px 0 0 0;
-	/*display: table-cell;*/
-	vertical-align: middle;
-	text-align: center;
-	border: 16px solid #ff0033;
-	border-radius: 100%;
-	box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	color: #fff;
-	text-decoration: none;
-	text-transform: uppercase;
-	letter-spacing: 0.2rem;
-	}
-body#cex_page #delete p.deletelink a:hover {
-	background: #ff0033;
-	color: #fff;
 	}
 
 
@@ -402,7 +371,7 @@ body#cex_page #footer {
 	}
 #footer .nav ul li {
 	display: inline;
-	font-size: 16px;
+	font-size: 0.75em;
 	margin-left: 20px;
 	text-transform: uppercase;
 	}
@@ -421,9 +390,9 @@ body#cex_page #footer {
 	margin: 25px 0 0 0;
 	}
 #footer p {
-	font-size: 20px;
+	font-size: 1em;
 	margin: 0;
-	line-height: 1.75rem;
+	line-height: 1.5em;
 	}
 #footer a {
 	color: #fff;
