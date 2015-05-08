@@ -1306,7 +1306,7 @@ var CxExtension = Backbone.Model.extend({
 
 var CxPanel = CxExtension.extend({
   initialize: function(browser) {
-    CxExtension.prototype.initialize.apply(this, browser);
+    CxExtension.prototype.initialize.call(this, browser);
 
     this.requestActiveTab();
     this.requestOpenTabs();
@@ -1389,7 +1389,7 @@ var CxPanel = CxExtension.extend({
     this.set({ openTabEntries: [] });
     this.set({ openTabsCitizenship: [] });
 
-    CxExtension.prototype.resetValues.apply(this);
+    CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {

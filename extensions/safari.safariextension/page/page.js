@@ -775,7 +775,7 @@ var CxExtension = Backbone.Model.extend({
 
 var CxPage = CxExtension.extend({
   initialize: function(browser, timeframes) {
-    CxExtension.prototype.initialize.apply(this, browser);
+    CxExtension.prototype.initialize.call(this, browser);
     this.timeframes = timeframes;
     this.set({ currentEntry: '' })
 
@@ -841,7 +841,7 @@ var CxPage = CxExtension.extend({
       timeframe: null
     });
 
-    CxExtension.prototype.resetValues.apply(this);
+    CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {
