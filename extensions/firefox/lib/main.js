@@ -697,6 +697,7 @@ tabs.on('ready', function(tab) {
       self.data.url('./lib/jquery.js'),
       self.data.url('./lib/backbone.js'),
       self.data.url('./lib/mapbox.js'),
+      self.data.url('./lib/moment.js'),
       self.data.url('./panel/panel.js'),
       self.data.url('./page/page.js')
     ],
