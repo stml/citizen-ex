@@ -714,14 +714,23 @@ var CxExtension = Backbone.Model.extend({
   calculatePercentages: function(data) {
     var sum = _.reduce(data, function(memo, num) { return memo + num; }, 0);
     var result = [];
+    var last;
     _.each(data, function(value, key) {
       var percentage = (value / sum) * 100;
       percentage = percentage.toFixed(2);
+      if (key === '') {
+        last = { 'unknown': key, percentage: percentage };
+        return;
+      }
       result.push({ code: key, percentage: percentage });
     });
     result = _.sortBy(result, 'percentage');
+    result = result.reverse();
+    if (last) {
+      result.push(last);
+    }
 
-    return result.reverse();
+    return result;
   },
 
   calculateDomainPercentages: function(data) {
