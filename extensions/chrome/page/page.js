@@ -812,7 +812,7 @@ var CxPage = CxExtension.extend({
     var cutOffDate = moment().subtract(n, unit).valueOf();
 
     var latestEntries = _.filter(entries, function(entry) {
-      return entry.latestTimestamp() <= cutOffDate;
+      return entry.latestTimestamp() >= cutOffDate;
     });
     return latestEntries;
   },
