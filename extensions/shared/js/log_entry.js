@@ -11,7 +11,8 @@ LogEntry.prototype.fromJSON = function(json) {
 };
 
 LogEntry.prototype.latestTimestamp = function() {
-  return _.max(this.timestamps, function(timestamp) {
-    return Date.parse(timestamp).value;
+  var latest = _.max(this.timestamps, function(timestamp) {
+    return Date.parse(timestamp);
   });
+  return Date.parse(latest);
 };
