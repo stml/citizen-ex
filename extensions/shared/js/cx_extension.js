@@ -38,6 +38,7 @@ var CxExtension = Backbone.Model.extend({
       this.set({ logEntries: '' });
     } else {
       this.set({ logEntries: logEntries });
+      this.saveShareData();
     }
   },
 
@@ -133,6 +134,7 @@ var CxExtension = Backbone.Model.extend({
 
   resetValues: function() {
     this.unset('logEntries');
+    this.unset('shareData');
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
   },
@@ -140,6 +142,31 @@ var CxExtension = Backbone.Model.extend({
   eraseData: function() {
     this.resetValues();
     storage.clear();
+  },
+
+  saveShareData: function() {
+    var data = this.prepShareData();
+    this.set({ shareData: data });
+  },
+
+  prepShareData: function() {
+    var logEntries = this.get('logEntries');
+    if (logEntries) {
+      shareableEntries = [];
+      _.each(logEntries, _.bind(function(entry) {
+        var obj = {};
+        var lat = this.trimGeo(entry.lat);
+        var lng = this.trimGeo(entry.lng);
+        shareableEntries.push({ lat: lat, lng: lng, timestamps: entry.timestamps, countryCode: entry.countryCode, countryName: entry.countryName, city: entry.city });
+      }, this));
+      return shareableEntries;
+    } else {
+      return null;
+    }
+  },
+
+  trimGeo: function(float) {
+    return float.toFixed(2);
   },
 
   convertIsoCode: function(countrycode) {
