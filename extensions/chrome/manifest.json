@@ -25,7 +25,8 @@
   "web_accessible_resources": [
     "flags/*.svg",
     "images/*",
-    "page/page.html"
+    "page/page.html",
+    "panel/*"
   	],
   "content_scripts": [
     {
@@ -36,7 +37,7 @@
         "lib/jquery.js",
         "lib/backbone.js",
         "lib/moment.js",
-        "lib/leaflet.js",
+        "lib/mapbox.js",
         "panel/panel.js"
       ]
     }

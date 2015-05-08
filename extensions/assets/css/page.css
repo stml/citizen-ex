@@ -1,3 +1,5 @@
+/* The Basics
+----------------------------------------------------------------------------- */
 body#cex_page {
 	background: #666;
 	color: #fff;
@@ -8,16 +10,14 @@ body#cex_page {
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
-	letter-spacing: 0.15rem;
+	letter-spacing: 0.1rem;
 	margin: 0;
 	padding: 0;
 	}
-
 body#cex_page #container {
 	}
-	
 body#cex_page .section {
 	width: 100%;
 	overflow: hidden;
@@ -26,8 +26,13 @@ body#cex_page .section {
 	box-sizing: border-box;
 	}
 
+
+
+
+/* The Page Header
+----------------------------------------------------------------------------- */
 body#cex_page #header {
-	padding-top: 50px;
+	padding-top: 25px;
 	}
 body#cex_page #header #logo {
 	float: left;
@@ -35,23 +40,33 @@ body#cex_page #header #logo {
 body#cex_page #header p.homepage {
 	float: right;
 	margin: 0;
-	}
-body#cex_page #header p.homepage a {
-	color: #fff;
-	text-decoration: none;
-	border-bottom: 1px solid transparent;
-	text-transform: uppercase;
 	font-size: 16px;
 	letter-spacing: 0.2rem;
+	line-height: 1rem;
+	text-transform: uppercase;
+	color: #fff;
+	}
+body#cex_page #header p.homepage a {
+	text-decoration: none;
+	border-bottom: 3px solid transparent;
+	color: #fff;
+	padding-bottom: 8px;
 	}
 body#cex_page #header p.homepage a:hover {
 	color: #fff000;
-	border-bottom: 1px solid #fff000;
+	border-bottom: 3px solid #fff000;
 	}
 
+
+
+
+/* The Toggles
+----------------------------------------------------------------------------- */
 body#cex_page #toggles {
 	width: 25%;
 	float: left;
+	max-width: 330px;
+	position: absolute;
 	}
 body#cex_page #toggles p {
 	font-size: 30px;
@@ -78,35 +93,47 @@ body#cex_page #toggles ul li a.selected {
 	color: #fff;
 	}
 
-body#cex_page badge {	
-	float: left;
-	width: 50%;
-	}
+
+
+
+/* The Badge
+----------------------------------------------------------------------------- */
 body#cex_page canvas#cex_badge_canvas {
 	width: 550px;
 	height: 550px;
+	position: relative;
+	margin: 0 auto 25px auto;
+	display: block;
 	}
 
+
+
+
+/* The Distribution Tables
+----------------------------------------------------------------------------- */
 body#cex_page #tables #distribution {
 	float: left;
-	width: 45%;
-	}	
+	width: 48.5%;
+	}
 body#cex_page #tables #sites {
 	float: right;
-	width: 45%;
+	width: 48.5%;
 	}
 body#cex_page #tables table {
 	width: 100%;
 	border-collapse: collapse;
 	}
 body#cex_page #tables table .thead {
-	font-weight: bold;
+	/* font-weight: bold; */
+	text-transform: uppercase;
+	letter-spacing: 0.3rem;
 	}
 body#cex_page #tables table tr {
-	border-top: 1px solid #fff;
+	border-top: 1px solid #999;
 	}
 body#cex_page #tables table tr:first-child {
 	border-top: none;
+	border-bottom: 5px solid #fff;
 	}
 body#cex_page #tables table tr:first-child td {
 	padding: 0 0 6px;
@@ -124,16 +151,25 @@ body#cex_page #tables table td {
 body#cex_page #tables table td.second {
 	text-align: right;
 	}
-	
+
+
+
+
+
+
+
+
 body#cex_page h2 {
 	text-transform: uppercase;
+	font-weight: normal;
 	font-size: 20px;
+	letter-spacing: 0.3rem;
 	}
 
 body#cex_page #map #cex_map {
 	width: 100%;
 	height: 550px;
-	border: 3px solid #fff;
+	border: 5px solid #fff;
 	box-sizing: border-box;
 	}
 body#cex_page #map #cex_map .leaflet-control-attribution {
@@ -147,6 +183,19 @@ body#cex_page #map #cex_map .leaflet-control-attribution a {
 	text-decoration: none !important;
 	font-size: 12px !important;
 	color: #fff !important;
+	}
+body#cex_page #map #cex_map .leaflet-popup-content-wrapper {
+	background: rgba(0,0,0,0.75);
+	color: #fff;
+	font-size: 12px;
+	line-height: 18px;
+	}
+body#cex_page #map #cex_map .leaflet-popup-tip-container {
+	width:15px;
+	height:15px;
+	}
+body#cex_page #map #cex_map .leaflet-popup-tip {
+	display: none;
 	}
 body#cex_page #map #cex_map .mapbox-maplogo {
 	position:absolute;
@@ -173,7 +222,7 @@ body#cex_page #share p.sharelink {
 	width: 325px;
 	float: left;
 	margin-left: 25%;
-	display: table; 
+	display: table;
 	overflow: hidden;
 	}
 body#cex_page #share p.sharelink a {
@@ -181,7 +230,7 @@ body#cex_page #share p.sharelink a {
 	line-height: 2;
 	height: 325px;
 	width: 325px;
-	display: table-cell; 
+	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
 	border: 16px solid #fff000;
@@ -203,7 +252,7 @@ body#cex_page #share p.info {
 	float: right;
 	font-size: 13px;
 	}
- 	
+
 body#cex_page #citizenship {
 	background: #00dcdc;
 	}
@@ -211,7 +260,16 @@ body#cex_page #citizenship h2,
 body#cex_page #citizenship p {
 	color: #000;
 	}
-	
+body#cex_page #citizenship a {
+	color: #000;
+	border-bottom: 1px solid #000;
+	text-decoration: none;
+	}
+body#cex_page #citizenship a:hover {
+	color: #fff;
+	border-bottom: 1px solid #fff;
+	}
+
 body#cex_page #about {
 	background: #fff;
 	}
@@ -230,7 +288,15 @@ body#cex_page #about #right {
 	width: 45%;
 	float: right;
 	}
-	
+body#cex_page #about a {
+	text-decoration: none;
+	color: #00dcdc;
+	border-bottom: 1px solid transparent;
+	}
+body#cex_page #about a:hover {
+	border-bottom: 1px solid #00dcdc;
+	}
+
 body#cex_page #footer {
 	background: #000;
 	}
@@ -242,7 +308,7 @@ body#cex_page #footer {
 	}
 #footer .nav ul {
 	list-style: none;
-	text-align: right;	
+	text-align: right;
 	}
 #footer .nav ul li {
 	display: inline;

@@ -2,7 +2,7 @@
 
 	<div id="header" class="section">
 		<img id="logo" src="" width="107" height="24" />
-		<p class="homepage"><a href="http://citizen-ex.com">citizen-ex.com &raquo;</a></p>
+		<p class="homepage">go to: <a href="http://citizen-ex.com">citizen-ex.com</a></p>
 		<script type="text/javascript">
             if (!_.isUndefined(window.chrome)) {
               $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
@@ -122,7 +122,7 @@
 				<td class="thead first">Most Visited Sites</td>
 				<td class="thead second">Country</td>
 			</tr>
-			<% _.each(timeframeDomains, function(entry) { %>
+			<% _.each(timeframeDomains.slice(0,10), function(entry) { %>
 				<tr>
 					<td class="first"><%= entry.domain %></td>
 					<td class="second"><%= cxPage.convertCountryCode(entry.code) %></td>
@@ -136,8 +136,6 @@
 		<h2>Your Map</h2>
 		<div id="cex_map">
 			<img id="cex_map_loading" src="" alt="Loading"/>
-			<!-- Add mapbox watermark -->
-  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
   		</div>
 
   		<script type="text/javascript">
@@ -148,42 +146,22 @@
 	        }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map', { zoomControl:false });
-			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://openstreetmap.org/copyright">Map data: &copy; OpenStreetMap</a>'}).addTo(cexmap);
+			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
+	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });
 			cexmap.attributionControl.setPrefix("");
-			
-			            var yellowMarker;
-            var cyanMarker;
-            var tabMarker;
-
-            if (!_.isUndefined(window.chrome)) {
-              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
-            } else if (safari) {
-              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
-            }
-
-			var destIcon = L.icon({
-				iconUrl: yellowMarker,
-				iconSize:     [41,41], // size of the icon
-				iconAnchor:   [20,20], // point of the icon which will correspond to marker's location
-				});
-
-			var cexmarkergroup = new L.featureGroup();
-            
+			var heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
+			var cexmarkergroup = L.mapbox.featureLayer();
             <% if (timeframeEntries) { %>
 				<% _.each(timeframeEntries, function(entry) { %>
-              		console.log(entry);
-					var cexmarker = L.marker([<%= entry.lat %>, <%= entry.lng %>], {icon: destIcon});
-					cexmarker.bindPopup(<%= entry.url %>).openPopup();;
+					var cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>]);
 					cexmarkergroup.addLayer(cexmarker);
+					heat.addLatLng(L.latLng(<%= entry.lat %>,<%= entry.lng %>));
 				<% }) %>
-				cexmarkergroup.addTo(cexmap);
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
             <% } else { %>
             	cexmap.setView([0,0],2);
             <% } %>
-            
+
 		    // kill loading circle
 		    $('img#cex_map_loading').hide();
 		    }
@@ -193,22 +171,28 @@
 
 	<div id="share" class="section">
 	<p class="sharelink"><a href="#">Share Your Data</a></p>
-	<p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+	<p class="info">NOT ACTUALLY WORKING YET! - Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</p>
 	</div><!-- share -->
 
 	<div id="citizenship" class="section">
 	<h2>Algorithmic Citizenship</h2>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+	<p>Every time you connect to the internet, you pass through time, space, and law. Information is sent from your computer all over the world, and sent back from there. This information is also stored and tracked in multiple locations, by the websites you visit, by other software on those websites, and at many places along the way. These stores may be owned by people, or companies, or states, existing in many ways, in many places, in many countries and legal jurisdictions. Citizen Ex shows you where some of these places are.</p>
+	<p>As you move around the web, the data you generate tells the internet about you. It's used by advertising companies to decide which ads you see, and security agencies to determine where you come from, in order to track and surveil you. Your Algorithmic Citizenship is how you appear to the internet, a data entity extending across many nations, with a different citizenship and different rights in every place. One day perhaps we will all live like we do on the internet. Until then, there's Citizen Ex.</p>
+	<p>For more information about Algorithmic Citizenship, and the stories behind it, visit <a href="http://citizen-ex.com">Citizen-Ex.com</a>.</p>
 	</div><!-- citizenship -->
 
 	<div id="about" class="section">
 		<div id="left">
-		<h2>About</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+		<h2>Accuracy</h2>
+		<p>The extension attempts to work out where a website is, but it will rarely be the real, or exact, location. The location is based on the website's IP address, a string of four digits (e.g. 74.125.226.31) which is the digital form of an address like google.com. These IP addresses are registered in blocks, and do not always correspond to the location of an individual website. In addition, many websites are served via Content Delivery Networks (CDNs) which take the website's content, and serve it from another location to ensure reliability. Those CDNs might have many locations, but the IP address will only tell us where the CDN itself is located. This is true of many large websites, and so the locations the extension provides should be taken only as a guide. To look up the full details about a website's registered address, you can use a service like <a href="http://whois.icann.org/">ICANN</a> or <a href="https://who.is/">Who.is</a>. The extension can't tell you any more than they can.</p>
+		<p>The extension uses the same process to work out your location. Every time you use the internet, you are given an address - another IP number. This doesn't necessarily point to your house, or even your city: it depends on how you access the internet, and will probably point to the registered location of your internet service provider. As with websites, the registered address is only a guide to the real location. Some websites may ask permission to use your real location, which can be determined by your computer from GPS and wifi signals. The extension does not do this. The way it sees you and the way it sees other websites is the way the internet sees you, every time you connect.</p>
 		</div>
 		<div id="right">
 		<h2>Privacy</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vitae condimentum ex, vitae ornare metus. Sed at sodales tellus, sit amet rutrum nibh. Cras vitae tempor orci, quis ultricies ex. Phasellus ultrices consectetur tempor. Nulla mi enim, aliquet sit amet varius vitae, ultrices porta dolor. Maecenas nisl ante, pharetra sed turpis non, blandit elementum ex. Cras quis dignissim lectus. Sed nibh lacus, elementum ac ligula ac, venenatis hendrerit nulla.</p>
+		<p>The Citizen Extension is software running on <em>your</em> computer, inside <em>your</em> browser. The data that it gathers is <em>your</em> data. This data is stored by your browser on your computer and isn't stored or sent anywhere else without your express permission.</p>
+		<p>If you choose to share data with Citizen Ex via the "Share Data" button above, no personal information is included: just the locations of the websites you visit (and not their names or IP addresses). If you share your Algorithmic Citizenship badge, this only includes a graphical representation of the countries you visit, and it does not include your location, or any data about the websites you visit.</p>
+		<p>The developers built this extension, and took these decisions about how data is stored, because we believe that personal privacy is important, and people who use computers and software should be aware of, and responsible for, their own data and privacy. The extension code is open source so that anyone can inspect it.</p>
+		<p>For an introduction to online privacy issues, visit <a href="https://www.cyberstreetwise.com/">Cyber Street</a>. For more advanced tools, see the EFF's <a href="https://ssd.eff.org">Surveillance Self-Defense</a>.</p>
 		</div>
 	</div><!-- about -->
 
