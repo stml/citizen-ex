@@ -9,12 +9,14 @@ var CxPageView = Backbone.View.extend({
     'click .cex_erase': 'eraseData',
     'click .cex_close': 'close',
     'click .cex_toggle': 'toggleTimeframe'
+    'click .cex_sharedata': 'toggleAllTime'
   },
 
   initialize: function(options) {
     this.name = options.name;
     this.template = _.template(options.template);
     this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'change:citizenship', this.triggerTimeframe);
     this.listenTo(this.model, 'change:logEntries', this.triggerTimeframe);
 
     this.appendToBody();
@@ -38,6 +40,11 @@ var CxPageView = Backbone.View.extend({
   toggleTimeframe: function(event) {
     event.preventDefault();
     this.model.toggleTimeframe(event.target.name);
+  },
+
+  toggleAllTime: function(event) {
+    event.preventDefault();
+    this.model.toggleTimeframe('all-time');
   },
 
   triggerTimeframe: function() {

@@ -368,7 +368,7 @@ var LogEntry = function(url, timestamp) {
   if (url) {
     this.url = url;
     this.domain = utils.trimUrl(url);
-    this.timestamps = [timestamp];
+    this.timestamps = [timestamp.toISOString()];
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -388,7 +388,7 @@ LogEntry.prototype.latestTimestamp = function() {
 
 LogEntry.prototype.addTimestamp = function() {
   var timestamp = new Date();
-  this.timestamps.push(timestamp);
+  this.timestamps.push(timestamp.toISOString());
 };
 
 LogEntry.prototype.storeEntries = function(entries) {

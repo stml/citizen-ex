@@ -136,9 +136,10 @@ LogEntry.prototype.fromJSON = function(json) {
 };
 
 LogEntry.prototype.latestTimestamp = function() {
-  return _.max(this.timestamps, function(timestamp) {
-    return Date.parse(timestamp).value;
+  var latest = _.max(this.timestamps, function(timestamp) {
+    return Date.parse(timestamp);
   });
+  return Date.parse(latest);
 };
 
 // shared/js/cx_extension.js
@@ -181,6 +182,7 @@ var CxExtension = Backbone.Model.extend({
       this.set({ logEntries: '' });
     } else {
       this.set({ logEntries: logEntries });
+      this.saveShareData();
     }
   },
 
@@ -207,24 +209,70 @@ var CxExtension = Backbone.Model.extend({
   calculatePercentages: function(data) {
     var sum = _.reduce(data, function(memo, num) { return memo + num; }, 0);
     var result = [];
+    var last;
     _.each(data, function(value, key) {
       var percentage = (value / sum) * 100;
       percentage = percentage.toFixed(2);
+      if (key === '') {
+        last = { 'unknown': key, percentage: percentage };
+        return;
+      }
       result.push({ code: key, percentage: percentage });
+    });
+    result = _.sortBy(result, 'percentage');
+    result = result.reverse();
+    if (last) {
+      result.push(last);
+    }
+
+    return result;
+  },
+
+  calculateDomainPercentages: function(data) {
+    var counts = _.pluck(data, 'count');
+    var sum = _.reduce(counts, function(memo, num) { return memo + num; }, 0);
+    var result = [];
+    _.each(data, function(item) {
+      var percentage = (item.count / sum) * 100;
+      percentage = percentage.toFixed(2);
+      result.push({ code: item.countryCode, percentage: percentage, domain: item.domain });
     });
     result = _.sortBy(result, 'percentage');
 
     return result.reverse();
   },
 
-  getPropertiesFromEntries: function(entries, property) {
+  getPropertyFromEntries: function(entries, property) {
     var validEntries = _.reject(entries, function(entry) {
       return entry[property] === undefined || entry[property] === '';
     });
-    var countryCodes = _.countBy(validEntries, function(entry) {
+    var data = _.countBy(validEntries, function(entry) {
       return entry[property];
     });
-    return countryCodes;
+    return data;
+  },
+
+  getDomainPropertiesFromEntries: function(entries) {
+    var properties = ['domain', 'countryCode'];
+    var validEntriesArr = [];
+    _.each(properties, function(property) {
+      validEntriesArr.push(_.reject(entries, function(entry) {
+        return entry[property] === undefined || entry[property] === '';
+      }));
+    });
+    var validEntries = _.intersection(validEntriesArr[0], validEntriesArr[1]);
+    var data = _.groupBy(validEntries, function(entry) {
+      return entry[properties[0]];
+    });
+    var structuredData = [];
+    _.each(data, function(entries) {
+      var obj = {};
+      obj.domain = entries[0].domain;
+      obj.countryCode = entries[0].countryCode;
+      obj.count = entries.length;
+      structuredData.push(obj);
+    });
+    return structuredData;
   },
 
   open: function() {
@@ -247,6 +295,7 @@ var CxExtension = Backbone.Model.extend({
     this.set({ open: false });
 
     this.unset('logEntries');
+    this.unset('shareData');
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
   },
@@ -255,6 +304,284 @@ var CxExtension = Backbone.Model.extend({
     this.resetValues();
     storage.clear();
   },
+
+  saveShareData: function() {
+    var data = this.prepShareData();
+    this.set({ shareData: data });
+  },
+
+  prepShareData: function() {
+    var logEntries = this.get('logEntries');
+    if (logEntries) {
+      shareableEntries = [];
+      _.each(logEntries, _.bind(function(entry) {
+        var obj = {};
+        var lat = this.trimGeo(entry.lat);
+        var lng = this.trimGeo(entry.lng);
+        shareableEntries.push({ lat: lat, lng: lng, timestamps: entry.timestamps, countryCode: entry.countryCode, countryName: entry.countryName, city: entry.city });
+      }, this));
+      return shareableEntries;
+    } else {
+      return null;
+    }
+  },
+
+  trimGeo: function(float) {
+    return float.toFixed(2);
+  },
+
+  convertIsoCode: function(countrycode) {
+	if (countrycode == 'AF') { return 'AFG'; }
+	if (countrycode == 'AX') { return 'ALA'; }
+	if (countrycode == 'AL') { return 'ALB'; }
+	if (countrycode == 'DZ') { return 'DZA'; }
+	if (countrycode == 'AS') { return 'ASM'; }
+	if (countrycode == 'AD') { return 'AND'; }
+	if (countrycode == 'AO') { return 'AGO'; }
+	if (countrycode == 'AI') { return 'AIA'; }
+	if (countrycode == 'AG') { return 'ATG'; }
+	if (countrycode == 'AR') { return 'ARG'; }
+	if (countrycode == 'AM') { return 'ARM'; }
+	if (countrycode == 'AW') { return 'ABW'; }
+	if (countrycode == 'AU') { return 'AUS'; }
+	if (countrycode == 'AT') { return 'AUT'; }
+	if (countrycode == 'AZ') { return 'AZE'; }
+	if (countrycode == 'BS') { return 'BHS'; }
+	if (countrycode == 'BH') { return 'BHR'; }
+	if (countrycode == 'BD') { return 'BGD'; }
+	if (countrycode == 'BB') { return 'BRB'; }
+	if (countrycode == 'BY') { return 'BLR'; }
+	if (countrycode == 'BE') { return 'BEL'; }
+	if (countrycode == 'BZ') { return 'BLZ'; }
+	if (countrycode == 'BJ') { return 'BEN'; }
+	if (countrycode == 'BM') { return 'BMU'; }
+	if (countrycode == 'BT') { return 'BTN'; }
+	if (countrycode == 'BO') { return 'BOL'; }
+	if (countrycode == 'BQ') { return 'BES'; }
+	if (countrycode == 'BA') { return 'BIH'; }
+	if (countrycode == 'BW') { return 'BWA'; }
+	if (countrycode == 'BR') { return 'BRA'; }
+	if (countrycode == 'IO') { return 'IOT'; }
+	if (countrycode == 'VG') { return 'VGB'; }
+	if (countrycode == 'BN') { return 'BRN'; }
+	if (countrycode == 'BG') { return 'BGR'; }
+	if (countrycode == 'BF') { return 'BFA'; }
+	if (countrycode == 'BI') { return 'BDI'; }
+	if (countrycode == 'KH') { return 'KHM'; }
+	if (countrycode == 'CM') { return 'CMR'; }
+	if (countrycode == 'CA') { return 'CAN'; }
+	if (countrycode == 'CV') { return 'CPV'; }
+	if (countrycode == 'KY') { return 'CYM'; }
+	if (countrycode == 'CF') { return 'CAF'; }
+	if (countrycode == 'TD') { return 'TCD'; }
+	if (countrycode == 'CL') { return 'CHL'; }
+	if (countrycode == 'CN') { return 'CHN'; }
+	if (countrycode == 'CX') { return 'CXR'; }
+	if (countrycode == 'CC') { return 'CCK'; }
+	if (countrycode == 'CO') { return 'COL'; }
+	if (countrycode == 'KM') { return 'COM'; }
+	if (countrycode == 'CG') { return 'COG'; }
+	if (countrycode == 'CD') { return 'ZAR'; }
+	if (countrycode == 'CK') { return 'COK'; }
+	if (countrycode == 'CR') { return 'CRI'; }
+	if (countrycode == 'HR') { return 'HRV'; }
+	if (countrycode == 'CU') { return 'CUB'; }
+	if (countrycode == 'CW') { return 'CUW'; }
+	if (countrycode == 'CY') { return 'CYP'; }
+	if (countrycode == 'CZ') { return 'CZE'; }
+	if (countrycode == 'DK') { return 'DNK'; }
+	if (countrycode == 'DJ') { return 'DJI'; }
+	if (countrycode == 'DM') { return 'DMA'; }
+	if (countrycode == 'DO') { return 'DOM'; }
+	if (countrycode == 'TL') { return 'TLS'; }
+	if (countrycode == 'EC') { return 'ECU'; }
+	if (countrycode == 'EG') { return 'EGY'; }
+	if (countrycode == 'SV') { return 'SLV'; }
+	if (countrycode == 'GQ') { return 'GNQ'; }
+	if (countrycode == 'ER') { return 'ERI'; }
+	if (countrycode == 'EE') { return 'EST'; }
+	if (countrycode == 'ET') { return 'ETH'; }
+	if (countrycode == 'FO') { return 'FRO'; }
+	if (countrycode == 'FK') { return 'FLK'; }
+	if (countrycode == 'FJ') { return 'FJI'; }
+	if (countrycode == 'FI') { return 'FIN'; }
+	if (countrycode == 'FR') { return 'FRA'; }
+	if (countrycode == 'GF') { return 'GUF'; }
+	if (countrycode == 'PF') { return 'PYF'; }
+	if (countrycode == 'TF') { return 'ATF'; }
+	if (countrycode == 'GA') { return 'GAB'; }
+	if (countrycode == 'GM') { return 'GMB'; }
+	if (countrycode == 'GE') { return 'GEO'; }
+	if (countrycode == 'DE') { return 'DEU'; }
+	if (countrycode == 'GH') { return 'GHA'; }
+	if (countrycode == 'GI') { return 'GIB'; }
+	if (countrycode == 'GR') { return 'GRC'; }
+	if (countrycode == 'GL') { return 'GRL'; }
+	if (countrycode == 'GD') { return 'GRD'; }
+	if (countrycode == 'GP') { return 'GLP'; }
+	if (countrycode == 'GU') { return 'GUM'; }
+	if (countrycode == 'GT') { return 'GTM'; }
+	if (countrycode == 'GG') { return 'GGY'; }
+	if (countrycode == 'GN') { return 'GIN'; }
+	if (countrycode == 'GW') { return 'GNB'; }
+	if (countrycode == 'GY') { return 'GUY'; }
+	if (countrycode == 'HT') { return 'HTI'; }
+	if (countrycode == 'VA') { return 'VAT'; }
+	if (countrycode == 'HN') { return 'HND'; }
+	if (countrycode == 'HK') { return 'HKG'; }
+	if (countrycode == 'HU') { return 'HUN'; }
+	if (countrycode == 'IS') { return 'ISL'; }
+	if (countrycode == 'IN') { return 'IND'; }
+	if (countrycode == 'ID') { return 'IDN'; }
+	if (countrycode == 'IR') { return 'IRN'; }
+	if (countrycode == 'IQ') { return 'IRQ'; }
+	if (countrycode == 'IE') { return 'IRL'; }
+	if (countrycode == 'IM') { return 'IMN'; }
+	if (countrycode == 'IL') { return 'ISR'; }
+	if (countrycode == 'IT') { return 'ITA'; }
+	if (countrycode == 'CI') { return 'CIV'; }
+	if (countrycode == 'JM') { return 'JAM'; }
+	if (countrycode == 'JP') { return 'JPN'; }
+	if (countrycode == 'JE') { return 'JEY'; }
+	if (countrycode == 'JO') { return 'JOR'; }
+	if (countrycode == 'KZ') { return 'KAZ'; }
+	if (countrycode == 'KE') { return 'KEN'; }
+	if (countrycode == 'KI') { return 'KIR'; }
+	if (countrycode == 'KO') { return 'KOS'; }
+	if (countrycode == 'KW') { return 'KWT'; }
+	if (countrycode == 'KG') { return 'KGZ'; }
+	if (countrycode == 'LA') { return 'LAO'; }
+	if (countrycode == 'LV') { return 'LVA'; }
+	if (countrycode == 'LB') { return 'LBN'; }
+	if (countrycode == 'LS') { return 'LSO'; }
+	if (countrycode == 'LR') { return 'LBR'; }
+	if (countrycode == 'LY') { return 'LBY'; }
+	if (countrycode == 'LI') { return 'LIE'; }
+	if (countrycode == 'LT') { return 'LTU'; }
+	if (countrycode == 'LU') { return 'LUX'; }
+	if (countrycode == 'MO') { return 'MAC'; }
+	if (countrycode == 'MK') { return 'MKD'; }
+	if (countrycode == 'MG') { return 'MDG'; }
+	if (countrycode == 'MW') { return 'MWI'; }
+	if (countrycode == 'MY') { return 'MYS'; }
+	if (countrycode == 'MV') { return 'MDV'; }
+	if (countrycode == 'ML') { return 'MLI'; }
+	if (countrycode == 'MT') { return 'MLT'; }
+	if (countrycode == 'MH') { return 'MHL'; }
+	if (countrycode == 'MQ') { return 'MTQ'; }
+	if (countrycode == 'MR') { return 'MRT'; }
+	if (countrycode == 'MU') { return 'MUS'; }
+	if (countrycode == 'YT') { return 'MYT'; }
+	if (countrycode == 'MX') { return 'MEX'; }
+	if (countrycode == 'FS') { return 'FSM'; }
+	if (countrycode == 'MD') { return 'MDA'; }
+	if (countrycode == 'MC') { return 'MCO'; }
+	if (countrycode == 'MN') { return 'MNG'; }
+	if (countrycode == 'ME') { return 'MNE'; }
+	if (countrycode == 'MS') { return 'MSR'; }
+	if (countrycode == 'MA') { return 'MAR'; }
+	if (countrycode == 'MZ') { return 'MOZ'; }
+	if (countrycode == 'MM') { return 'MMR'; }
+	if (countrycode == 'NA') { return 'NAM'; }
+	if (countrycode == 'NR') { return 'NRU'; }
+	if (countrycode == 'NP') { return 'NPL'; }
+	if (countrycode == 'AN') { return 'ANT'; }
+	if (countrycode == 'NL') { return 'NLD'; }
+	if (countrycode == 'NC') { return 'NCL'; }
+	if (countrycode == 'NZ') { return 'NZL'; }
+	if (countrycode == 'NI') { return 'NIC'; }
+	if (countrycode == 'NE') { return 'NER'; }
+	if (countrycode == 'NG') { return 'NGA'; }
+	if (countrycode == 'NU') { return 'NIU'; }
+	if (countrycode == 'NF') { return 'NFK'; }
+	if (countrycode == 'KP') { return 'PRK'; }
+	if (countrycode == 'MP') { return 'MNP'; }
+	if (countrycode == 'NO') { return 'NOR'; }
+	if (countrycode == 'OM') { return 'OMN'; }
+	if (countrycode == 'PK') { return 'PAK'; }
+	if (countrycode == 'PW') { return 'PLW'; }
+	if (countrycode == 'PS') { return 'PSE'; }
+	if (countrycode == 'PA') { return 'PAN'; }
+	if (countrycode == 'PG') { return 'PNG'; }
+	if (countrycode == 'PY') { return 'PRY'; }
+	if (countrycode == 'PE') { return 'PER'; }
+	if (countrycode == 'PH') { return 'PHL'; }
+	if (countrycode == 'PN') { return 'PCN'; }
+	if (countrycode == 'PL') { return 'POL'; }
+	if (countrycode == 'PT') { return 'PRT'; }
+	if (countrycode == 'PR') { return 'PRI'; }
+	if (countrycode == 'QA') { return 'QAT'; }
+	if (countrycode == 'RO') { return 'ROU'; }
+	if (countrycode == 'RU') { return 'RUS'; }
+	if (countrycode == 'RW') { return 'RWA'; }
+	if (countrycode == 'RE') { return 'REU'; }
+	if (countrycode == 'BQ') { return 'BES'; }
+	if (countrycode == 'BL') { return 'BLM'; }
+	if (countrycode == 'KN') { return 'KNA'; }
+	if (countrycode == 'SH') { return 'SHN'; }
+	if (countrycode == 'LC') { return 'LCA'; }
+	if (countrycode == 'MF') { return 'MAF'; }
+	if (countrycode == 'PM') { return 'SPM'; }
+	if (countrycode == 'VC') { return 'VCT'; }
+	if (countrycode == 'WS') { return 'WSM'; }
+	if (countrycode == 'SM') { return 'SMR'; }
+	if (countrycode == 'ST') { return 'STP'; }
+	if (countrycode == 'SA') { return 'SAU'; }
+	if (countrycode == 'SN') { return 'SEN'; }
+	if (countrycode == 'RS') { return 'SRB'; }
+	if (countrycode == 'SC') { return 'SYC'; }
+	if (countrycode == 'SL') { return 'SLE'; }
+	if (countrycode == 'SG') { return 'SGP'; }
+	if (countrycode == 'BQ') { return 'BES'; }
+	if (countrycode == 'SX') { return 'SXM'; }
+	if (countrycode == 'SK') { return 'SVK'; }
+	if (countrycode == 'SI') { return 'SVN'; }
+	if (countrycode == 'SB') { return 'SLB'; }
+	if (countrycode == 'SO') { return 'SOM'; }
+	if (countrycode == 'SO') { return 'SOM'; }
+	if (countrycode == 'ZA') { return 'ZAF'; }
+	if (countrycode == 'GS') { return 'SGS'; }
+	if (countrycode == 'KR') { return 'KOR'; }
+	if (countrycode == 'SS') { return 'SSD'; }
+	if (countrycode == 'ES') { return 'ESP'; }
+	if (countrycode == 'LK') { return 'LKA'; }
+	if (countrycode == 'SD') { return 'SDN'; }
+	if (countrycode == 'SR') { return 'SUR'; }
+	if (countrycode == 'SZ') { return 'SWZ'; }
+	if (countrycode == 'SE') { return 'SWE'; }
+	if (countrycode == 'CH') { return 'CHE'; }
+	if (countrycode == 'SY') { return 'SYR'; }
+	if (countrycode == 'TW') { return 'TWN'; }
+	if (countrycode == 'TJ') { return 'TJK'; }
+	if (countrycode == 'TZ') { return 'TZA'; }
+	if (countrycode == 'TH') { return 'THA'; }
+	if (countrycode == 'TG') { return 'TGO'; }
+	if (countrycode == 'TK') { return 'TKL'; }
+	if (countrycode == 'TO') { return 'TON'; }
+	if (countrycode == 'TT') { return 'TTO'; }
+	if (countrycode == 'TN') { return 'TUN'; }
+	if (countrycode == 'TR') { return 'TUR'; }
+	if (countrycode == 'TM') { return 'TKM'; }
+	if (countrycode == 'TC') { return 'TCA'; }
+	if (countrycode == 'TV') { return 'TUV'; }
+	if (countrycode == 'UG') { return 'UGA'; }
+	if (countrycode == 'UA') { return 'UKR'; }
+	if (countrycode == 'AE') { return 'ARE'; }
+	if (countrycode == 'GB') { return 'GBR'; }
+	if (countrycode == 'US') { return 'USA'; }
+	if (countrycode == 'VI') { return 'VIR'; }
+	if (countrycode == 'UY') { return 'URY'; }
+	if (countrycode == 'UZ') { return 'UZB'; }
+	if (countrycode == 'VU') { return 'VUT'; }
+	if (countrycode == 'VE') { return 'VEN'; }
+	if (countrycode == 'VN') { return 'VNM'; }
+	if (countrycode == 'WF') { return 'WLF'; }
+	if (countrycode == 'EH') { return 'ESH'; }
+	if (countrycode == 'YE') { return 'YEM'; }
+	if (countrycode == 'ZM') { return 'ZMB'; }
+	if (countrycode == 'ZW') { return 'ZWE'; }
+    return null;
+  	},
 
   convertCountryCode: function(countrycode) {
     if (countrycode == 'AF') { return 'Afghanistan'; }
@@ -529,28 +856,31 @@ var CxPage = CxExtension.extend({
       return this.get('citizenship');
     }
     var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getPropertiesFromEntries(entries, 'countryCode');
+    var countryCodes = this.getPropertyFromEntries(entries, 'countryCode');
     var citizenship = this.calculatePercentages(countryCodes);
     return citizenship;
   },
 
   getDomainsForDays: function(n) {
     var entries = this.getTabEntriesForDays(n);
-    var domains = this.getPropertiesFromEntries(entries, 'domain');
-    var domainPopularity = this.calculatePercentages(domains);
+    var domains = this.getDomainPropertiesFromEntries(entries);
+    var domainPopularity = this.calculateDomainPercentages(domains);
     return domainPopularity;
   },
 
   getTabEntriesForDays: function(n) {
+    var unit = 'days';
     if (n === null) {
       return this.get('logEntries');
+    } else if (n === 1) {
+      unit = 'day';
     }
 
     var entries = this.get('logEntries');
-    var cutOffDate = moment().subtract(n, 'days').valueOf();
+    var cutOffDate = moment().subtract(n, unit).valueOf();
 
     var latestEntries = _.filter(entries, function(entry) {
-      return entry.latestTimestamp() <= cutOffDate;
+      return entry.latestTimestamp() >= cutOffDate;
     });
     return latestEntries;
   },
@@ -560,9 +890,9 @@ var CxPage = CxExtension.extend({
       return tf.name === name;
     });
 
-    var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
-    var domains = this.getDomainsForDays(this.get('timeframe').duration);
-    var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
+    var entries = this.getTabEntriesForDays(timeframe.duration);
+    var domains = this.getDomainsForDays(timeframe.duration);
+    var citizenship = this.getCitizenshipForDays(timeframe.duration);
     this.set({
       timeframeCitizenship: citizenship,
       timeframeEntries: entries,
@@ -579,7 +909,7 @@ var CxPage = CxExtension.extend({
       timeframe: null
     });
 
-    CxExtension.prototype.resetValues.apply(this);
+    CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {
@@ -601,12 +931,14 @@ var CxPageView = Backbone.View.extend({
     'click .cex_erase': 'eraseData',
     'click .cex_close': 'close',
     'click .cex_toggle': 'toggleTimeframe'
+    'click .cex_sharedata': 'toggleAllTime'
   },
 
   initialize: function(options) {
     this.name = options.name;
     this.template = _.template(options.template);
     this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'change:citizenship', this.triggerTimeframe);
     this.listenTo(this.model, 'change:logEntries', this.triggerTimeframe);
 
     this.appendToBody();
@@ -630,6 +962,11 @@ var CxPageView = Backbone.View.extend({
   toggleTimeframe: function(event) {
     event.preventDefault();
     this.model.toggleTimeframe(event.target.name);
+  },
+
+  toggleAllTime: function(event) {
+    event.preventDefault();
+    this.model.toggleTimeframe('all-time');
   },
 
   triggerTimeframe: function() {
@@ -656,7 +993,7 @@ var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var message = new CxMessage(browser);
 
-var cxPageTemplate = "<div id=\"container\">\n\n\t<div id=\"header\">\n\t\t<img id=\"logo\" src=\"\" width=\"107\" height=\"24\" />\n\t\t<p class=\"homepage\"><a href=\"http://citizen-ex.com\">citizen-ex.com &raquo;</a></p>\n\t\t<script type=\"text/javascript\">\n            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {\n              $('#header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n\n            } else if (typeof safari !== 'undefined') {\n              $('#header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n            } else {\n              $('#header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.png');\n\n            }\n\t\t</script>\n\t</div>\n\n\t<div id=\"toggles\">\n\t\t<p>This is your Algorithmic Citizenship for:</p>\n\t    <ul>\n          <li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'all-time') { %> selected <% } %>\" name=\"all-time\">All time</a></li>\n        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'month') { %> selected <% } %>\" name=\"month\">This month</a></li>\n        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>\" name=\"week\">This week</a></li>\n        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>\" name=\"day\">Today</a></li>\n        </ul>\n\t</div>\n\n\t<div id=\"cex_main\">\n\n\t<% if (currentEntry) { %>\n\n\t  \t<div id=\"cex_badge\">\n\n\t  \t\t<div id=\"cex_badge_column\">\n\n\t\t\t\t<% if (citizenship.length > 0) { %>\n\n\t\t\t\t<h2>This is your Algorithmic Citizenship</h2>\n\n\t\t\t\t<canvas id=\"cex_badge_canvas\"></canvas>\n\n\t\t\t\t<p id=\"cex_whatmeans\"><a href=\"http://citizen-ex.com/citizenship/\" target=\"_blank\">What does this mean?</a></p>\n\t\t\t\t<ul id=\"cex_sharebuttons\">\n\t\t\t\t\t<li>Share:</li>\n\t\t\t\t\t<li><a href=\"#\" class=\"cex_share_facebook\">Facebook</a></li>\n\t\t\t\t\t<li><a href=\"#\" class=\"cex_share_twitter\">Twitter</a></li>\n\t\t\t\t\t<li><a href=\"#\" class=\"cex_share_email\">Email</a></li>\n\t\t\t\t</ul>\n\n\t\t\t</div><!-- cex_badge_column -->\n\n\t\t\t<div id=\"cex_data_column\">\n\n\t\t\t\t<table id=\"distribution_table\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"thead cex_country\">Your distribution</td>\n\t\t\t\t\t\t<td class=\"thead cex_percentage\">%</td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% _.each(citizenship, function(country) { %>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"cex_country\"><%= cxPage.convertCountryCode(country.code) %></td>\n\t\t\t\t\t\t<td class=\"cex_percentage\"><%= country.percentage %></td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% }); %>\n\t\t\t\t</table>\n\n\t\t\t</div><!-- cex_data_column -->\n\n\t\t\t<script type=\"text/javascript\">\n\t\t\t\tvar percents = [\n\t\t\t\t<% _.each(citizenship, function(country) { %>\n\t\t\t\t  [\"<%= country.code %>\",<%= country.percentage %>],\n\t\t\t\t  <% }); %>];\n\t\t\t\t\t// set canvas to css heights\n\t\t\t\t$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));\n\t\t\t\t$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));\n\n\t\t\t\tvar badge = $(\"#cex_badge_canvas\").get(0).getContext(\"2d\");\n\n\t\t\t\t// circle centre and radius\n\t\t\t\tvar x0 = $('#cex_badge_canvas').attr('width')/2;\n\t\t\t\tvar y0 = $('#cex_badge_canvas').attr('height')/2;\n\t\t\t\tvar r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);\n\n\t\t\t\tvar circlepointer = 0;\n\n\t\t\t\t$.each(percents, function() {\n\t\t\t\t\tvar country = this[0];\n\t\t\t\t\tvar value = this[1];\n\t\t\t\t\tvar degrees = 360*(value/100);\n\t\t\t\t\tdrawSegment(badge,x0,y0,r,circlepointer,country,degrees);\n\t\t\t\t\tcirclepointer = circlepointer + degrees;\n\t\t\t\t\t});\n\n\t\t\t\tfunction drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {\n\t\t\t\t\tvar img = new Image();\n\t\t\t\t\timg.onload = function() {\n\t\t\t\t\t\tvar flagscaledheight = badge.canvas.clientHeight;\n\t\t\t\t\t\tvar flagscaledwidth = flagscaledheight*(img.width/img.height);\n\t\t\t\t\t\tvar flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;\n\t\t\t\t\t\tvar svgCanvas = document.createElement(\"canvas\");\n\t\t\t\t    \tsvgCanvas.height = flagscaledheight;\n\t\t\t\t    \tsvgCanvas.width = flagscaledwidth;\n\t\t\t\t    \tvar svgCtx = svgCanvas.getContext(\"2d\");\n\t\t\t\t    \tsvgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);\n\t\t\t\t    \tvar pattern = badge.createPattern(svgCanvas, 'repeat');\n\t\t\t\t    \tbadge.fillStyle = pattern;\n\t\t\t\t\t\tbadge.beginPath();\n\t\t\t\t\t\tbadge.moveTo(x0, y0);\n\t\t\t\t\t\tvar xy = circleCoords(x0,y0,r,circlepointer);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tfor (i = 0; i < degrees; i=i+20) {\n\t\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+i);\n\t\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+degrees);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tbadge.closePath();\n\t\t\t\t\t\tbadge.lineWidth=1;\n\t\t\t\t\t\tbadge.strokeStyle=\"#888\";\n\t\t\t\t\t\tbadge.stroke();\n\t\t\t\t\t\tbadge.fill();\n\t\t\t\t      \t};\n                      if (!_.isUndefined(window.chrome)) {\n                        img.src = chrome.extension.getURL('flags/'+country+'.svg');\n                      } else if (safari) {\n                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';\n                      }\n\t\t\t\t\t}\n\n\t\t\t\tfunction circleCoords(x0,y0,r,theta) {\n\t\t\t\t\tvar x = x0 + r * Math.cos(theta * Math.PI / 180);\n\t\t\t\t\tvar y = y0 + r * Math.sin(theta * Math.PI / 180);\n\t\t\t\t\treturn [x,y];\n\t\t\t\t\t}\n\n\t\t\t</script>\n\n\t\t</div><!-- cex_badge -->\n\n\t\t\t\t<% } else { %>\n\t\t\t\t  <h2>No Citizenship data available yet. Keep browsing!</h2>\n\t\t\t\t<% }; %>\n\n\t\t<div id=\"cex_map\">\n\n\t\t<div id=\"cex_map_window\" class=\"dark\">\n\t\t\t<img id=\"cex_map_loading\" src=\"\" alt=\"Loading\"/>\n\t\t\t<!-- Add mapbox watermark -->\n  \t\t\t<a href=\"http://mapbox.com/about/maps\" class='mapbox-maplogo' target=\"_blank\">MapBox</a>\n  \t\t</div>\n\n\t  \t<script type=\"text/javascript\">\n        if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {\n          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));\n        } else if (typeof safari !== 'undefined') {\n          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');\n        } else {\n          $('img#cex_map_loading').attr('src', '<%= self.options.baseURI %>images/loading.gif');\n\n        }\n\t  \tsetTimeout(function(){ cex_drawMap(); }, 1000);\n\t  \tfunction cex_drawMap() {\n\t\t\tvar cexmap = L.map('cex_map_window', { zoomControl:false });\n\t\t\tvar cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {\n\t\t\t\tattribution: '<a href=\"http://openstreetmap.org/copyright\">Map data: © OpenStreetMap</a>'}).addTo(cexmap);\n\t\t\tcextilelayer.on('tileerror', function(error, tile) {\n\t\t\t    console.log(error);\n\t\t\t    console.log(tile);\n\t\t\t\t});\n\t\t\tcexmap.attributionControl.setPrefix(\"\");\n/* \t\t\tcexmap.setView([0,0],2); */\n            var yellowMarker;\n            var cyanMarker;\n\n            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {\n              cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');\n              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');\n            } else if (typeof safari !== 'undefined') {\n              cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';\n              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';\n            } else {\n              cyanMarker = '<%= self.options.baseURI %>images/map-marker-cyan.png';\n              yellowMarker = '<%= self.options.baseURI %>images/map-marker-yellow.png';\n\n            }\n\n\t\t\tvar destIcon = L.icon({\n\t\t\t\ticonUrl: yellowMarker,\n\t\t\t\ticonSize:     [41,41], // size of the icon\n\t\t\t\ticonAnchor:   [20,20], // point of the icon which will correspond to marker's location\n\t\t\t\t});\n\t\t\tvar origIcon = L.icon({\n\t\t\t\ticonUrl: cyanMarker,\n\t\t\t\ticonSize:     [41,41], // size of the icon\n\t\t\t\ticonAnchor:   [20,20], // point of the icon which will correspond to marker's location\n\t\t\t\t});\n\n\t\t\t<% if (ownGeoData && currentEntry.lat && currentEntry.lng) { %>\n\t\t\t\tvar cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);\n\t\t\t<% } %>\n\n\t\t\tvar cexmarkergroup = new L.featureGroup();\n\t\t\t<% if (ownGeoData && ownGeoData.ownIp) { %>\n\t\t\t\tvar origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);\n\t\t\t\tcexmarkergroup.addLayer(origMarker);\n\t\t\t<% } else { %>\n\t\t    <% }; %>\n\t\t\t<% if (currentEntry.ip) { %>\n\t\t\t\tvar destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);\n\t\t\t\tcexmarkergroup.addLayer(destMarker);\n\t\t    <% } else { %>\n\n\t\t    <% }; %>\n\t\t    cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});\n\t\t    // kill loading circle\n\t\t    $('img#cex_map_loading').hide();\n\t\t    }\n\n\t  \t</script>\n\n\t    \t\t<div id=\"cex_mapdata\">\n\n\t    \t\t\t<div id=\"cex_dest_column\">\n\t    \t\t\t\t<h3>Current remote location</h3>\n\t\t\t\t\t    <% if (currentEntry.ip) { %>\n\t\t\t\t\t      <p><strong><% if (currentEntry.city.length > 0) { %><%= currentEntry.city %>, <% } %><%= currentEntry.countryCode %></strong></p>\n\t\t\t\t\t      <p>IP Address: <%= currentEntry.ip %></p>\n\t\t\t\t\t      <p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>\n\t\t\t\t\t    <% } else { %>\n\t\t\t\t\t      <p><strong>Remote location is unknown</strong></p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t    <% }; %>\n\t\t\t\t    </div><!-- cex_dest_column -->\n\t\t\t\t    <div id=\"cex_orig_column\">\n\t    \t\t\t\t<h3>Your tracked location</h3>\n\t\t\t\t\t    <% if (ownGeoData && ownGeoData.ownIp) { %>\n\t\t\t\t\t      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= ownGeoData.ownCountryCode %></strong></p>\n\t\t\t\t\t      <p>IP Address: <%= ownGeoData.ownIp %></p>\n\t\t\t\t\t      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>\n\t\t\t\t\t    <% } else { %>\n\t\t\t\t\t      <p><strong>Your location is unknown</strong></p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t    <% }; %>\n\t\t\t\t    </div><!-- cex_orig_column -->\n\t\t\t\t</div><!-- cex_mapdata -->\n\n\t    </div><!-- cex_map -->\n\n\t  <% } else { %>\n\n\t  \t\t<div id=\"cex_nodata\">\n\t\t\t\t<p>No data available yet.</p>\n\t\t\t</div>\n\t  <% }; %>\n\n      Timeframe:\n      <%= timeframe.name %>\n      <br>\n      Timeframe duration:\n      <%= timeframe.duration %>\n      <br>\n      Timeframe citizenship\n      <br>\n      <% _.each(timeframeCitizenship, function(country) { %>\n          <tr>\n              <td class=\"cex_country\"><%= cxPage.convertCountryCode(country.code) %></td>\n              <td class=\"cex_percentage\"><%= country.percentage %></td>\n          </tr>\n      <% }); %>\n      <br>\n      Timeframe entries\n      <br>\n      <% _.each(timeframeEntries, function(entry) { %>\n        <%= entry.url %>\n      <% }); %>\n      <br>\n      Timeframe domains\n      <br>\n      <% _.each(timeframeDomains, function(entry) { %>\n        <%= entry.code %> | <%= entry.percentage %>\n      <% }); %>\n\n\t</div><!-- #cex_main -->\n\n</div>\n";
+var cxPageTemplate = "<div id=\"container\">\n\n\t<div id=\"header\" class=\"section\">\n\t\t<img id=\"logo\" src=\"\" width=\"107\" height=\"24\" />\n\t\t<p class=\"homepage\">go to: <a href=\"http://citizen-ex.com\">citizen-ex.com</a></p>\n\t\t<script type=\"text/javascript\">\n            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {\n              $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n\t\t\t  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n\n            } else if (typeof safari !== 'undefined') {\n              $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n              $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n            } else {\n              $('body#cex_page #header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.png');\n              $('body#cex_page #footer #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.png');\n            }\n\t\t</script>\n\t</div><!-- header -->\n\n\t<div id=\"badge\" class=\"section\">\n\n\t\t<div id=\"toggles\">\n\t\t\t<p>This is your Algorithmic Citizenship for:</p>\n\t\t    <ul>\n\t          <li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'all-time') { %> selected <% } %>\" name=\"all-time\">All time</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'month') { %> selected <% } %>\" name=\"month\">This month</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>\" name=\"week\">This week</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>\" name=\"day\">Today</a></li>\n\t        </ul>\n\t\t</div><!-- toggles -->\n\n\t\t<canvas id=\"cex_badge_canvas\"></canvas>\n\n\t\t<script type=\"text/javascript\">\n\t\t\t\tvar percents = [\n      \t\t\t<% _.each(timeframeCitizenship, function(country) { %>\n          \t\t\t[\"<%= country.code %>\",\"<%= country.percentage %>\"],\n      \t\t\t\t<% }); %>];\n\t\t\t\t\t// set canvas to css heights\n\t\t\t\t$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));\n\t\t\t\t$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));\n\n\t\t\t\tvar badge = $(\"#cex_badge_canvas\").get(0).getContext(\"2d\");\n\n\t\t\t\t// circle centre and radius\n\t\t\t\tvar x0 = $('#cex_badge_canvas').attr('width')/2;\n\t\t\t\tvar y0 = $('#cex_badge_canvas').attr('height')/2;\n\t\t\t\tvar r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);\n\n\t\t\t\tvar circlepointer = 0;\n\n\t\t\t\t$.each(percents, function() {\n\t\t\t\t\tvar country = this[0];\n\t\t\t\t\tvar value = this[1];\n\t\t\t\t\tvar degrees = 360*(value/100);\n\t\t\t\t\tdrawSegment(badge,x0,y0,r,circlepointer,country,degrees);\n\t\t\t\t\tcirclepointer = circlepointer + degrees;\n\t\t\t\t\t});\n\n\t\t\t\tfunction drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {\n\t\t\t\t\tvar img = new Image();\n\t\t\t\t\timg.onload = function() {\n\t\t\t\t\t\tvar flagscaledheight = badge.canvas.clientHeight;\n\t\t\t\t\t\tvar flagscaledwidth = flagscaledheight*(img.width/img.height);\n\t\t\t\t\t\tvar flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;\n\t\t\t\t\t\tvar svgCanvas = document.createElement(\"canvas\");\n\t\t\t\t    \tsvgCanvas.height = flagscaledheight;\n\t\t\t\t    \tsvgCanvas.width = flagscaledwidth;\n\t\t\t\t    \tvar svgCtx = svgCanvas.getContext(\"2d\");\n\t\t\t\t    \tsvgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);\n\t\t\t\t    \tvar pattern = badge.createPattern(svgCanvas, 'repeat');\n\t\t\t\t    \tbadge.fillStyle = pattern;\n\t\t\t\t\t\tbadge.beginPath();\n\t\t\t\t\t\tbadge.moveTo(x0, y0);\n\t\t\t\t\t\tvar xy = circleCoords(x0,y0,r,circlepointer);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tfor (i = 0; i < degrees; i=i+20) {\n\t\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+i);\n\t\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+degrees);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tbadge.closePath();\n\t\t\t\t\t\tbadge.lineWidth=1;\n\t\t\t\t\t\tbadge.strokeStyle=\"#888\";\n\t\t\t\t\t\tbadge.stroke();\n\t\t\t\t\t\tbadge.fill();\n\t\t\t\t      \t};\n                      if (!_.isUndefined(window.chrome)) {\n                        img.src = chrome.extension.getURL('flags/'+country+'.svg');\n                      } else if (safari) {\n                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';\n                      }\n\t\t\t\t\t}\n\n\t\t\t\tfunction circleCoords(x0,y0,r,theta) {\n\t\t\t\t\tvar x = x0 + r * Math.cos(theta * Math.PI / 180);\n\t\t\t\t\tvar y = y0 + r * Math.sin(theta * Math.PI / 180);\n\t\t\t\t\treturn [x,y];\n\t\t\t\t\t}\n\n\t\t\t</script>\n\t</div><!-- badge -->\n\n\t<div id=\"tables\" class=\"section\">\n\t\t<div id=\"distribution\">\n\t\t\t<table>\n\t\t\t<tr>\n\t\t\t\t<td class=\"thead first\">Your Distribution</td>\n\t\t\t\t<td class=\"thead second\">%</td>\n\t\t\t</tr>\n\t\t\t<% _.each(timeframeCitizenship, function(country) { %>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class=\"first\"><%= cxPage.convertCountryCode(country.code) %></td>\n\t\t\t\t\t<td class=\"second\"><%= country.percentage %></td>\n\t\t\t\t</tr>\n\t\t\t<% }); %>\n\t\t\t</table>\n\t</div><!-- distribution -->\n\n\n\t\t<div id=\"sites\">\n\t\t\t<table>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class=\"thead first\">Most Visited Sites</td>\n\t\t\t\t\t<td class=\"thead second\">Country</td>\n\t\t\t\t</tr>\n\t\t\t\t<% _.each(timeframeDomains.slice(0,10), function(entry) { %>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"first\"><%= entry.domain %></td>\n\t\t\t\t\t\t<td class=\"second\"><%= cxPage.convertCountryCode(entry.code) %></td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% }); %>\n\t\t\t</table>\n\t\t</div><!-- sites -->\n\t</div><!-- #tables .section -->\n\n\t<div id=\"map\" class=\"section\">\n\t\t<h2>Your Map</h2>\n\t\t<div id=\"cex_map\">\n\t\t\t<img id=\"cex_map_loading\" src=\"\" alt=\"Loading\"/>\n  \t\t</div>\n\n\t  \t<script type=\"text/javascript\">\n        if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {\n          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));\n        } else if (typeof safari !== 'undefined') {\n          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');\n        } else {\n          $('img#cex_map_loading').attr('src', '<%= self.options.baseURI %>images/loading.gif');\n        }\n\t  \tsetTimeout(function(){ cex_drawMap(); }, 1000);\n\t  \tfunction cex_drawMap() {\n\t\t\tL.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';\n\t  \t\tvar cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });\n\t\t\tcexmap.attributionControl.setPrefix(\"\");\n\t\t\tvar heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);\n\t\t\tvar cexmarkergroup = L.mapbox.featureLayer();\n            <% if (timeframeEntries) { %>\n\t\t\t\t<% _.each(timeframeEntries, function(entry) { %>\n\t\t\t\t\tvar cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>]);\n\t\t\t\t\tcexmarkergroup.addLayer(cexmarker);\n\t\t\t\t\theat.addLatLng(L.latLng(<%= entry.lat %>,<%= entry.lng %>));\n\t\t\t\t<% }) %>\n\t\t\t\tcexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});\n            <% } else { %>\n            \tcexmap.setView([0,0],2);\n            <% } %>\n\n\t\t    // kill loading circle\n\t\t    $('img#cex_map_loading').hide();\n\t\t    }\n\t  \t</script>\n\n\t</div><!-- map -->\n\n\t<div id=\"share\" class=\"section\">\n\t\t<p class=\"info\">NOT ACTUALLY WORKING YET! <br /> Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</p>\n\t\t<p class=\"sharelink\"><a class=\"cex_sharedata\" href=\"#\">Share<br />Your Data</a></p>\n\t</div><!-- share -->\n\n\t<div id=\"citizenship\" class=\"section\">\n\t\t<div id=\"citizenship-wrapper\">\n\t\t\t<h2>Algorithmic Citizenship</h2>\n\t\t\t<p>Every time you connect to the internet, you pass through time, space, and law. Information is sent from your computer all over the world, and sent back from there. This information is also stored and tracked in multiple locations, by the websites you visit, by other software on those websites, and at many places along the way. These stores may be owned by people, or companies, or states, existing in many ways, in many places, in many countries and legal jurisdictions. Citizen Ex shows you where some of these places are.</p>\n\t\t\t<p>As you move around the web, the data you generate tells the internet about you. It's used by advertising companies to decide which ads you see, and security agencies to determine where you come from, in order to track and surveil you. Your Algorithmic Citizenship is how you appear to the internet, a data entity extending across many nations, with a different citizenship and different rights in every place. One day perhaps we will all live like we do on the internet. Until then, there's Citizen Ex.</p>\n\t\t\t<p>For more information about Algorithmic Citizenship, and the stories behind it, visit <a href=\"http://citizen-ex.com\">Citizen-Ex.com</a>.</p>\n\t\t</div>\n\t</div><!-- citizenship -->\n\n\t<div id=\"about\" class=\"section\">\n\t\t<div id=\"left\">\n\t\t\t<h2>Accuracy</h2>\n\t\t\t<p>The extension attempts to work out where a website is, but it will rarely be the real, or exact, location. The location is based on the website's IP address, a string of four digits (e.g. 74.125.226.31) which is the digital form of an address like google.com. These IP addresses are registered in blocks, and do not always correspond to the location of an individual website. In addition, many websites are served via Content Delivery Networks (CDNs) which take the website's content, and serve it from another location to ensure reliability. Those CDNs might have many locations, but the IP address will only tell us where the CDN itself is located. This is true of many large websites, and so the locations the extension provides should be taken only as a guide. To look up the full details about a website's registered address, you can use a service like <a href=\"http://whois.icann.org/\">ICANN</a> or <a href=\"https://who.is/\">Who.is</a>. The extension can't tell you any more than they can.</p>\n\t\t\t<p>The extension uses the same process to work out your location. Every time you use the internet, you are given an address - another IP number. This doesn't necessarily point to your house, or even your city: it depends on how you access the internet, and will probably point to the registered location of your internet service provider. As with websites, the registered address is only a guide to the real location. Some websites may ask permission to use your real location, which can be determined by your computer from GPS and wifi signals. The extension does not do this. The way it sees you and the way it sees other websites is the way the internet sees you, every time you connect.</p>\n\t\t</div>\n\t\t<div id=\"right\">\n\t\t\t<h2>Privacy</h2>\n\t\t\t<p>The Citizen Extension is software running on <em>your</em> computer, inside <em>your</em> browser. The data that it gathers is <em>your</em> data. This data is stored by your browser on your computer and isn't stored or sent anywhere else without your express permission.</p>\n\t\t\t<p>If you choose to share data with Citizen Ex via the \"Share Data\" button above, no personal information is included: just the locations of the websites you visit (and not their names or IP addresses). If you share your Algorithmic Citizenship badge, this only includes a graphical representation of the countries you visit, and it does not include your location, or any data about the websites you visit.</p>\n\t\t\t<p>The developers built this extension, and took these decisions about how data is stored, because we believe that personal privacy is important, and people who use computers and software should be aware of, and responsible for, their own data and privacy. The extension code is open source so that anyone can inspect it.</p>\n\t\t\t<p>For an introduction to online privacy issues, visit <a href=\"https://www.cyberstreetwise.com/\">Cyber Street</a>. For more advanced tools, see the EFF's <a href=\"https://ssd.eff.org\">Surveillance Self-Defense</a>.</p>\n\t\t</div>\n\t</div><!-- about -->\n\n\t<div id=\"delete\" class=\"section\">\n\t\t<p class=\"info\">Had enough of storing your data? It is only stored on your computer, but if you want to do a complete wipe and start over, clicking this button will remove your complete history. This cannot be undone.</p>\n\t\t<p class=\"deletelink\"><a class=\"cex_deletedata\" href=\"#\">Delete<br />Your Data</a></p>\n\t</div><!-- delete -->\n\n\t<div id=\"footer\" class=\"section\">\n\t\t<p><img id=\"logo\" src=\"\" width=\"107\" height=\"24\" /></p>\n\t\t<div class=\"credits\">\n\t\t\t<p class=\"subhead\">A project by <a href=\"http://booktwo.org\">James Bridle</a></p>\n\t\t\t<div class=\"additional-credit\">\n\t\t\t\t<p class=\"subhead\"><strong>Made possible with funding from:</strong></p>\n\t\t\t\t<p><a href=\"http://www.southbankcentre.co.uk\">Southbank Centre</a></p>\n\t\t\t\t<p><a href=\"http://www.thespace.org\">The Space</a></p>\n\t\t\t\t<p><a href=\"http://webfoundation.org\">World Wide Web Foundation</a></p>\n\t\t\t\t<p class=\"subhead\"><strong>Designed and built by:</strong></p>\n\t\t\t\t<p><a href=\"http://booktwo.org\">James Bridle</a> / <a href=\"http://ntlk.net/\">ntlk</a> / <a href=\"http://aftertheflood.co/\">After the Flood</a></p>\n\t\t\t</div>\n\t\t</div>\n\t</div><!-- footer -->\n\n\n</div><!-- container -->\n";
 
 var Timeframe = function(name, duration) {
   this.name = name;
@@ -673,6 +1010,17 @@ var timeframes = [
 var cxPage = new CxPage(browser, timeframes);
 var cxPageView = new CxPageView({ model: cxPage, template: cxPageTemplate });
 
+/*
+ (c) 2014, Vladimir Agafonkin
+ simpleheat, a tiny JavaScript library for drawing heatmaps with Canvas
+ https://github.com/mourner/simpleheat
+*/
+!function(){"use strict";function t(i){return this instanceof t?(this._canvas=i="string"==typeof i?document.getElementById(i):i,this._ctx=i.getContext("2d"),this._width=i.width,this._height=i.height,this._max=1,void this.clear()):new t(i)}t.prototype={defaultRadius:25,defaultGradient:{.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"},data:function(t){return this._data=t,this},max:function(t){return this._max=t,this},add:function(t){return this._data.push(t),this},clear:function(){return this._data=[],this},radius:function(t,i){i=i||15;var a=this._circle=document.createElement("canvas"),s=a.getContext("2d"),e=this._r=t+i;return a.width=a.height=2*e,s.shadowOffsetX=s.shadowOffsetY=200,s.shadowBlur=i,s.shadowColor="black",s.beginPath(),s.arc(e-200,e-200,t,0,2*Math.PI,!0),s.closePath(),s.fill(),this},gradient:function(t){var i=document.createElement("canvas"),a=i.getContext("2d"),s=a.createLinearGradient(0,0,0,256);i.width=1,i.height=256;for(var e in t)s.addColorStop(e,t[e]);return a.fillStyle=s,a.fillRect(0,0,1,256),this._grad=a.getImageData(0,0,1,256).data,this},draw:function(t){this._circle||this.radius(this.defaultRadius),this._grad||this.gradient(this.defaultGradient);var i=this._ctx;i.clearRect(0,0,this._width,this._height);for(var a,s=0,e=this._data.length;e>s;s++)a=this._data[s],i.globalAlpha=Math.max(a[2]/this._max,t||.05),i.drawImage(this._circle,a[0]-this._r,a[1]-this._r);var n=i.getImageData(0,0,this._width,this._height);return this._colorize(n.data,this._grad),i.putImageData(n,0,0),this},_colorize:function(t,i){for(var a,s=3,e=t.length;e>s;s+=4)a=4*t[s],a&&(t[s-3]=i[a],t[s-2]=i[a+1],t[s-1]=i[a+2])}},window.simpleheat=t}(),/*
+ (c) 2014, Vladimir Agafonkin
+ Leaflet.heat, a tiny and fast heatmap plugin for Leaflet.
+ https://github.com/Leaflet/Leaflet.heat
+*/
+L.HeatLayer=(L.Layer?L.Layer:L.Class).extend({initialize:function(t,i){this._latlngs=t,L.setOptions(this,i)},setLatLngs:function(t){return this._latlngs=t,this.redraw()},addLatLng:function(t){return this._latlngs.push(t),this.redraw()},setOptions:function(t){return L.setOptions(this,t),this._heat&&this._updateOptions(),this.redraw()},redraw:function(){return!this._heat||this._frame||this._map._animating||(this._frame=L.Util.requestAnimFrame(this._redraw,this)),this},onAdd:function(t){this._map=t,this._canvas||this._initCanvas(),t._panes.overlayPane.appendChild(this._canvas),t.on("moveend",this._reset,this),t.options.zoomAnimation&&L.Browser.any3d&&t.on("zoomanim",this._animateZoom,this),this._reset()},onRemove:function(t){t.getPanes().overlayPane.removeChild(this._canvas),t.off("moveend",this._reset,this),t.options.zoomAnimation&&t.off("zoomanim",this._animateZoom,this)},addTo:function(t){return t.addLayer(this),this},_initCanvas:function(){var t=this._canvas=L.DomUtil.create("canvas","leaflet-heatmap-layer leaflet-layer"),i=this._map.getSize();t.width=i.x,t.height=i.y;var a=this._map.options.zoomAnimation&&L.Browser.any3d;L.DomUtil.addClass(t,"leaflet-zoom-"+(a?"animated":"hide")),this._heat=simpleheat(t),this._updateOptions()},_updateOptions:function(){this._heat.radius(this.options.radius||this._heat.defaultRadius,this.options.blur),this.options.gradient&&this._heat.gradient(this.options.gradient),this.options.max&&this._heat.max(this.options.max)},_reset:function(){var t=this._map.containerPointToLayerPoint([0,0]);L.DomUtil.setPosition(this._canvas,t);var i=this._map.getSize();this._heat._width!==i.x&&(this._canvas.width=this._heat._width=i.x),this._heat._height!==i.y&&(this._canvas.height=this._heat._height=i.y),this._redraw()},_redraw:function(){var t,i,a,s,e,n,h,o,r,_=[],d=this._heat._r,l=this._map.getSize(),m=new L.LatLngBounds(this._map.containerPointToLatLng(L.point([-d,-d])),this._map.containerPointToLatLng(l.add([d,d]))),c=void 0===this.options.maxZoom?this._map.getMaxZoom():this.options.maxZoom,u=1/Math.pow(2,Math.max(0,Math.min(c-this._map.getZoom(),12))),g=d/2,f=[],p=this._map._getMapPanePos(),v=p.x%g,w=p.y%g;for(t=0,i=this._latlngs.length;i>t;t++)if(m.contains(this._latlngs[t])){a=this._map.latLngToContainerPoint(this._latlngs[t]),e=Math.floor((a.x-v)/g)+2,n=Math.floor((a.y-w)/g)+2;var y=void 0!==this._latlngs[t].alt?this._latlngs[t].alt:void 0!==this._latlngs[t][2]?+this._latlngs[t][2]:1;r=y*u,f[n]=f[n]||[],s=f[n][e],s?(s[0]=(s[0]*s[2]+a.x*r)/(s[2]+r),s[1]=(s[1]*s[2]+a.y*r)/(s[2]+r),s[2]+=r):f[n][e]=[a.x,a.y,r]}for(t=0,i=f.length;i>t;t++)if(f[t])for(h=0,o=f[t].length;o>h;h++)s=f[t][h],s&&_.push([Math.round(s[0]),Math.round(s[1]),Math.min(s[2],1)]);this._heat.data(_).draw(this.options.minOpacity),this._frame=null},_animateZoom:function(t){var i=this._map.getZoomScale(t.zoom),a=this._map._getCenterOffset(t.center)._multiplyBy(-i).subtract(this._map._getMapPanePos());L.DomUtil.setTransform?L.DomUtil.setTransform(this._canvas,a,i):this._canvas.style[L.DomUtil.TRANSFORM]=L.DomUtil.getTranslateString(a)+" scale("+i+")"}}),L.heatLayer=function(t,i){return new L.HeatLayer(t,i)};
 // page/js/init_safari.js
 
 safari.self.addEventListener('message', function(message) {

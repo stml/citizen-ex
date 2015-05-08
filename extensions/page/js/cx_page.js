@@ -15,28 +15,31 @@ var CxPage = CxExtension.extend({
       return this.get('citizenship');
     }
     var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getPropertiesFromEntries(entries, 'countryCode');
+    var countryCodes = this.getPropertyFromEntries(entries, 'countryCode');
     var citizenship = this.calculatePercentages(countryCodes);
     return citizenship;
   },
 
   getDomainsForDays: function(n) {
     var entries = this.getTabEntriesForDays(n);
-    var domains = this.getPropertiesFromEntries(entries, 'domain');
-    var domainPopularity = this.calculatePercentages(domains);
+    var domains = this.getDomainPropertiesFromEntries(entries);
+    var domainPopularity = this.calculateDomainPercentages(domains);
     return domainPopularity;
   },
 
   getTabEntriesForDays: function(n) {
+    var unit = 'days';
     if (n === null) {
       return this.get('logEntries');
+    } else if (n === 1) {
+      unit = 'day';
     }
 
     var entries = this.get('logEntries');
-    var cutOffDate = moment().subtract(n, 'days').valueOf();
+    var cutOffDate = moment().subtract(n, unit).valueOf();
 
     var latestEntries = _.filter(entries, function(entry) {
-      return entry.latestTimestamp() <= cutOffDate;
+      return entry.latestTimestamp() >= cutOffDate;
     });
     return latestEntries;
   },
@@ -46,9 +49,9 @@ var CxPage = CxExtension.extend({
       return tf.name === name;
     });
 
-    var entries = this.getTabEntriesForDays(this.get('timeframe').duration);
-    var domains = this.getDomainsForDays(this.get('timeframe').duration);
-    var citizenship = this.getCitizenshipForDays(this.get('timeframe').duration);
+    var entries = this.getTabEntriesForDays(timeframe.duration);
+    var domains = this.getDomainsForDays(timeframe.duration);
+    var citizenship = this.getCitizenshipForDays(timeframe.duration);
     this.set({
       timeframeCitizenship: citizenship,
       timeframeEntries: entries,
@@ -65,7 +68,7 @@ var CxPage = CxExtension.extend({
       timeframe: null
     });
 
-    CxExtension.prototype.resetValues.apply(this);
+    CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {

@@ -1,7 +1,7 @@
 <div id="cex_hud">
 	<div id="cex_header">
 		<img id="cex_logo" src="" width="107" height="24" />
-		<a href="#" class="cex_more" target="_blank">More Info</a>
+		<a href="#" class="cex_more" target="_blank">More Data &amp; More Info &raquo;</a>
         <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
             if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
@@ -37,12 +37,15 @@
 				<canvas id="cex_badge_canvas"></canvas>
 
 				<p id="cex_whatmeans"><a href="http://citizen-ex.com/citizenship/" target="_blank">What does this mean?</a></p>
-				<ul id="cex_sharebuttons">
-					<li>Share:</li>
-					<li><a href="#" class="cex_share_facebook">Facebook</a></li>
-					<li><a href="#" class="cex_share_twitter">Twitter</a></li>
-					<li><a href="#" class="cex_share_email">Email</a></li>
-				</ul>
+<!-- 				<p id="cex_sharebuttons">Share Via:<p> -->
+				<p id="cex_sharebuttons">
+					<a href="#" class="cex_share_badge">Save your badge</a>&nbsp;&nbsp;&nbsp;
+<!--
+					<a href="#" class="cex_share_facebook">Facebook</a>&nbsp;&nbsp;&nbsp;
+					<a href="#" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
+					<a href="#" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
+-->
+				</p>
 
 			</div><!-- cex_badge_column -->
 
@@ -72,7 +75,8 @@
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
 
-				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
+				var cex_canvas = $("#cex_badge_canvas").get(0);
+				var badge = cex_canvas.getContext("2d");
 
 				// circle centre and radius
 				var x0 = $('#cex_badge_canvas').attr('width')/2;
@@ -89,8 +93,33 @@
 					circlepointer = circlepointer + degrees;
 					});
 
+				var title = encodeURIComponent('Citizen Ex');
+				var summary = encodeURIComponent("This is my Algorithmic Citizenship. What's yours?");
+				var url = encodeURIComponent('http://citizen-ex.com');
+
+				$('.cex_share_badge').click(function () {
+					var badgeImg = new Image();
+					badgeImg.crossOrigin = "anonymous";
+					badgeImg.onload = function() {
+						var badgeCanvas = document.createElement("canvas");
+					    badgeCanvas.width = 600;
+						badgeCanvas.height = 350;
+					    var badgeContext = badgeCanvas.getContext("2d");
+	  					badgeContext.drawImage(badgeImg, 0, 0);
+	  					badgeContext.drawImage(cex_canvas, 285, 35, 280, 280);
+						var badgeImage = badgeCanvas.toDataURL();
+						window.open(badgeImage);
+						};
+					if (!_.isUndefined(window.chrome)) {
+						badgeImg.src = chrome.extension.getURL('images/share-card.png');
+					} else if (safari) {
+						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
+						}
+					});
+
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
+					img.crossOrigin = "anonymous";
 					img.onload = function() {
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
@@ -146,8 +175,6 @@
 
 		<div id="cex_map_window" class="dark">
 			<img id="cex_map_loading" src="" alt="Loading"/>
-			<!-- Add mapbox watermark -->
-  			<a href="http://mapbox.com/about/maps" class='mapbox-maplogo' target="_blank">MapBox</a>
   		</div>
 
 	  	<script type="text/javascript">
@@ -161,28 +188,24 @@
 
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
-			var cexmap = L.map('cex_map_window', { zoomControl:false });
-			var cextilelayer = L.tileLayer('https://{s}.tiles.mapbox.com/v3/stml.l6086pbg/{z}/{x}/{y}.png', {
-				attribution: '<a href="http://openstreetmap.org/copyright">Map data: © OpenStreetMap</a>'}).addTo(cexmap);
-			cextilelayer.on('tileerror', function(error, tile) {
-			    console.log(error);
-			    console.log(tile);
-				});
+	  		L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
+	  		var cexmap = L.mapbox.map('cex_map_window', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });
 			cexmap.attributionControl.setPrefix("");
             var yellowMarker;
             var cyanMarker;
+            var tabMarker;
 
             if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
-              cyanMarker = chrome.extension.getURL('images/map-marker-cyan.png');
-              yellowMarker = chrome.extension.getURL('images/map-marker-yellow.png');
+              cyanMarker = chrome.extension.getURL('images/map-pin-blue.png');
+              yellowMarker = chrome.extension.getURL('images/map-pin-yellow.png');
               tabMarker = chrome.extension.getURL('images/map-marker-tab.png');
             } else if (typeof safari !== 'undefined') {
-              cyanMarker = safari.extension.baseURI + 'images/map-marker-cyan.png';
-              yellowMarker = safari.extension.baseURI + 'images/map-marker-yellow.png';
+              cyanMarker = safari.extension.baseURI + 'images/map-pin-blue.png';
+              yellowMarker = safari.extension.baseURI + 'images/map-pin-yellow.png';
               tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';
             } else {
-              cyanMarker = '<%= self.options.baseURI %>' + 'images/map-marker-cyan.png';
-              yellowMarker = '<%= self.options.baseURI %>' + 'images/map-marker-yellow.png';
+              cyanMarker = '<%= self.options.baseURI %>' + 'images/map-pin-blue.png';
+              yellowMarker = '<%= self.options.baseURI %>' + 'images/map-pin-yellow.png';
               tabMarker = '<%= self.options.baseURI %>' + 'images/map-marker-tab.png';
             }
 
@@ -212,23 +235,58 @@
             <% } %>
 */
 
-			<% if (ownGeoData && currentEntry.lat && currentEntry.lng) { %>
-				var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+			// if we have location data
+			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
+
+				var cexmarkergroup = new L.featureGroup();
+
+				// if we have a local location
+				<% if (ownGeoData.ownLat) { %>
+					// if we have city-level data
+					<% if (ownGeoData.ownCity.length > 0) { %>
+						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon, clickable: false}).addTo(cexmap);
+						cexmarkergroup.addLayer(origMarker);
+					<% } else { %>
+						var isocode = 'cex_country_'+'<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
+						var cex_outline = window['cex_country_'+isocode];
+	                	var geojsonLayer = L.mapbox.featureLayer()
+	                		.setGeoJSON(cex_outline)
+	                		.setStyle({"color": "#00dcdc","weight": 1,"opacity": 1,"fillColor":"#00dcdc","fillOpacity":0.25})
+	                		.addTo(cexmap);
+						cexmarkergroup.addLayer(geojsonLayer);
+					<% } %>
+				<% } %>
+
+				// if we have a remote location
+				<% if (currentEntry.lat) { %>
+					// if we have city-level data
+					<% if (currentEntry.city.length > 0) { %>
+						var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon, clickable: false}).addTo(cexmap);
+						cexmarkergroup.addLayer(destMarker);
+					<% } else { %>
+						var isocode = '<%= cxPanel.convertIsoCode(currentEntry.countryCode) %>';
+						var cex_outline = window['cex_country_'+isocode];
+	                	var geojsonLayer = L.mapbox.featureLayer()
+	                		.setGeoJSON(cex_outline)
+	                		.setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":0.25})
+	                		.addTo(cexmap);
+						cexmarkergroup.addLayer(geojsonLayer);
+					<% } %>
+				<% } %>
+
+				// if we have both a local and a remote city-level location
+				<% if (ownGeoData.ownCity && currentEntry.city) { %>
+					<% if (ownGeoData.ownCity.length > 0 && currentEntry.city.length > 0) { %>
+						var cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);
+					<% } %>
+				<% } %>
+				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 9});
+
+			// else if we have no location data
+			<% } else { %>
+				cexmap.setView([0,0],2);
 			<% } %>
 
-			var cexmarkergroup = new L.featureGroup();
-			<% if (ownGeoData && ownGeoData.ownIp) { %>
-				var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon}).addTo(cexmap);
-				cexmarkergroup.addLayer(origMarker);
-			<% } else { %>
-		    <% }; %>
-			<% if (currentEntry.ip) { %>
-				var destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon}).addTo(cexmap);
-				cexmarkergroup.addLayer(destMarker);
-		    <% } else { %>
-
-		    <% }; %>
-		    cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
 		    // kill loading circle
 		    $('img#cex_map_loading').hide();
 		    }
