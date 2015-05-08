@@ -30,7 +30,7 @@ body#cex_page h2 {
 	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 20px;
-	letter-spacing: 0.4rem;
+	letter-spacing: 0.3rem;
 	}
 
 
@@ -48,7 +48,7 @@ body#cex_page #header p.homepage {
 	float: right;
 	margin: 0;
 	font-size: 16px;
-	letter-spacing: 0.4rem;
+	letter-spacing: 0.3rem;
 	line-height: 1rem;
 	text-transform: uppercase;
 	color: #fff;
@@ -72,12 +72,17 @@ body#cex_page #header p.homepage a:hover {
 body#cex_page #toggles {
 	width: 25%;
 	float: left;
-	max-width: 330px;
+	max-width: 300px;
 	position: absolute;
-	}
-body#cex_page #toggles p {
 	font-size: 30px;
 	line-height: 1.33;
+	}
+	@media (max-width: 1100px) {
+		body#cex_page #toggles {
+			max-width: 250px;
+			font-size: 24px;
+		}}
+body#cex_page #toggles p {
 	margin-bottom: 20px;
 	color: #fff;
 	}
@@ -86,10 +91,10 @@ body#cex_page #toggles ul {
 	padding: 0;
 	}
 body#cex_page #toggles ul li {
-	line-height: 1.33;
+	/*line-height: 1.33;*/
 	}
 body#cex_page #toggles ul li a {
-	font-size: 30px;
+	/*font-size: 30px;*/
 	color: #b3b3b3;
 	text-decoration: none;
 	}
@@ -133,7 +138,7 @@ body#cex_page #tables table {
 body#cex_page #tables table .thead {
 	/* font-weight: bold; */
 	text-transform: uppercase;
-	letter-spacing: 0.4rem;
+	letter-spacing: 0.3rem;
 	}
 body#cex_page #tables table tr {
 	border-top: 1px solid #888;
@@ -287,7 +292,7 @@ body#cex_page #citizenship h2 {
 	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 30px;
-	letter-spacing: 0.4rem;
+	letter-spacing: 0.3rem;
 	}
 body#cex_page #citizenship p {
 	line-height: 1.3em;
