@@ -256,7 +256,7 @@ gulp.task('firefoxImages', function() {
 });
 
 gulp.task('firefoxFlags', function() {
-  gulp.src(flags)
+  gulp.src(svgflags)
     .pipe(gulp.dest('./extensions/firefox/data/flags/'));
 });
 
