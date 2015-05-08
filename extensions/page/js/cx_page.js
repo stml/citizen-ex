@@ -77,6 +77,8 @@ var CxPage = CxExtension.extend({
 
   eraseData: function() {
     this.resetValues();
+
+    CxExtension.prototype.eraseData.call(this);
   }
 
 });

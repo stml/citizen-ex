@@ -30,10 +30,7 @@
 		<canvas id="cex_badge_canvas"></canvas>
 
 		<script type="text/javascript">
-				var percents = [
-      			<% _.each(timeframeCitizenship, function(country) { %>
-          			["<%= country.code %>","<%= country.percentage %>"],
-      				<% }); %>];
+				var percents = [<% _.each(timeframeCitizenship, function(country) { %>["<%= country.code %>","<%= country.percentage %>"],<% }); %>];
 					// set canvas to css heights
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
@@ -62,6 +59,9 @@
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
 						var svgCanvas = document.createElement("canvas");
+                        if (flagscaledwidth === 0) {
+                          return;
+                        }
 				    	svgCanvas.height = flagscaledheight;
 				    	svgCanvas.width = flagscaledwidth;
 				    	var svgCtx = svgCanvas.getContext("2d");
@@ -84,6 +84,9 @@
 						badge.stroke();
 						badge.fill();
 				      	};
+                      if (country === '') {
+                        return;
+                      }
                       if (!_.isUndefined(window.chrome)) {
                         img.src = chrome.extension.getURL('flags/'+country+'.svg');
                       } else if (safari) {
@@ -215,12 +218,14 @@
 	</div><!-- delete -->
 
 	<script type="text/javascript">
-		$('.cex_deletedata').click(function() {
+		$('body').on('click', '.cex_deletedata', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
 			$('.cex_deletedata').addClass("cex_erase");
-			$('.cex_deletedata').html("Are<br/>you sure?");
+			$('.cex_deletedata').html("Are<br/>you sure?").removeClass('cex_deletedata');
 			$('#delete .info').html("Click the button again to delete your data.");
-			});
-		$('.cex_erase').click(function() {
+        });
+		$('body').on('click', '.cex_erase', function() {
 	    	$('#delete .info').html("All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.");
 			});
 	</script>
