@@ -12,7 +12,7 @@ body#cex_page {
 	-moz-osx-font-smoothing: grayscale;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 30px;
-	letter-spacing: 0.1rem;
+	letter-spacing: 0.06rem;
 	margin: 0;
 	padding: 0;
 	}
@@ -30,7 +30,7 @@ body#cex_page h2 {
 	text-transform: uppercase;
 	font-weight: normal;
 	font-size: 20px;
-	letter-spacing: 0.3rem;
+	letter-spacing: 0.4rem;
 	}
 
 
@@ -48,7 +48,7 @@ body#cex_page #header p.homepage {
 	float: right;
 	margin: 0;
 	font-size: 16px;
-	letter-spacing: 0.2rem;
+	letter-spacing: 0.4rem;
 	line-height: 1rem;
 	text-transform: uppercase;
 	color: #fff;
@@ -133,7 +133,7 @@ body#cex_page #tables table {
 body#cex_page #tables table .thead {
 	/* font-weight: bold; */
 	text-transform: uppercase;
-	letter-spacing: 0.3rem;
+	letter-spacing: 0.4rem;
 	}
 body#cex_page #tables table tr {
 	border-top: 1px solid #999;
@@ -251,7 +251,7 @@ body#cex_page #share p.sharelink a {
 	color: #fff;
 	text-decoration: none;
 	text-transform: uppercase;
-	letter-spacing: 0.2rem;
+	letter-spacing: 0.3rem;
 	}
 body#cex_page #share p.sharelink a:hover {
 	background: #fff000;
@@ -276,19 +276,33 @@ body#cex_page #share p.info {
 ----------------------------------------------------------------------------- */
 body#cex_page #citizenship {
 	background: #00dcdc;
+	padding-bottom: 25px;
+	}
+body#cex_page #citizenship-wrapper {
+	width: 80%;
+	max-width: 850px;
 	}
 body#cex_page #citizenship h2,
 body#cex_page #citizenship p {
 	color: #000;
 	}
+body#cex_page #citizenship h2 {
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 30px;
+	letter-spacing: 0.4rem;
+	}
+body#cex_page #citizenship p {
+	line-height: 1.3em;
+	}
 body#cex_page #citizenship a {
 	color: #000;
-	border-bottom: 1px solid #000;
+	border-bottom: 3px solid #fff;
 	text-decoration: none;
 	}
 body#cex_page #citizenship a:hover {
 	color: #fff;
-	border-bottom: 1px solid #fff;
+	border-bottom: 3px solid #fff;
 	}
 
 
@@ -305,22 +319,25 @@ body#cex_page #about p {
 	}
 body#cex_page #about p {
 	font-size: 20px;
+	letter-spacing: 0.03rem;
+	line-height: 1.4em;
 	}
 body#cex_page #about #left {
-	width: 45%;
+	width: 48.5%;
 	float: left;
 	}
 body#cex_page #about #right {
-	width: 45%;
+	width: 48.5%;
 	float: right;
 	}
 body#cex_page #about a {
 	text-decoration: none;
-	color: #00dcdc;
-	border-bottom: 1px solid transparent;
+	color: #000;
+	border-bottom: 2px solid #00dcdc;
 	}
 body#cex_page #about a:hover {
-	border-bottom: 1px solid #00dcdc;
+	color: #00dcdc;
+	border-bottom: 2px solid #00dcdc;
 	}
 
 
