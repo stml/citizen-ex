@@ -38,7 +38,7 @@ var CxPageView = Backbone.View.extend({
 
   toggleAllTime: function(event) {
     event.preventDefault();
-    this.model.toggleTimeframe('all-time');
+    this.model.toggleTimeframe(this.model.timeframes[0].name);
   },
 
   triggerTimeframe: function() {

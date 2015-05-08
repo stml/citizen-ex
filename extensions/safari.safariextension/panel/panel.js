@@ -785,7 +785,7 @@ var CxExtension = Backbone.Model.extend({
 
   resetValues: function() {
     this.unset('logEntries');
-    this.unset('shareData');
+    this.set({ shareData: [] });
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
   },

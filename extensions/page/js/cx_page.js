@@ -68,6 +68,10 @@ var CxPage = CxExtension.extend({
       timeframe: null
     });
 
+    if (this.timeframes) {
+      this.toggleTimeframe(this.timeframes[0].name);
+    }
+
     CxExtension.prototype.resetValues.call(this);
   },
 
