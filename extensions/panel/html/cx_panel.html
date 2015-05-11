@@ -233,7 +233,7 @@
 						var origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon, clickable: false}).addTo(cexmap);
 						cexmarkergroup.addLayer(origMarker);
 					<% } else { %>
-						var isocode = 'cex_country_'+'<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
+						var isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';
 						var cex_outline = window['cex_country_'+isocode];
 	                	var geojsonLayer = L.mapbox.featureLayer()
 	                		.setGeoJSON(cex_outline)

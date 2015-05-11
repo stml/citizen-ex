@@ -157,16 +157,16 @@
 			cexmap.attributionControl.setPrefix("");
 			var heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
 			var cexmarkergroup = L.mapbox.featureLayer();
-            <% if (timeframeEntries) { %>
-				<% _.each(timeframeEntries, function(entry) { %>
-					var cexmarker = L.marker([<%= entry.lat %>,<%= entry.lng %>]);
-					cexmarkergroup.addLayer(cexmarker);
-					heat.addLatLng(L.latLng(<%= entry.lat %>,<%= entry.lng %>));
-				<% }) %>
-				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
-            <% } else { %>
-            	cexmap.setView([0,0],2);
-            <% } %>
+			<% _.each(timeframeCitizenship, function(country) { %>
+				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';
+				var cex_outline = window['cex_country_'+isocode];
+	            var geojsonLayer = L.mapbox.featureLayer()
+	                .setGeoJSON(cex_outline)
+	                .setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":<%= country.percentage/200 %>})
+	                .addTo(cexmap);
+				cexmarkergroup.addLayer(geojsonLayer);
+			<% }); %>
+            cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
 
 		    // kill loading circle
 		    $('img#cex_map_loading').hide();
@@ -267,7 +267,9 @@
 			$('#delete .info').html("Click the button again to delete your data.");
 			return false;
 			});
-		$('body').on('click', '.cex_erase', function() {
+		$('body').on('click', '.cex_erase', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
 	    	$('#delete .info').html("All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.");
 	    	return false;
 			});
