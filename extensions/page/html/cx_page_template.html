@@ -15,7 +15,7 @@
 	</div><!-- header -->
 
   
-  <% if (timeframeCitizenship || timeframeCitizenship.length > 0) { %>
+  <% if (timeframeCitizenship && timeframeCitizenship.length > 0) { %>
   
 	<div id="badge" class="section">
 
@@ -183,26 +183,36 @@
 	</div><!-- share -->
 
 	<script type="text/javascript">
-		$('.cex_sharedata').click(function() {
-			console.log('Sharing data');
-            <% if (shareData) { %>
-            	$('.cex_sharedata').html('Sharing<br />Data...');
-				var sharedatajson = <%= JSON.stringify(shareData) %>;
-				$.post('http://citizen-ex.com/api/savedata.php', { data: sharedatajson})
-					.done(function( data ) {
-    					console.log(data);
-						if (data.result == 'OK') {
-							$('.cex_sharedata').html('Data<br />Shared');
-							$('#share .info').html('Thanks! You have shared your data. You do not need to do so again, for a while...')
-							}
-						else {		
-							$('.cex_sharedata').html('Data<br />Not Shared');
-							$('#share .info').html('Sorry! There was a problem sharing your data. If you want to, you can email <strong>iamcitizenex@gmail.com</strong> with the following message, and we will try to fix it: "'+data.result+'"')
-							}
-    					});
-            <% } %>
+		$('body').on('click', '.cex_sharedata', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+			<% if (shareData) { %>
+				$('.cex_sharedata').html("Are<br/>you sure?").addClass('cex_sharedata_2');
+				$('#share .info').html('Click the button again to confirm you want to share your data. (This will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations.)');
+			<% } %>
             return false;
 			});
+		$('body').on('click', '.cex_sharedata_2', function(event) {
+            event.stopPropagation();
+            event.preventDefault();		  
+        	$('.cex_sharedata').html('Sharing<br />Data...');
+			var sharedatajson = <%= JSON.stringify(shareData) %>;
+			$.post('http://citizen-ex.com/api/savedata.php', { data: sharedatajson})
+				.done(function( result ) {
+					var data = JSON.parse(result);
+					if (data.result == 'OK') {
+						$('.cex_sharedata').html('Data<br />Shared');
+						$('.sharelink a').removeClass('cex_sharedata_2').removeClass('cex_sharedata');
+						$('#share .info').html("Thanks! You have shared your data. You can share as many times as you like, but wait until you've visited some more places!");
+						}
+					else {		
+						$('.cex_sharedata').html('Data<br />Not Shared');
+						$('#share .info').html('Sorry! There was a problem sharing your data. If you want to, you can email <strong>iamcitizenex@gmail.com</strong> with the following message, and we will try to fix it: "'+data.result+'"')
+						}
+					});
+			return false;
+			});
+    			
 	</script>
 	
 	 <% } %>
@@ -257,8 +267,6 @@
 			$('#delete .info').html("Click the button again to delete your data.");
 			return false;
 			});
-		$('.cex_erase').click(function() {
-        });
 		$('body').on('click', '.cex_erase', function() {
 	    	$('#delete .info').html("All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.");
 	    	return false;
