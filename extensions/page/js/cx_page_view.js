@@ -42,14 +42,15 @@ var CxPageView = Backbone.View.extend({
   },
 
   triggerTimeframe: function() {
-    this.model.toggleTimeframe(this.model.get('timeframe').name);
+    if (this.model.get('timeframe') && this.model.get('timeframe').name) {
+      this.model.toggleTimeframe(this.model.get('timeframe').name);
+    }
   },
 
   eraseData: function(event) {
     event.preventDefault();
     this.model.eraseData();
   }
-
 });
 
 
