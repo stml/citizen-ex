@@ -1329,201 +1329,187 @@ var CxExtension = Backbone.Model.extend({
 
 });
 
-// page/js/cx_page.js
+// panel/js/cx_panel.js
 
-var CxPage = CxExtension.extend({
-  initialize: function(browser, timeframes) {
+var CxPanel = CxExtension.extend({
+  initialize: function(browser) {
     CxExtension.prototype.initialize.call(this, browser);
-    this.timeframes = timeframes;
-    this.set({ currentEntry: '' })
 
-    this.set({ timeframe: this.timeframes[0] });
-    this.toggleTimeframe(this.timeframes[0].name);
+    this.requestActiveTab();
+    this.requestOpenTabs();
   },
 
-  getCitizenshipForDays: function(n) {
-    if (n === null) {
-      return this.get('citizenship');
+  requestActiveTab: function() {
+    message.send({ activeTab: true });
+  },
+
+  requestOpenTabs: function() {
+    message.send({ allTabs: true });
+  },
+
+  receiveActiveTab: function(url) {
+    var entry = this.getLogEntryForUrl(url);
+
+    if (!entry) {
+      this.set({ currentEntry: '' });
+      return;
+    } else {
+      this.set({ currentEntry: entry });
     }
-    var entries = this.getTabEntriesForDays(n);
-    var countryCodes = this.getPropertyFromEntries(entries, 'countryCode');
-    var citizenship = this.calculatePercentages(countryCodes);
-    return citizenship;
   },
 
-  getDomainsForDays: function(n) {
-    var entries = this.getTabEntriesForDays(n);
-    var domains = this.getDomainPropertiesFromEntries(entries);
-    var domainPopularity = this.calculateDomainPercentages(domains);
-    return domainPopularity;
+  receiveOpenTabs: function(urls) {
+    this.set({ openTabs: urls });
+    this.getOpenTabEntries();
   },
 
-  getTabEntriesForDays: function(n) {
-    var unit = 'days';
-    if (n === null) {
-      return this.get('logEntries');
-    } else if (n === 1) {
-      unit = 'day';
+  getOpenTabEntries: function() {
+    var tabs = this.get('openTabs');
+
+    if (!_.isEmpty(tabs)) {
+      var entries = [];
+      _.each(tabs, _.bind(function(tabUrl) {
+        var logEntry = this.getLogEntryForUrl(tabUrl);
+        if (logEntry && logEntry !== -Infinity) {
+          entries.push(logEntry);
+        }
+      }, this));
+      this.set({ openTabEntries: entries });
+      this.setUpOpenTabsCitizenship();
+    } else {
+      this.set({ openTabEntries: [] });
     }
-
-    var entries = this.get('logEntries');
-    var cutOffDate = moment().subtract(n, unit).valueOf();
-
-    var latestEntries = _.filter(entries, function(entry) {
-      return entry.latestTimestamp() >= cutOffDate;
-    });
-    return latestEntries;
   },
 
-  toggleTimeframe: function(name) {
-    var timeframe = _.find(this.timeframes, function(tf) {
-      return tf.name === name;
+  setUpOpenTabsCitizenship: function() {
+    var tabEntries = this.get('openTabEntries');
+    var validEntries = _.reject(tabEntries, function(entry) {
+      return entry.countryCode === undefined || entry.countryCode === '';
     });
+    var countryCodes = _.countBy(validEntries, function(entry) {
+      return entry.countryCode;
+    });
+    var openTabsCitizenship = this.calculatePercentages(countryCodes);
+    this.set({ openTabsCitizenship: openTabsCitizenship });
+  },
 
-    var entries = this.getTabEntriesForDays(timeframe.duration);
-    var domains = this.getDomainsForDays(timeframe.duration);
-    var citizenship = this.getCitizenshipForDays(timeframe.duration);
-    this.set({
-      timeframeCitizenship: citizenship,
-      timeframeEntries: entries,
-      timeframeDomains: domains,
-      timeframe: timeframe
-    });
+  open: function() {
+    this.set({ open: true });
+  },
+
+  close: function() {
+    this.set({ open: false });
+  },
+
+  toggle: function() {
+    if (this.get('open')) {
+      this.close();
+    } else {
+      this.open();
+    }
   },
 
   resetValues: function() {
-    if (this.timeframes) {
-      this.toggleTimeframe(this.timeframes[0].name);
-    }
+    this.set({ open: false });
 
-    this.set({
-      timeframeCitizenship: [],
-      timeframeEntries: [],
-      timeframeDomains: []
-    });
-
+    this.set({ currentEntry: '' });
+    this.set({ openTabEntries: [] });
+    this.set({ openTabsCitizenship: [] });
 
     CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {
     this.resetValues();
-
-    CxExtension.prototype.eraseData.call(this);
   }
 
 });
 
 
 
-// page/js/cx_page_view.js
+// panel/js/cx_panel_view.js
 
-var CxPageView = Backbone.View.extend({
+var CxPanelView = Backbone.View.extend({
   tagName: 'div',
 
-  className: 'citizen-ex__pane open',
+  className: 'citizen-ex__pane',
 
   events: {
     'click .cex_erase': 'eraseData',
-    'click .cex_toggle': 'toggleTimeframe',
-    'click .cex_sharedata': 'toggleAllTime'
+    'click .cex_close': 'close'
   },
 
   initialize: function(options) {
-    this.name = options.name;
     this.template = _.template(options.template);
-    this.listenTo(this.model, 'change', this.render);
-    this.listenTo(this.model, 'change:citizenship', this.triggerTimeframe);
-    this.listenTo(this.model, 'change:logEntries', this.triggerTimeframe);
+
+    this.listenTo(this.model, 'change:open', this.render);
+    this.listenTo(this.model, 'change:currentEntry', this.render);
+    this.listenTo(this.model, 'change:citizenship', this.render);
+    this.listenTo(this.model, 'change:ownGeoData', this.render);
+    this.listenTo(this.model, 'change:openTabsEntries', this.render);
+    this.listenTo(this.model, 'change:openTabsCitizenship', this.render);
 
     this.appendToBody();
-    this.render();
   },
 
-  render: function(model, pane) {
-    this.$el.html(this.template(this.model.toJSON()));
+  render: function() {
+    if (this.model.get('open')) {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.slideDown();
+    } else {
+      this.$el.slideUp();
+    }
   },
 
   appendToBody: function() {
     var body = $('body');
-    this.$el.appendTo(body);
-  },
-
-  toggleTimeframe: function(event) {
-    event.preventDefault();
-    this.model.toggleTimeframe(event.target.name);
-  },
-
-  toggleAllTime: function(event) {
-    event.preventDefault();
-    this.model.toggleTimeframe(this.model.timeframes[0].name);
-  },
-
-  triggerTimeframe: function() {
-    if (this.model.get('timeframe') && this.model.get('timeframe').name) {
-      this.model.toggleTimeframe(this.model.get('timeframe').name);
+    if (body.length > 0) {
+      this.$el.appendTo(body);
+    } else {
+      var html = $('html');
+      html.append(this.$el);
     }
+  },
+
+  close: function(event) {
+    event.preventDefault();
+    this.model.close();
   },
 
   eraseData: function(event) {
     event.preventDefault();
     this.model.eraseData();
   }
+
 });
 
 
+// panel/js/init_shared.js
 
-// page/js/init_shared.js
+var panelTemplate = "<div id=\"cex_hud\">\n\t<div id=\"cex_header\">\n\t\t<img id=\"cex_logo\" src=\"\" width=\"107\" height=\"24\" />\n\t\t<a href=\"#\" class=\"cex_more\" target=\"_blank\">More Data &amp; More Info &raquo;</a>\n        <a href=\"#\" class=\"cex_close\"><img id=\"cex_close\" src=\"\" width=\"24\" height=\"24\" /></a>\n\t\t<script type=\"text/javascript\">\n            if (!_.isUndefined(window.chrome)) {\n              $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n              $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));\n              $('.cex_more').attr('href',chrome.extension.getURL('page/page.html'));\n\n            } else if (safari) {\n              $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n              $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');\n              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');\n              $('.cex_more').attr('href',safari.extension.baseURI + 'page/page.html');\n            }\n\t\t</script>\n\t</div>\n\n\t<div id=\"cex_main\">\n\n\t<% if (currentEntry) { %>\n\n\t  \t<div id=\"cex_badge\">\n\n\t  \t\t<div id=\"cex_badge_column\">\n\n\t\t\t\t<% if (citizenship.length > 0) { %>\n\n\t\t\t\t<h2>This is your Algorithmic Citizenship</h2>\n\n\t\t\t\t<canvas id=\"cex_badge_canvas\"></canvas>\n\n\t\t\t\t<p id=\"cex_whatmeans\"><a href=\"http://citizen-ex.com/citizenship/\" target=\"_blank\">What does this mean?</a></p>\n\t\t\t\t<p id=\"cex_sharebuttons\">Share Via:<p>\n\t\t\t\t<p id=\"cex_sharebuttons\">\n\t\t\t\t\t<a href=\"https://www.facebook.com/sharer/sharer.php?u=http://citizen-ex.com\" target=\"_blank\" class=\"cex_share_facebook\">Facebook</a>&nbsp;&nbsp;&nbsp;\n\t\t\t\t\t<a href=\"\" target=\"_blank\" class=\"cex_share_twitter\">Twitter</a>&nbsp;&nbsp;&nbsp;\n\t\t\t\t\t<a href=\"\" target=\"_blank\" class=\"cex_share_email\">Email</a>&nbsp;&nbsp;&nbsp;\n\t\t\t\t</p>\n\t\t\t\t<p id=\"cex_sharebuttons\">\n\t\t\t\t\t<a href=\"#\" class=\"cex_share_badge\">Save your badge for sharing</a>&nbsp;&nbsp;&nbsp;\n\t\t\t\t</p>\n\t\t\t\t\n\t\t\t\t<script>\n\t\t\t\t\tvar tweetstring = '';\n\t\t\t\t\t<% _.each(citizenship, function(country) { %>\n\t\t\t\t\t\tif (tweetstring.length < 40) {\n\t\t\t\t\t\t\ttweetstring += '<%= country.percentage %>% <%= cxPanel.convertCountryCode(country.code) %>, ';\n\t\t\t\t\t\t\t}\n\t\t\t\t\t<% }); %>\n\t\t\t\t\ttweetstring = tweetstring.substring(0,tweetstring.length-2);\n\t\t\t\t\tvar twittext = encodeURI(\"My Algorithmic Citizenship is \"+tweetstring+\". What's yours?\");\n\t\t\t\t\tvar url = encodeURI('http://citizen-ex.com');\n\t\t\t\t\t$('.cex_share_twitter').attr('href','https://twitter.com/intent/tweet?text='+twittext+'&hashtags=citizenex&url='+url);\n\t\t\t\t\tvar emailtext = 'mailto:?Subject=What%27s%20Your%20Algorithmic%20Citizenship%3F&Body=My%20Algorithmic%20Citizenship%20is%20'+encodeURI(tweetstring)+'.%0A%0AAs%20you%20move%20around%20the%20web%2C%20the%20data%20you%20generate%20tells%20the%20internet%20about%20you.%20It%27s%20used%20by%20advertising%20companies%20to%20decide%20which%20ads%20you%20see%2C%20and%20security%20agencies%20to%20determine%20where%20you%20come%20from%2C%20in%20order%20to%20track%20and%20surveil%20you.%20Your%20Algorithmic%20Citizenship%20is%20how%20you%20appear%20to%20the%20internet%2C%20a%20series%20of%20datapoints%20extending%20across%20many%20nations%2C%20with%20a%20different%20citizenship%20and%20different%20rights%20in%20every%20place.%20One%20day%20perhaps%20we%20will%20all%20live%20like%20we%20do%20on%20the%20internet.%20Until%20then%2C%20there%27s%20Citizen%20Ex.%0A%0AFind%20out%20more%20at%20http%3A//citizen-ex.com';\n\t\t\t\t\t$('.cex_share_email').attr('href',emailtext);\n\t\t\t\t</script>\n\n\t\t\t</div><!-- cex_badge_column -->\n\n\t\t\t<div id=\"cex_data_column\">\n\n\t\t\t\t<table id=\"distribution_table\">\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"thead cex_country\">Your distribution</td>\n\t\t\t\t\t\t<td class=\"thead cex_percentage\">%</td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% _.each(citizenship, function(country) { %>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"cex_country\"><%= cxPanel.convertCountryCode(country.code) %></td>\n\t\t\t\t\t\t<td class=\"cex_percentage\"><%= country.percentage %></td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% }); %>\n\t\t\t\t</table>\n\n\t\t\t</div><!-- cex_data_column -->\n\n\t\t\t<script type=\"text/javascript\">\n\t\t\t\tvar percents = [\n\t\t\t\t<% _.each(citizenship, function(country) { %>\n\t\t\t\t  [\"<%= country.code %>\",<%= country.percentage %>],\n\t\t\t\t  <% }); %>];\n\t\t\t\t\t// set canvas to css heights\n\t\t\t\t$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));\n\t\t\t\t$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));\n\n\t\t\t\tvar cex_canvas = $(\"#cex_badge_canvas\").get(0);\n\t\t\t\tvar badge = cex_canvas.getContext(\"2d\");\n\n\t\t\t\t// circle centre and radius\n\t\t\t\tvar x0 = $('#cex_badge_canvas').attr('width')/2;\n\t\t\t\tvar y0 = $('#cex_badge_canvas').attr('height')/2;\n\t\t\t\tvar r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);\n\n\t\t\t\tvar circlepointer = 0;\n\n\t\t\t\t$.each(percents, function() {\n\t\t\t\t\tvar country = this[0];\n\t\t\t\t\tvar value = this[1];\n\t\t\t\t\tvar degrees = 360*(value/100);\n\t\t\t\t\tdrawSegment(badge,x0,y0,r,circlepointer,country,degrees);\n\t\t\t\t\tcirclepointer = circlepointer + degrees;\n\t\t\t\t\t});\n\t\t\t\t\t\n\t\t\t\tvar title = encodeURIComponent('Citizen Ex');\n\t\t\t\tvar summary = encodeURIComponent(\"This is my Algorithmic Citizenship. What's yours?\");\n\t\t\t\tvar url = encodeURIComponent('http://citizen-ex.com');\n\t\t\t\t\t\n\t\t\t\t$('.cex_share_badge').click(function () {\n\t\t\t\t\tvar badgeImg = new Image();\n\t\t\t\t\tbadgeImg.crossOrigin = \"anonymous\";\n\t\t\t\t\tbadgeImg.onload = function() {\n\t\t\t\t\t\tvar badgeCanvas = document.createElement(\"canvas\");\n\t\t\t\t\t    badgeCanvas.width = 600;\n\t\t\t\t\t\tbadgeCanvas.height = 350;\n\t\t\t\t\t    var badgeContext = badgeCanvas.getContext(\"2d\");\n\t  \t\t\t\t\tbadgeContext.drawImage(badgeImg, 0, 0);\n\t  \t\t\t\t\tbadgeContext.drawImage(cex_canvas, 285, 35, 280, 280);\n\t\t\t\t\t\tvar badgeImage = badgeCanvas.toDataURL();\n\t\t\t\t\t\twindow.open(badgeImage);\n\t\t\t\t\t\t};\n\t\t\t\t\tif (!_.isUndefined(window.chrome)) {\n\t\t\t\t\t\tbadgeImg.src = chrome.extension.getURL('images/share-card.png');\n\t\t\t\t\t} else if (safari) {\n\t\t\t\t\t\tbadgeImg.src = safari.extension.baseURI + 'images/share-card.png';\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\n\t\t\t\tfunction drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {\n\t\t\t\t\tvar img = new Image();\n\t\t\t\t\timg.crossOrigin = \"anonymous\";\n\t\t\t\t\timg.onload = function() {\n\t\t\t\t\t\tvar flagscaledheight = badge.canvas.clientHeight;\n\t\t\t\t\t\tvar flagscaledwidth = flagscaledheight*(img.width/img.height);\n\t\t\t\t\t\tvar flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;\n\t\t\t\t\t\tvar svgCanvas = document.createElement(\"canvas\");\n\t\t\t\t    \tsvgCanvas.height = flagscaledheight;\n\t\t\t\t    \tsvgCanvas.width = flagscaledwidth;\n\t\t\t\t    \tvar svgCtx = svgCanvas.getContext(\"2d\");\n\t\t\t\t    \tsvgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);\n\t\t\t\t    \tvar pattern = badge.createPattern(svgCanvas, 'repeat');\n\t\t\t\t    \tbadge.fillStyle = pattern;\n\t\t\t\t\t\tbadge.beginPath();\n\t\t\t\t\t\tbadge.moveTo(x0, y0);\n\t\t\t\t\t\tvar xy = circleCoords(x0,y0,r,circlepointer);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tfor (i = 0; i < degrees; i=i+20) {\n\t\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+i);\n\t\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+degrees);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tbadge.closePath();\n\t\t\t\t\t\tbadge.lineWidth=1;\n\t\t\t\t\t\tbadge.strokeStyle=\"#888\";\n\t\t\t\t\t\tbadge.stroke();\n\t\t\t\t\t\tbadge.fill();\n\t\t\t\t      \t};\n                      if (!_.isUndefined(window.chrome)) {\n                        img.src = chrome.extension.getURL('flags/'+country+'.svg');\n                      } else if (safari) {\n                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';\n                      }\n\t\t\t\t\t}\n\n\t\t\t\tfunction circleCoords(x0,y0,r,theta) {\n\t\t\t\t\tvar x = x0 + r * Math.cos(theta * Math.PI / 180);\n\t\t\t\t\tvar y = y0 + r * Math.sin(theta * Math.PI / 180);\n\t\t\t\t\treturn [x,y];\n\t\t\t\t\t}\n\n\t\t\t</script>\n\n\t\t</div><!-- cex_badge -->\n\n\t\t\t\t<% } else { %>\n\t\t\t\t  <h2>No Citizenship data available yet. Keep browsing!</h2>\n\t\t\t\t<% }; %>\n\n\t\t<div id=\"cex_map\">\n\n\t\t<div id=\"cex_map_window\" class=\"dark\">\n\t\t\t<img id=\"cex_map_loading\" src=\"\" alt=\"Loading\"/>\n  \t\t</div>\n\n\t  \t<script type=\"text/javascript\">\n        if (!_.isUndefined(window.chrome)) {\n          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));\n        } else if (safari) {\n          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');\n        }\n\t  \tsetTimeout(function(){ cex_drawMap(); }, 1000);\n\t  \tfunction cex_drawMap() {\n\t  \t\tL.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';\n\t  \t\tvar cexmap = L.mapbox.map('cex_map_window', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });\n\t\t\tcexmap.attributionControl.setPrefix(\"\");\n            var yellowMarker;\n            var cyanMarker;\n            var tabMarker;\n\n            if (!_.isUndefined(window.chrome)) {\n              cyanMarker = chrome.extension.getURL('images/map-pin-blue.png');\n              yellowMarker = chrome.extension.getURL('images/map-pin-yellow.png');\n              tabMarker = chrome.extension.getURL('images/map-marker-tab.png');\n            } else if (safari) {\n              cyanMarker = safari.extension.baseURI + 'images/map-pin-blue.png';\n              yellowMarker = safari.extension.baseURI + 'images/map-pin-yellow.png';\n              tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';\n            }\n\n\t\t\tvar destIcon = L.icon({\n\t\t\t\ticonUrl: yellowMarker,\n\t\t\t\ticonSize:     [41,41], // size of the icon\n\t\t\t\ticonAnchor:   [20,20], // point of the icon which will correspond to marker's location\n\t\t\t\t});\n\t\t\tvar origIcon = L.icon({\n\t\t\t\ticonUrl: cyanMarker,\n\t\t\t\ticonSize:     [41,41], // size of the icon\n\t\t\t\ticonAnchor:   [20,20], // point of the icon which will correspond to marker's location\n\t\t\t\t});\n\t\t\tvar tabIcon = L.icon({\n\t\t\t\ticonUrl: tabMarker,\n\t\t\t\ticonSize:     [9,9], // size of the icon\n\t\t\t\ticonAnchor:   [5,5], // point of the icon which will correspond to marker's location\n\t\t\t\t});\n\n/*\n            <% if (openTabEntries) { %>\n              <% _.each(openTabEntries, function(tabEntry) { %>\n                  <% if (tabEntry.url !== currentEntry.url) { %>\n                      var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);\n                  <% } %>\n              <% }) %>\n            <% } %>\n*/\n\n\t\t\t// if we have location data\n\t\t\t<% if (ownGeoData.ownLat || currentEntry.lat) { %>\n\t\t\t\n\t\t\t\tvar cexmarkergroup = new L.featureGroup();\n\t\t\t\n\t\t\t\t// if we have a local location\n\t\t\t\t<% if (ownGeoData.ownLat) { %>\n\t\t\t\t\t// if we have city-level data\n\t\t\t\t\t<% if (ownGeoData.ownCity.length > 0) { %>\n\t\t\t\t\t\tvar origMarker = L.marker([<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>], {icon: origIcon, clickable: false}).addTo(cexmap);\n\t\t\t\t\t\tcexmarkergroup.addLayer(origMarker);\n\t\t\t\t\t<% } else { %>\n\t\t\t\t\t\tvar isocode = '<%= cxPanel.convertIsoCode(ownGeoData.ownCountryCode) %>';\n\t\t\t\t\t\tvar cex_outline = window['cex_country_'+isocode];\n\t                \tvar geojsonLayer = L.mapbox.featureLayer()\n\t                \t\t.setGeoJSON(cex_outline)\n\t                \t\t.setStyle({\"color\": \"#00dcdc\",\"weight\": 1,\"opacity\": 1,\"fillColor\":\"#00dcdc\",\"fillOpacity\":0.25})\n\t                \t\t.addTo(cexmap);\n\t\t\t\t\t\tcexmarkergroup.addLayer(geojsonLayer);\n\t\t\t\t\t<% } %>\n\t\t\t\t<% } %>\n\n\t\t\t\t// if we have a remote location \n\t\t\t\t<% if (currentEntry.lat) { %>\n\t\t\t\t\t// if we have city-level data\n\t\t\t\t\t<% if (currentEntry.city.length > 0) { %>\n\t\t\t\t\t\tvar destMarker = L.marker([<%= currentEntry.lat %>, <%= currentEntry.lng %>], {icon: destIcon, clickable: false}).addTo(cexmap);\n\t\t\t\t\t\tcexmarkergroup.addLayer(destMarker);\n\t\t\t\t\t<% } else { %>\n\t\t\t\t\t\tvar isocode = '<%= cxPanel.convertIsoCode(currentEntry.countryCode) %>';\n\t\t\t\t\t\tvar cex_outline = window['cex_country_'+isocode];\n\t                \tvar geojsonLayer = L.mapbox.featureLayer()\n\t                \t\t.setGeoJSON(cex_outline)\n\t                \t\t.setStyle({\"color\": \"#fff000\",\"weight\": 1,\"opacity\": 1,\"fillColor\":\"#fff000\",\"fillOpacity\":0.25})\n\t                \t\t.addTo(cexmap);\n\t\t\t\t\t\tcexmarkergroup.addLayer(geojsonLayer);\n\t\t\t\t\t<% } %>\t\t\t\t\n\t\t\t\t<% } %>\n\t\t\t\t\n\t\t\t\t// if we have both a local and a remote city-level location\n\t\t\t\t<% if (ownGeoData.ownCity && currentEntry.city) { %>\n\t\t\t\t\t<% if (ownGeoData.ownCity.length > 0 && currentEntry.city.length > 0) { %>\n\t\t\t\t\t\tvar cexmarkerline = L.polyline([[<%= ownGeoData.ownLat %>, <%= ownGeoData.ownLng %>],[<%= currentEntry.lat %>, <%= currentEntry.lng %>]], { color: '#fff', weight: 1, opacity: 1 }).addTo(cexmap);\n\t\t\t\t\t<% } %>\n\t\t\t\t<% } %>\n\t\t\t\tcexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 9});\n\t\t\t\t\t\t\t\n\t\t\t// else if we have no location data\n\t\t\t<% } else { %>\n\t\t\t\tcexmap.setView([0,0],2);\n\t\t\t<% } %>\n \n\t\t    // kill loading circle\n\t\t    $('img#cex_map_loading').hide();\n\t\t    }\n\n\t  \t</script>\n\n\t    \t\t<div id=\"cex_mapdata\">\n\n\t    \t\t\t<div id=\"cex_dest_column\">\n\t    \t\t\t\t<h3>Current remote location</h3>\n\t\t\t\t\t    <% if (currentEntry.ip) { %>\n\t\t\t\t\t      <p><strong><% if (currentEntry.city.length > 0) { %><%= currentEntry.city %>, <% } %><%= cxPanel.convertCountryCode(currentEntry.countryCode) %></strong></p>\n\t\t\t\t\t      <p>IP Address: <%= currentEntry.ip %></p>\n\t\t\t\t\t      <p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>\n\t\t\t\t\t    <% } else { %>\n\t\t\t\t\t      <p><strong>Remote location is unknown</strong></p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t    <% }; %>\n\t\t\t\t    </div><!-- cex_dest_column -->\n\t\t\t\t    <div id=\"cex_orig_column\">\n\t    \t\t\t\t<h3>Your tracked location</h3>\n\t\t\t\t\t    <% if (ownGeoData && ownGeoData.ownIp) { %>\n\t\t\t\t\t      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= cxPanel.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>\n\t\t\t\t\t      <p>IP Address: <%= ownGeoData.ownIp %></p>\n\t\t\t\t\t      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>\n\t\t\t\t\t    <% } else { %>\n\t\t\t\t\t      <p><strong>Your location is unknown</strong></p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t      <p>&nbsp;</p>\n\t\t\t\t\t    <% }; %>\n\t\t\t\t    </div><!-- cex_orig_column -->\n\t\t\t\t</div><!-- cex_mapdata -->\n\n\t    </div><!-- cex_map -->\n\n\t  <% } else { %>\n\n\t  \t\t<div id=\"cex_nodata\">\n\t\t\t\t<p>No data available yet.</p>\n\t\t\t</div>\n\t  <% }; %>\n\n\t</div><!-- #cex_main -->\n\n</div><!-- #cex_hud -->\n";
 
 var browser = new CxBrowser();
 var storage = new CxStorage(browser);
 var message = new CxMessage(browser);
 
-var cxPageTemplate = "<div id=\"container\">\n\n\t<div id=\"header\" class=\"section\">\n\t\t<img id=\"logo\" src=\"\" width=\"107\" height=\"24\" />\n\t\t<p class=\"homepage\">go to: <a href=\"http://citizen-ex.com\">citizen-ex.com</a></p>\n\t\t<script type=\"text/javascript\">\n            if (!_.isUndefined(window.chrome)) {\n              $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n\t\t\t  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));\n            } else if (safari) {\n              $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n              $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');\n            }\n\t\t</script>\n\t</div><!-- header -->\n\n  \n  <% if (timeframeCitizenship && timeframeCitizenship.length > 0) { %>\n  \n\t<div id=\"badge\" class=\"section\">\n\n\t\t<div id=\"toggles\">\n\t\t\t<p>This is your Algorithmic Citizenship for:</p>\n\t\t    <ul>\n\t          <li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'all-time') { %> selected <% } %>\" name=\"all-time\">All time</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'month') { %> selected <% } %>\" name=\"month\">This month</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'week') { %> selected <% } %>\" name=\"week\">This week</a></li>\n\t        \t<li><a href=\"#\" class=\"cex_toggle <% if (timeframe.name === 'day') { %> selected <% } %>\" name=\"day\">Today</a></li>\n\t        </ul>\n\t\t</div><!-- toggles -->\n\n\t\t<canvas id=\"cex_badge_canvas\"></canvas>\n\n\t\t<script type=\"text/javascript\">\n\t\t\t\tvar percents = [<% _.each(timeframeCitizenship, function(country) { %>[\"<%= country.code %>\",\"<%= country.percentage %>\"],<% }); %>];\n\t\t\t\t\t// set canvas to css heights\n\t\t\t\t$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));\n\t\t\t\t$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));\n\n\t\t\t\tvar badge = $(\"#cex_badge_canvas\").get(0).getContext(\"2d\");\n\n\t\t\t\t// circle centre and radius\n\t\t\t\tvar x0 = $('#cex_badge_canvas').attr('width')/2;\n\t\t\t\tvar y0 = $('#cex_badge_canvas').attr('height')/2;\n\t\t\t\tvar r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);\n\n\t\t\t\tvar circlepointer = 0;\n\n\t\t\t\t$.each(percents, function() {\n\t\t\t\t\tvar country = this[0];\n\t\t\t\t\tvar value = this[1];\n\t\t\t\t\tvar degrees = 360*(value/100);\n\t\t\t\t\tdrawSegment(badge,x0,y0,r,circlepointer,country,degrees);\n\t\t\t\t\tcirclepointer = circlepointer + degrees;\n\t\t\t\t\t});\n\n\t\t\t\tfunction drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {\n\t\t\t\t\tvar img = new Image();\n\t\t\t\t\timg.onload = function() {\n\t\t\t\t\t\tvar flagscaledheight = badge.canvas.clientHeight;\n\t\t\t\t\t\tvar flagscaledwidth = flagscaledheight*(img.width/img.height);\n\t\t\t\t\t\tvar flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;\n\t\t\t\t\t\tvar svgCanvas = document.createElement(\"canvas\");\n                        if (flagscaledwidth === 0) {\n                          return;\n                        }\n\t\t\t\t    \tsvgCanvas.height = flagscaledheight;\n\t\t\t\t    \tsvgCanvas.width = flagscaledwidth;\n\t\t\t\t    \tvar svgCtx = svgCanvas.getContext(\"2d\");\n\t\t\t\t    \tsvgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);\n\t\t\t\t    \tvar pattern = badge.createPattern(svgCanvas, 'repeat');\n\t\t\t\t    \tbadge.fillStyle = pattern;\n\t\t\t\t\t\tbadge.beginPath();\n\t\t\t\t\t\tbadge.moveTo(x0, y0);\n\t\t\t\t\t\tvar xy = circleCoords(x0,y0,r,circlepointer);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tfor (i = 0; i < degrees; i=i+20) {\n\t\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+i);\n\t\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\txy = circleCoords(x0,y0,r,circlepointer+degrees);\n\t\t\t\t\t\tbadge.lineTo(xy[0],xy[1]);\n\t\t\t\t\t\tbadge.closePath();\n\t\t\t\t\t\tbadge.lineWidth=1;\n\t\t\t\t\t\tbadge.strokeStyle=\"#888\";\n\t\t\t\t\t\tbadge.stroke();\n\t\t\t\t\t\tbadge.fill();\n\t\t\t\t      \t};\n                      if (country === '') {\n                        return;\n                      }\n                      if (!_.isUndefined(window.chrome)) {\n                        img.src = chrome.extension.getURL('flags/'+country+'.svg');\n                      } else if (safari) {\n                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';\n                      }\n\t\t\t\t\t}\n\n\t\t\t\tfunction circleCoords(x0,y0,r,theta) {\n\t\t\t\t\tvar x = x0 + r * Math.cos(theta * Math.PI / 180);\n\t\t\t\t\tvar y = y0 + r * Math.sin(theta * Math.PI / 180);\n\t\t\t\t\treturn [x,y];\n\t\t\t\t\t}\n\n\t\t\t</script>\n\t</div><!-- badge -->\n\n\t<div id=\"tables\" class=\"section\">\n\t\t<div id=\"distribution\">\n\t\t\t<table>\n\t\t\t<tr>\n\t\t\t\t<td class=\"thead first\">Your Distribution</td>\n\t\t\t\t<td class=\"thead second\">%</td>\n\t\t\t</tr>\n\t\t\t<% _.each(timeframeCitizenship, function(country) { %>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class=\"first\"><%= cxPage.convertCountryCode(country.code) %></td>\n\t\t\t\t\t<td class=\"second\"><%= country.percentage %></td>\n\t\t\t\t</tr>\n\t\t\t<% }); %>\n\t\t\t</table>\n\t</div><!-- distribution -->\n\n\n\t\t<div id=\"sites\">\n\t\t\t<table>\n\t\t\t\t<tr>\n\t\t\t\t\t<td class=\"thead first\">Most Visited Sites</td>\n\t\t\t\t\t<td class=\"thead second\">Country</td>\n\t\t\t\t</tr>\n\t\t\t\t<% _.each(timeframeDomains.slice(0,10), function(entry) { %>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<td class=\"first\"><%= entry.domain %></td>\n\t\t\t\t\t\t<td class=\"second\"><%= cxPage.convertCountryCode(entry.code) %></td>\n\t\t\t\t\t</tr>\n\t\t\t\t<% }); %>\n\t\t\t</table>\n\t\t</div><!-- sites -->\n\t</div><!-- #tables .section -->\n\n\t<div id=\"map\" class=\"section\">\n\t\t<h2>Your Map</h2>\n\t\t<div id=\"cex_map\">\n\t\t\t<img id=\"cex_map_loading\" src=\"\" alt=\"Loading\"/>\n  \t\t</div>\n\n  \t\t<script type=\"text/javascript\">\n\t    if (!_.isUndefined(window.chrome)) {\n\t          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));\n\t        } else if (safari) {\n\t          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');\n\t        }\n\t  \tsetTimeout(function(){ cex_drawMap(); }, 1000);\n\t  \tfunction cex_drawMap() {\n\t\t\tL.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';\n\t  \t\tvar cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });\n\t\t\tcexmap.attributionControl.setPrefix(\"\");\n\t\t\tvar heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);\n\t\t\tvar cexmarkergroup = L.mapbox.featureLayer();\n\t\t\t<% _.each(timeframeCitizenship, function(country) { %>\n\t\t\t\tvar isocode = '<%= cxPage.convertIsoCode(country.code) %>';\n\t\t\t\tvar cex_outline = window['cex_country_'+isocode];\n\t            var geojsonLayer = L.mapbox.featureLayer()\n\t                .setGeoJSON(cex_outline)\n\t                .bindPopup('<%= cxPage.convertCountryCode(country.code) %> (<%= country.percentage %>%)')\n\t                .setStyle({\"color\": \"#fff000\",\"weight\": 1,\"opacity\": 1,\"fillColor\":\"#fff000\",\"fillOpacity\":<%= country.percentage/200 %>})\n\t                .addTo(cexmap);\n\t            geojsonLayer.on('mouseover', function(e) {\n\t\t\t\t    e.layer.openPopup();\n\t\t\t\t\t});\n\t\t\t\tgeojsonLayer.on('mouseout', function(e) {\n\t\t\t\t    e.layer.closePopup();\n\t\t\t\t\t});\n\t\t\t\tcexmarkergroup.addLayer(geojsonLayer);\n\t\t\t<% }); %>\n            cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});\n\n\t\t    // kill loading circle\n\t\t    $('img#cex_map_loading').hide();\n\t\t    }\n\t  \t</script>\n\n\t</div><!-- map -->\n\t\n\t<% if (shareData.length > 20) { %> \n\n\t<div id=\"share\" class=\"section\">\n\t\t<p class=\"info\">Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</strong></p>\n\t\t<p class=\"sharelink\"><a class=\"cex_sharedata\" href=\"#share\">Share<br />Your Data</a></p>\n\t</div><!-- share -->\n\n\t<script type=\"text/javascript\">\n\t\t$('body').on('click', '.cex_sharedata', function(event) {\n            event.stopPropagation();\n            event.preventDefault();\n\t\t\t<% if (shareData) { %>\n\t\t\t\t$('.cex_sharedata').html(\"Are<br/>you sure?\").addClass('cex_sharedata_2');\n\t\t\t\t$('#share .info').html('Click the button again to confirm you want to share your data. (This will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations.)');\n\t\t\t<% } %>\n            return false;\n\t\t\t});\n\t\t$('body').on('click', '.cex_sharedata_2', function(event) {\n            event.stopPropagation();\n            event.preventDefault();\t\t  \n        \t$('.cex_sharedata').html('Sharing<br />Data...');\n\t\t\tvar sharedatajson = <%= JSON.stringify(shareData) %>;\n\t\t\t$.post('http://citizen-ex.com/api/savedata.php', { data: sharedatajson})\n\t\t\t\t.done(function( result ) {\n\t\t\t\t\tvar data = JSON.parse(result);\n\t\t\t\t\tif (data.result == 'OK') {\n\t\t\t\t\t\t$('.cex_sharedata').html('Data<br />Shared');\n\t\t\t\t\t\t$('.sharelink a').removeClass('cex_sharedata_2').removeClass('cex_sharedata');\n\t\t\t\t\t\t$('#share .info').html(\"Thanks! You have shared your data. You can share as many times as you like, but wait until you've visited some more places!\");\n\t\t\t\t\t\t}\n\t\t\t\t\telse {\t\t\n\t\t\t\t\t\t$('.cex_sharedata').html('Data<br />Not Shared');\n\t\t\t\t\t\t$('#share .info').html('Sorry! There was a problem sharing your data. If you want to, you can email <strong>iamcitizenex@gmail.com</strong> with the following message, and we will try to fix it: \"'+data.result+'\"')\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\treturn false;\n\t\t\t});\n    \t\t\t\n\t</script>\n\t\n\t <% } %>\n\n\t <% } else { %><!-- end if have citizenship data  -->\n\t \n\t \t<div id=\"citizenship\" class=\"section\">\n\t\t<div id=\"citizenship-wrapper\">\n\t\t\t<h2>Your Data</h2>\n\t\t\t<p>You haven't done enough browsing to generate citizenship data yet. Come back here soon, when you've done some more browsing!</p>\n\t\t</div>\n\t</div><!-- citizenship -->\n\t \n\t <% } %> \n\n\n\t<div id=\"citizenship\" class=\"section\">\n\t\t<div id=\"citizenship-wrapper\">\n\t\t\t<h2>Algorithmic Citizenship</h2>\n<p>Every time you connect to the internet, you pass through time, space, and law. Information is sent from your computer all over the world, and sent back from there. This information is also stored and tracked in multiple locations, by the websites you visit, by other software on those websites, and at many places along the way. These stores may be owned by people, or companies, or states, existing in many ways, in many places, in many countries and legal jurisdictions. Citizen Ex shows you where some of these places are.</p>\n\n<p>As you move around the web, the data you generate tells the internet about you. It's used by advertising companies to decide which ads you see, and security agencies to determine where you come from, in order to track and surveil you. Your Algorithmic Citizenship is how you appear to the internet, a series of datapoints extending across many nations, with a different citizenship and different rights in every place. One day perhaps we will all live like we do on the internet. Until then, there's Citizen Ex.</p>\n\t\t\t<p>For more information about Algorithmic Citizenship, and the stories behind it, visit <a href=\"http://citizen-ex.com\">Citizen-Ex.com</a>.</p>\n\t\t</div>\n\t</div><!-- citizenship -->\n\n\t<div id=\"about\" class=\"section\">\n\t\t<div id=\"left\">\n\t\t\t<h2>Accuracy</h2>\n\t\t\t<p>The extension attempts to work out where a website is, but it will rarely be the real, or exact, location. The location is based on the website's IP address, a string of four digits (e.g. 74.125.226.31) which is the digital form of an address like google.com. These IP addresses are registered in blocks, and do not always correspond to the location of an individual website. In addition, many websites are served via Content Delivery Networks (CDNs) which take the website's content, and serve it from another location to ensure reliability. Those CDNs might have many locations, but the IP address will only tell us where the CDN itself is located. This is true of many large websites, and so the locations the extension provides should be taken only as a guide. To look up the full details about a website's registered address, you can use a service like <a href=\"http://whois.icann.org/\">ICANN</a> or <a href=\"https://who.is/\">Who.is</a>. The extension can't tell you any more than they can.</p>\n\t\t\t<p>The extension uses the same process to work out your location. Every time you use the internet, you are given an address - another IP number. This doesn't necessarily point to your house, or even your city: it depends on how you access the internet, and will probably point to the registered location of your internet service provider. As with websites, the registered address is only a guide to the real location. Some websites may ask permission to use your real location, which can be determined by your computer from GPS and wifi signals. The extension does not do this. The way it sees you and the way it sees other websites is the way the internet sees you, every time you connect.</p>\n\t\t</div>\n\t\t<div id=\"right\">\n\t\t\t<h2>Privacy</h2>\n\t\t\t<p>The Citizen Extension is software running on <em>your</em> computer, inside <em>your</em> browser. The data that it gathers is <em>your</em> data. This data is stored by your browser on your computer and isn't stored or sent anywhere else without your express permission.</p>\n\t\t\t<p>If you choose to share data with Citizen Ex via the \"Share Data\" button above, no personal information is included: just the locations of the websites you visit (and not their names or IP addresses). If you share your Algorithmic Citizenship badge, this only includes a graphical representation of the countries you visit, and it does not include your location, or any data about the websites you visit.</p>\n\t\t\t<p>The developers built this extension, and took these decisions about how data is stored, because we believe that personal privacy is important, and people who use computers and software should be aware of, and responsible for, their own data and privacy. The extension code is open source so that anyone can inspect it.</p>\n\t\t\t<p>For an introduction to online privacy issues, visit <a href=\"https://www.cyberstreetwise.com/\">Cyber Street</a>. For more advanced tools, see the EFF's <a href=\"https://ssd.eff.org\">Surveillance Self-Defense</a>.</p>\n\t\t</div>\n\t</div><!-- about -->\n\n\t<div id=\"delete\" class=\"section\">\n\t\t<p class=\"info\">Had enough of storing your data? It is only stored on your computer, but if you want to do a complete wipe and start over, clicking this button will remove your complete history. This cannot be undone.</p>\n\t\t<p class=\"deletelink\"><a class=\"cex_deletedata\" href=\"#delete\">Delete<br />Your Data</a></p>\n\t</div><!-- delete -->\n\n\t<script type=\"text/javascript\">\n\t\t$('body').on('click', '.cex_deletedata', function(event) {\n            event.stopPropagation();\n            event.preventDefault();\n\t\t\t$('.cex_deletedata').addClass(\"cex_erase\");\n\t\t\t$('.cex_deletedata').html(\"Are<br/>you sure?\").removeClass('cex_deletedata');\n\t\t\t$('#delete .info').html(\"Click the button again to delete your data.\");\n\t\t\treturn false;\n\t\t\t});\n\t\t$('body').on('click', '.cex_erase', function(event) {\n            event.stopPropagation();\n            event.preventDefault();\n\t    \t$('#delete .info').html(\"All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.\");\n\t    \treturn false;\n\t\t\t});\n\t</script>\n\n\t<div id=\"footer\" class=\"section\">\n\t\t<p><img id=\"logo\" src=\"\" width=\"107\" height=\"24\" /></p>\n\t\t<div class=\"credits\">\n\t\t\t<p class=\"subhead\">A project by <a href=\"http://booktwo.org\">James Bridle</a></p>\n\t\t\t<div class=\"additional-credit\">\n\t\t\t\t<p class=\"subhead\"><strong>Made possible with funding from:</strong></p>\n\t\t\t\t<p><a href=\"http://www.southbankcentre.co.uk\">Southbank Centre</a></p>\n\t\t\t\t<p><a href=\"http://www.thespace.org\">The Space</a></p>\n\t\t\t\t<p><a href=\"http://webfoundation.org\">World Wide Web Foundation</a></p>\n\t\t\t\t<p class=\"subhead\"><strong>Designed and built by:</strong></p>\n\t\t\t\t<p><a href=\"http://booktwo.org\">James Bridle</a> / <a href=\"http://ntlk.net/\">ntlk</a> / <a href=\"http://aftertheflood.co/\">After the Flood</a></p>\n\t\t\t</div>\n\t\t</div>\n\t</div><!-- footer -->\n\n\n</div><!-- container -->\n";
+var cxPanel;
+var cxPanelView;
 
-var Timeframe = function(name, duration) {
-  this.name = name;
-  this.duration = duration;
-};
+// panel/js/init_chrome.js
 
-var timeframes = [
-  new Timeframe('all-time', null),
-  new Timeframe('month', 30),
-  new Timeframe('week', 7),
-  new Timeframe('day', 1)
-];
-
-var cxPage = new CxPage(browser, timeframes);
-var cxPageView = new CxPageView({ model: cxPage, template: cxPageTemplate });
-
-/*
- (c) 2014, Vladimir Agafonkin
- simpleheat, a tiny JavaScript library for drawing heatmaps with Canvas
- https://github.com/mourner/simpleheat
-*/
-!function(){"use strict";function t(i){return this instanceof t?(this._canvas=i="string"==typeof i?document.getElementById(i):i,this._ctx=i.getContext("2d"),this._width=i.width,this._height=i.height,this._max=1,void this.clear()):new t(i)}t.prototype={defaultRadius:25,defaultGradient:{.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"},data:function(t){return this._data=t,this},max:function(t){return this._max=t,this},add:function(t){return this._data.push(t),this},clear:function(){return this._data=[],this},radius:function(t,i){i=i||15;var a=this._circle=document.createElement("canvas"),s=a.getContext("2d"),e=this._r=t+i;return a.width=a.height=2*e,s.shadowOffsetX=s.shadowOffsetY=200,s.shadowBlur=i,s.shadowColor="black",s.beginPath(),s.arc(e-200,e-200,t,0,2*Math.PI,!0),s.closePath(),s.fill(),this},gradient:function(t){var i=document.createElement("canvas"),a=i.getContext("2d"),s=a.createLinearGradient(0,0,0,256);i.width=1,i.height=256;for(var e in t)s.addColorStop(e,t[e]);return a.fillStyle=s,a.fillRect(0,0,1,256),this._grad=a.getImageData(0,0,1,256).data,this},draw:function(t){this._circle||this.radius(this.defaultRadius),this._grad||this.gradient(this.defaultGradient);var i=this._ctx;i.clearRect(0,0,this._width,this._height);for(var a,s=0,e=this._data.length;e>s;s++)a=this._data[s],i.globalAlpha=Math.max(a[2]/this._max,t||.05),i.drawImage(this._circle,a[0]-this._r,a[1]-this._r);var n=i.getImageData(0,0,this._width,this._height);return this._colorize(n.data,this._grad),i.putImageData(n,0,0),this},_colorize:function(t,i){for(var a,s=3,e=t.length;e>s;s+=4)a=4*t[s],a&&(t[s-3]=i[a],t[s-2]=i[a+1],t[s-1]=i[a+2])}},window.simpleheat=t}(),/*
- (c) 2014, Vladimir Agafonkin
- Leaflet.heat, a tiny and fast heatmap plugin for Leaflet.
- https://github.com/Leaflet/Leaflet.heat
-*/
-L.HeatLayer=(L.Layer?L.Layer:L.Class).extend({initialize:function(t,i){this._latlngs=t,L.setOptions(this,i)},setLatLngs:function(t){return this._latlngs=t,this.redraw()},addLatLng:function(t){return this._latlngs.push(t),this.redraw()},setOptions:function(t){return L.setOptions(this,t),this._heat&&this._updateOptions(),this.redraw()},redraw:function(){return!this._heat||this._frame||this._map._animating||(this._frame=L.Util.requestAnimFrame(this._redraw,this)),this},onAdd:function(t){this._map=t,this._canvas||this._initCanvas(),t._panes.overlayPane.appendChild(this._canvas),t.on("moveend",this._reset,this),t.options.zoomAnimation&&L.Browser.any3d&&t.on("zoomanim",this._animateZoom,this),this._reset()},onRemove:function(t){t.getPanes().overlayPane.removeChild(this._canvas),t.off("moveend",this._reset,this),t.options.zoomAnimation&&t.off("zoomanim",this._animateZoom,this)},addTo:function(t){return t.addLayer(this),this},_initCanvas:function(){var t=this._canvas=L.DomUtil.create("canvas","leaflet-heatmap-layer leaflet-layer"),i=this._map.getSize();t.width=i.x,t.height=i.y;var a=this._map.options.zoomAnimation&&L.Browser.any3d;L.DomUtil.addClass(t,"leaflet-zoom-"+(a?"animated":"hide")),this._heat=simpleheat(t),this._updateOptions()},_updateOptions:function(){this._heat.radius(this.options.radius||this._heat.defaultRadius,this.options.blur),this.options.gradient&&this._heat.gradient(this.options.gradient),this.options.max&&this._heat.max(this.options.max)},_reset:function(){var t=this._map.containerPointToLayerPoint([0,0]);L.DomUtil.setPosition(this._canvas,t);var i=this._map.getSize();this._heat._width!==i.x&&(this._canvas.width=this._heat._width=i.x),this._heat._height!==i.y&&(this._canvas.height=this._heat._height=i.y),this._redraw()},_redraw:function(){var t,i,a,s,e,n,h,o,r,_=[],d=this._heat._r,l=this._map.getSize(),m=new L.LatLngBounds(this._map.containerPointToLatLng(L.point([-d,-d])),this._map.containerPointToLatLng(l.add([d,d]))),c=void 0===this.options.maxZoom?this._map.getMaxZoom():this.options.maxZoom,u=1/Math.pow(2,Math.max(0,Math.min(c-this._map.getZoom(),12))),g=d/2,f=[],p=this._map._getMapPanePos(),v=p.x%g,w=p.y%g;for(t=0,i=this._latlngs.length;i>t;t++)if(m.contains(this._latlngs[t])){a=this._map.latLngToContainerPoint(this._latlngs[t]),e=Math.floor((a.x-v)/g)+2,n=Math.floor((a.y-w)/g)+2;var y=void 0!==this._latlngs[t].alt?this._latlngs[t].alt:void 0!==this._latlngs[t][2]?+this._latlngs[t][2]:1;r=y*u,f[n]=f[n]||[],s=f[n][e],s?(s[0]=(s[0]*s[2]+a.x*r)/(s[2]+r),s[1]=(s[1]*s[2]+a.y*r)/(s[2]+r),s[2]+=r):f[n][e]=[a.x,a.y,r]}for(t=0,i=f.length;i>t;t++)if(f[t])for(h=0,o=f[t].length;o>h;h++)s=f[t][h],s&&_.push([Math.round(s[0]),Math.round(s[1]),Math.min(s[2],1)]);this._heat.data(_).draw(this.options.minOpacity),this._frame=null},_animateZoom:function(t){var i=this._map.getZoomScale(t.zoom),a=this._map._getCenterOffset(t.center)._multiplyBy(-i).subtract(this._map._getMapPanePos());L.DomUtil.setTransform?L.DomUtil.setTransform(this._canvas,a,i):this._canvas.style[L.DomUtil.TRANSFORM]=L.DomUtil.getTranslateString(a)+" scale("+i+")"}}),L.heatLayer=function(t,i){return new L.HeatLayer(t,i)};
-// page/js/init_safari.js
-
-safari.self.addEventListener('message', function(message) {
-
-  if (message.name === 'tabs') {
-    cxPage.receiveOpenTabs(message.message.tabs);
-  } else if (message.name === 'activeTab') {
-    cxPage.receiveActiveTab(message.message.activeTab);
-  } else if (message.name === 'allLogEntries') {
-    cxPage.receiveAllLogEntries(message.message.allLogEntries);
-  } else if (message.name === 'countryLog') {
-    cxPage.receiveCitizenship(message.message.countryLog);
-  } else if (message.name === 'ownGeoData') {
-    cxPage.receiveOwnGeoData(message.message.ownGeoData);
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+  if (_.has(request, 'tabs')) {
+    cxPanel.receiveOpenTabs(request.tabs);
+  } else if (_.has(request, 'activeTab'))  {
+    cxPanel.receiveActiveTab(request.activeTab);
+  } else if (request.allLogEntries) {
+    cxPanel.receiveAllLogEntries(request.allLogEntries);
+  } else if (request.countryLog) {
+    cxPanel.receiveCitizenship(request.countryLog);
+  } else if (_.has(request, 'ownGeoData')) {
+    cxPanel.receiveOwnGeoData(request.ownGeoData);
   }
+});
 
-
-}, false);
-
-cxPage.requestOpenTabs();
+cxPanel = new CxPanel(browser);
+cxPanelView = new CxPanelView({ model: cxPanel, template: panelTemplate });

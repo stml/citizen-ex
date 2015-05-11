@@ -153,9 +153,8 @@
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
-	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12 });
+	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 1 });
 			cexmap.attributionControl.setPrefix("");
-			var heat = L.heatLayer([], { maxZoom: 12, radius: 50, minOpacity: 0.5, gradient: {0: '#fff000', 1: '#fff000'}}).addTo(cexmap);
 			var cexmarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
 				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';
