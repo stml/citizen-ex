@@ -168,20 +168,38 @@
 	  	</script>
 
 	</div><!-- map -->
+	
+	<% if (shareData.length > 20) { %> 
 
 	<div id="share" class="section">
-		<p class="info">NOT ACTUALLY WORKING YET! <br /> Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</p>
-		<p class="sharelink"><a class="cex_sharedata" href="#">Share<br />Your Data</a></p>
+		<p class="info">Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</strong></p>
+		<p class="sharelink"><a class="cex_sharedata" href="#share">Share<br />Your Data</a></p>
 	</div><!-- share -->
 
 	<script type="text/javascript">
 		$('.cex_sharedata').click(function() {
 			console.log('Sharing data');
             <% if (shareData) { %>
-              console.log(<%= JSON.stringify(shareData) %>)
+            	$('.cex_sharedata').html('Sharing<br />Data...');
+				var sharedatajson = <%= JSON.stringify(shareData) %>;
+				$.post('http://citizen-ex.com/api/savedata.php', { data: sharedatajson})
+					.done(function( data ) {
+    					console.log(data);
+						if (data.result == 'OK') {
+							$('.cex_sharedata').html('Data<br />Shared');
+							$('#share .info').html('Thanks! You have shared your data. You do not need to do so again, for a while...')
+							}
+						else {		
+							$('.cex_sharedata').html('Data<br />Not Shared');
+							$('#share .info').html('Sorry! There was a problem sharing your data. If you want to, you can email <strong>iamcitizenex@gmail.com</strong> with the following message, and we will try to fix it: "'+data.result+'"')
+							}
+    					});
             <% } %>
+            return false;
 			});
 	</script>
+	
+	 <% } %>
 
 	<div id="citizenship" class="section">
 		<div id="citizenship-wrapper">
@@ -217,9 +235,11 @@
 			$('.cex_deletedata').addClass("cex_erase");
 			$('.cex_deletedata').html("Are<br/>you sure?");
 			$('#delete .info').html("Click the button again to delete your data.");
+			return false;
 			});
 		$('.cex_erase').click(function() {
 	    	$('#delete .info').html("All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.");
+	    	return false;
 			});
 	</script>
 
