@@ -162,8 +162,15 @@
 				var cex_outline = window['cex_country_'+isocode];
 	            var geojsonLayer = L.mapbox.featureLayer()
 	                .setGeoJSON(cex_outline)
+	                .bindPopup('<%= cxPage.convertCountryCode(country.code) %> (<%= country.percentage %>%)')
 	                .setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":<%= country.percentage/200 %>})
 	                .addTo(cexmap);
+	            geojsonLayer.on('mouseover', function(e) {
+				    e.layer.openPopup();
+					});
+				geojsonLayer.on('mouseout', function(e) {
+				    e.layer.closePopup();
+					});
 				cexmarkergroup.addLayer(geojsonLayer);
 			<% }); %>
             cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
@@ -232,8 +239,9 @@
 	<div id="citizenship" class="section">
 		<div id="citizenship-wrapper">
 			<h2>Algorithmic Citizenship</h2>
-			<p>Every time you connect to the internet, you pass through time, space, and law. Information is sent from your computer all over the world, and sent back from there. This information is also stored and tracked in multiple locations, by the websites you visit, by other software on those websites, and at many places along the way. These stores may be owned by people, or companies, or states, existing in many ways, in many places, in many countries and legal jurisdictions. Citizen Ex shows you where some of these places are.</p>
-			<p>As you move around the web, the data you generate tells the internet about you. It's used by advertising companies to decide which ads you see, and security agencies to determine where you come from, in order to track and surveil you. Your Algorithmic Citizenship is how you appear to the internet, a data entity extending across many nations, with a different citizenship and different rights in every place. One day perhaps we will all live like we do on the internet. Until then, there's Citizen Ex.</p>
+<p>Every time you connect to the internet, you pass through time, space, and law. Information is sent from your computer all over the world, and sent back from there. This information is also stored and tracked in multiple locations, by the websites you visit, by other software on those websites, and at many places along the way. These stores may be owned by people, or companies, or states, existing in many ways, in many places, in many countries and legal jurisdictions. Citizen Ex shows you where some of these places are.</p>
+
+<p>As you move around the web, the data you generate tells the internet about you. It's used by advertising companies to decide which ads you see, and security agencies to determine where you come from, in order to track and surveil you. Your Algorithmic Citizenship is how you appear to the internet, a series of datapoints extending across many nations, with a different citizenship and different rights in every place. One day perhaps we will all live like we do on the internet. Until then, there's Citizen Ex.</p>
 			<p>For more information about Algorithmic Citizenship, and the stories behind it, visit <a href="http://citizen-ex.com">Citizen-Ex.com</a>.</p>
 		</div>
 	</div><!-- citizenship -->

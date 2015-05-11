@@ -33,15 +33,30 @@
 				<canvas id="cex_badge_canvas"></canvas>
 
 				<p id="cex_whatmeans"><a href="http://citizen-ex.com/citizenship/" target="_blank">What does this mean?</a></p>
-<!-- 				<p id="cex_sharebuttons">Share Via:<p> -->
+				<p id="cex_sharebuttons">Share Via:<p>
 				<p id="cex_sharebuttons">
-					<a href="#" class="cex_share_badge">Save your badge</a>&nbsp;&nbsp;&nbsp;
-<!--
-					<a href="#" class="cex_share_facebook">Facebook</a>&nbsp;&nbsp;&nbsp;
-					<a href="#" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
-					<a href="#" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
--->
+					<a href="https://www.facebook.com/sharer/sharer.php?u=http://citizen-ex.com" target="_blank" class="cex_share_facebook">Facebook</a>&nbsp;&nbsp;&nbsp;
+					<a href="" target="_blank" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
+					<a href="" target="_blank" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
 				</p>
+				<p id="cex_sharebuttons">
+					<a href="#" class="cex_share_badge">Save your badge for sharing</a>&nbsp;&nbsp;&nbsp;
+				</p>
+				
+				<script>
+					var tweetstring = '';
+					<% _.each(citizenship, function(country) { %>
+						if (tweetstring.length < 40) {
+							tweetstring += '<%= country.percentage %>% <%= cxPanel.convertCountryCode(country.code) %>, ';
+							}
+					<% }); %>
+					tweetstring = tweetstring.substring(0,tweetstring.length-2);
+					var twittext = encodeURI("My Algorithmic Citizenship is "+tweetstring+". What's yours?");
+					var url = encodeURI('http://citizen-ex.com');
+					$('.cex_share_twitter').attr('href','https://twitter.com/intent/tweet?text='+twittext+'&hashtags=citizenex&url='+url);
+					var emailtext = 'mailto:?Subject=What%27s%20Your%20Algorithmic%20Citizenship%3F&Body=My%20Algorithmic%20Citizenship%20is%20'+encodeURI(tweetstring)+'.%0A%0AAs%20you%20move%20around%20the%20web%2C%20the%20data%20you%20generate%20tells%20the%20internet%20about%20you.%20It%27s%20used%20by%20advertising%20companies%20to%20decide%20which%20ads%20you%20see%2C%20and%20security%20agencies%20to%20determine%20where%20you%20come%20from%2C%20in%20order%20to%20track%20and%20surveil%20you.%20Your%20Algorithmic%20Citizenship%20is%20how%20you%20appear%20to%20the%20internet%2C%20a%20series%20of%20datapoints%20extending%20across%20many%20nations%2C%20with%20a%20different%20citizenship%20and%20different%20rights%20in%20every%20place.%20One%20day%20perhaps%20we%20will%20all%20live%20like%20we%20do%20on%20the%20internet.%20Until%20then%2C%20there%27s%20Citizen%20Ex.%0A%0AFind%20out%20more%20at%20http%3A//citizen-ex.com';
+					$('.cex_share_email').attr('href',emailtext);
+				</script>
 
 			</div><!-- cex_badge_column -->
 

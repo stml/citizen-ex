@@ -38,8 +38,8 @@
 	-moz-osx-font-smoothing: grayscale !important;
 	}
 	
-a:before,
-a:after {
+.citizen-ex__pane a:before,
+.citizen-ex__pane a:after {
 	content: '' !important;
 	}
 	
@@ -177,20 +177,18 @@ a:after {
 	display: block !important;
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	width: 100% !important;
-	font-size: 14px !important;
+	font-size: 18px !important;
 	color: #fff !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons {
 	width: 100% !important;
 	margin: 0 !important;
-	}
-.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	color: #fff !important;
 	font-size: 14px !important;
 	border: none !important;
 	line-height: 1.5;
-	margin-bottom: 10px !important;
+	margin-bottom: 14px !important;
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons a {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
