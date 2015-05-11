@@ -226,15 +226,6 @@
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
 
-/*
-            <% if (openTabEntries) { %>
-              <% _.each(openTabEntries, function(tabEntry) { %>
-                  <% if (tabEntry.url !== currentEntry.url) { %>
-                      var tabMarker = L.marker([<%= tabEntry.lat %>, <%= tabEntry.lng %>], {icon: tabIcon}).addTo(cexmap);
-                  <% } %>
-              <% }) %>
-            <% } %>
-*/
 
 			// if we have location data
 			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
@@ -301,7 +292,11 @@
 					    <% if (currentEntry.ip) { %>
 					      <p><strong><% if (currentEntry.city.length > 0) { %><%= currentEntry.city %>, <% } %><%= cxPanel.convertCountryCode(currentEntry.countryCode) %></strong></p>
 					      <p>IP Address: <%= currentEntry.ip %></p>
-					      <p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>
+					      <% if (currentEntry.city.length > 0) { %>
+					      	<p>Lat: <%= currentEntry.lat %> / Lon: <%= currentEntry.lng %></p>
+					      <% } else { %>
+					      	<p>&nbsp;</p>
+					      <% } %>
 					    <% } else { %>
 					      <p><strong>Remote location is unknown</strong></p>
 					      <p>&nbsp;</p>
@@ -313,7 +308,11 @@
 					    <% if (ownGeoData && ownGeoData.ownIp) { %>
 					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= cxPanel.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
 					      <p>IP Address: <%= ownGeoData.ownIp %></p>
-					      <p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
+					      <% if (ownGeoData.ownCity.length > 0) { %>
+							<p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
+					      <% } else { %>
+					      	<p>&nbsp;</p>
+					      <% } %>
 					    <% } else { %>
 					      <p><strong>Your location is unknown</strong></p>
 					      <p>&nbsp;</p>
