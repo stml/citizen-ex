@@ -158,7 +158,7 @@
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
-	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 1 });
+	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 2, maxBounds: [[-90,-180],[90,180]] });
 			cexmap.attributionControl.setPrefix("Cable Data: Telegeography / ");
 			
 			var cableLayer = L.mapbox.featureLayer()
