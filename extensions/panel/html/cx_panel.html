@@ -37,6 +37,8 @@
 				<h2>This is your Algorithmic Citizenship</h2>
 
 				<canvas id="cex_badge_canvas"></canvas>
+				<canvas id="cex_temp_canvas" style="display:none"></canvas>
+				<canvas id="cex_share_canvas" style="display:none"></canvas>
 
 				<p id="cex_whatmeans"><a href="http://citizen-ex.com/citizenship/" target="_blank">What does this mean?</a></p>
 				<p id="cex_sharebuttons">Share Via:<p>
@@ -122,7 +124,7 @@
 					var badgeImg = new Image();
 					badgeImg.crossOrigin = "anonymous";
 					badgeImg.onload = function() {
-						var badgeCanvas = document.body.appendChild(document.createElement('canvas'));
+						var badgeCanvas = $("#cex_share_canvas").get(0);
 					    badgeCanvas.width = 600;
 						badgeCanvas.height = 350;
 					    var badgeContext = badgeCanvas.getContext("2d");
@@ -142,13 +144,15 @@
 					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
+					console.log('flag image loading '+country);
 					var img = new Image();
 					//img.crossOrigin = "anonymous";
 					img.onload = function() {
+						console.log('flag image loaded '+country);
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
-						var svgCanvas = document.body.appendChild(document.createElement('canvas'));
+						var svgCanvas = $("#cex_temp_canvas").get(0);
 				    	svgCanvas.height = flagscaledheight;
 				    	svgCanvas.width = flagscaledwidth;
 				    	var svgCtx = svgCanvas.getContext("2d");
@@ -183,6 +187,9 @@
                       	} else {
                         	img.src = safari.extension.baseURI + 'flags/'+country+'.png';
                         	}
+                      } else {
+                      	console.log('THIS IS FIREFOX - BUT WHAT IS THE IMAGE URL?');
+                      	// should be something like self.data.url('flags/'+country+'.png'));
                       }
 					}
 
