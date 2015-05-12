@@ -42,7 +42,7 @@
 				<p id="cex_sharebuttons">
 					<a href="#" class="cex_share_badge">Save your badge for sharing</a>&nbsp;&nbsp;&nbsp;
 				</p>
-				
+
 				<script>
 					var tweetstring = '';
 					<% _.each(citizenship, function(country) { %>
@@ -103,11 +103,11 @@
 					drawSegment(badge,x0,y0,r,circlepointer,country,degrees);
 					circlepointer = circlepointer + degrees;
 					});
-					
+
 				var title = encodeURIComponent('Citizen Ex');
 				var summary = encodeURIComponent("This is my Algorithmic Citizenship. What's yours?");
 				var url = encodeURIComponent('http://citizen-ex.com');
-					
+
 				$('.cex_share_badge').click(function () {
 					var badgeImg = new Image();
 					badgeImg.crossOrigin = "anonymous";
@@ -130,7 +130,7 @@
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
-					img.crossOrigin = "anonymous";
+					//img.crossOrigin = "anonymous";
 					img.onload = function() {
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
@@ -229,9 +229,9 @@
 
 			// if we have location data
 			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
-			
+
 				var cexmarkergroup = new L.featureGroup();
-			
+
 				// if we have a local location
 				<% if (ownGeoData.ownLat) { %>
 					// if we have city-level data
@@ -249,7 +249,7 @@
 					<% } %>
 				<% } %>
 
-				// if we have a remote location 
+				// if we have a remote location
 				<% if (currentEntry.lat) { %>
 					// if we have city-level data
 					<% if (currentEntry.city.length > 0) { %>
@@ -263,9 +263,9 @@
 	                		.setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":0.25})
 	                		.addTo(cexmap);
 						cexmarkergroup.addLayer(geojsonLayer);
-					<% } %>				
+					<% } %>
 				<% } %>
-				
+
 				// if we have both a local and a remote city-level location
 				<% if (ownGeoData.ownCity && currentEntry.city) { %>
 					<% if (ownGeoData.ownCity.length > 0 && currentEntry.city.length > 0) { %>
@@ -273,12 +273,12 @@
 					<% } %>
 				<% } %>
 				cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50], maxZoom: 9});
-							
+
 			// else if we have no location data
 			<% } else { %>
 				cexmap.setView([0,0],2);
 			<% } %>
- 
+
 		    // kill loading circle
 		    $('img#cex_map_loading').hide();
 		    }
