@@ -4,16 +4,22 @@
 		<a href="#" class="cex_more" target="_blank">More Data &amp; More Info &raquo;</a>
         <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
-            if (!_.isUndefined(window.chrome)) {
+            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
+              <% self.options = { baseURI: '' } %>
               $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
               $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
               $('.cex_more').attr('href',chrome.extension.getURL('page/page.html'));
 
-            } else if (safari) {
+            } else if (typeof safari !== 'undefined') {
+              <% self.options = { baseURI: '' } %>
               $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
-              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'more_info.html');
+              $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'page/page.html');
               $('.cex_more').attr('href',safari.extension.baseURI + 'page/page.html');
+            } else {
+              $('#cex_header #cex_logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
+              $('#cex_header #cex_close').attr('src', '<%= self.options.baseURI %>images/close.png');
+              $('#cex_header .cex_close').attr('href', '<%= self.options.baseURI %>page/page.html');
             }
 		</script>
 	</div>
@@ -76,7 +82,7 @@
 					<tr>
 						<td class="cex_country"><a href="#" class="cex_more" target="_blank">+<%= extras %> more...</a></td>
 						<td class="cex_percentage"></td>
-					</tr>					
+					</tr>
 				<% } %>
 				</table>
 			</div><!-- cex_data_column -->
@@ -127,9 +133,12 @@
 						};
 					if (!_.isUndefined(window.chrome)) {
 						badgeImg.src = chrome.extension.getURL('images/share-card.png');
-					} else if (safari) {
+                    } else if (typeof safari !== 'undefined') {
 						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
-						}
+                    } else {
+                      badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
+                    }
+
 					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
@@ -162,13 +171,13 @@
 						badge.stroke();
 						badge.fill();
 				      	};
-                      if (!_.isUndefined(window.chrome)) {
+                      if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
                       	if (country.length == 0) {
                       		img.src = chrome.extension.getURL('flags/Unknown.svg');
                       	} else {
                         	img.src = chrome.extension.getURL('flags/'+country+'.svg');
                         	}
-                      } else if (safari) {
+                      } else if (typeof safari !== 'undefined') {
                        	if (country.length == 0) {
                       		img.src = safari.extension.baseURI + 'flags/Unknown.png';
                       	} else {
@@ -198,11 +207,14 @@
   		</div>
 
 	  	<script type="text/javascript">
-        if (!_.isUndefined(window.chrome)) {
+        if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
           $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
-        } else if (safari) {
+        } else if (typeof safari !== 'undefined') {
           $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+        } else {
+          $('img#cex_map_loading').attr('src','<%= self.options.baseURI %>' + 'images/loading.gif');
         }
+
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 	  		L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
@@ -212,14 +224,18 @@
             var cyanMarker;
             var tabMarker;
 
-            if (!_.isUndefined(window.chrome)) {
+            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
               cyanMarker = chrome.extension.getURL('images/map-pin-blue.png');
               yellowMarker = chrome.extension.getURL('images/map-pin-yellow.png');
               tabMarker = chrome.extension.getURL('images/map-marker-tab.png');
-            } else if (safari) {
+            } else if (typeof safari !== 'undefined') {
               cyanMarker = safari.extension.baseURI + 'images/map-pin-blue.png';
               yellowMarker = safari.extension.baseURI + 'images/map-pin-yellow.png';
               tabMarker = safari.extension.baseURI + 'images/map-marker-tab.png';
+            } else {
+              cyanMarker = '<%= self.options.baseURI %>' + 'images/map-pin-blue.png';
+              yellowMarker = '<%= self.options.baseURI %>' + 'images/map-pin-yellow.png';
+              tabMarker = '<%= self.options.baseURI %>' + 'images/map-marker-tab.png';
             }
 
 			var destIcon = L.icon({
@@ -237,14 +253,14 @@
 				iconSize:     [9,9], // size of the icon
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
-			
+
 			var cableLayer = L.mapbox.featureLayer()
 		         .setGeoJSON(cables)
 		         .setStyle({"color": "#ffffff","weight": 1,"opacity": 0.25})
 		         .addTo(cexmap);
 
 			// if we have location data
-			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
+			<% if (ownGeoData && ownGeoData.ownLat || currentEntry.lat) { %>
 
 				var cexmarkergroup = new L.featureGroup();
 

@@ -4,12 +4,16 @@
 		<img id="logo" src="" width="107" height="24" />
 		<p class="homepage">go to: <a href="http://citizen-ex.com">citizen-ex.com</a></p>
 		<script type="text/javascript">
-            if (!_.isUndefined(window.chrome)) {
+            if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
               $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
 			  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
-            } else if (safari) {
+
+            } else if (typeof safari !== 'undefined') {
               $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
+            } else {
+              $('body#cex_page #header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.png');
+              $('body#cex_page #footer #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.png');
             }
 		</script>
 	</div><!-- header -->
@@ -149,12 +153,14 @@
 			<img id="cex_map_loading" src="" alt="Loading"/>
   		</div>
 
-  		<script type="text/javascript">
-	    if (!_.isUndefined(window.chrome)) {
-	          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
-	        } else if (safari) {
-	          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
-	        }
+	  	<script type="text/javascript">
+        if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
+          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+        } else if (typeof safari !== 'undefined') {
+          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+        } else {
+          $('img#cex_map_loading').attr('src', '<%= self.options.baseURI %>images/loading.gif');
+        }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';

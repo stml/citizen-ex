@@ -1,10 +1,18 @@
 var CxBrowser = function() {
   this.name = 'unknown';
-  var notChrome = _.isUndefined(window.chrome);
-  if (!notChrome) {
-    this.name = 'chrome';
+  if (typeof window !== 'undefined') {
+    var notChrome = _.isUndefined(window.chrome);
+    if (!notChrome) {
+      this.name = 'chrome';
+    } else {
+      if (typeof safari !== 'undefined') {
+        this.name = 'safari';
+      } else {
+        this.name = 'firefox';
+      }
+    }
   } else {
-    this.name = 'safari';
+    this.name = 'firefox';
   }
 };
 
@@ -14,4 +22,8 @@ CxBrowser.prototype.chrome = function() {
 
 CxBrowser.prototype.safari = function() {
   return this.name === 'safari';
+};
+
+CxBrowser.prototype.firefox = function() {
+  return this.name === 'firefox';
 };

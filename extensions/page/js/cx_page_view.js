@@ -7,6 +7,7 @@ var CxPageView = Backbone.View.extend({
 
   events: {
     'click .cex_erase': 'eraseData',
+    'click .cex_close': 'close',
     'click .cex_toggle': 'toggleTimeframe',
     'click .cex_sharedata': 'toggleAllTime'
   },
@@ -23,7 +24,12 @@ var CxPageView = Backbone.View.extend({
   },
 
   render: function(model, pane) {
-    this.$el.html(this.template(this.model.toJSON()));
+    if (this.model.get('open')) {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.show();
+    } else {
+      this.$el.hide();
+    }
   },
 
   appendToBody: function() {
@@ -45,6 +51,11 @@ var CxPageView = Backbone.View.extend({
     if (this.model.get('timeframe') && this.model.get('timeframe').name) {
       this.model.toggleTimeframe(this.model.get('timeframe').name);
     }
+  },
+
+  close: function(event) {
+    event.preventDefault();
+    this.model.close();
   },
 
   eraseData: function(event) {

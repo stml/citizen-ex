@@ -14,6 +14,8 @@ CxStorage.prototype.set = function(property, value) {
     chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
+  } else if (this.browser.firefox()) {
+    ss[property] = json;
   } else {
     throw 'Unknown browser';
   }
@@ -32,6 +34,12 @@ CxStorage.prototype.get = function(property, callback) {
     var data = undefined;
     if (localStorage[property]) {
       var data = JSON.parse(localStorage[property]);
+    }
+    callback(data);
+  } else if (this.browser.firefox()) {
+    var data = undefined;
+    if (ss[property]) {
+      var data = JSON.parse(ss[property]);
     }
     callback(data);
   } else {
