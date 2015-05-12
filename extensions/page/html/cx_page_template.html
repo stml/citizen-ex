@@ -159,7 +159,14 @@
 	  	function cex_drawMap() {
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
 	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 1 });
-			cexmap.attributionControl.setPrefix("");
+			cexmap.attributionControl.setPrefix("Cable Data: Telegeography / ");
+			
+			var cableLayer = L.mapbox.featureLayer()
+		         .setGeoJSON(cables)
+		         .setStyle({"color": "#ffffff","weight": 1,"opacity": 0.25})
+		         .addTo(cexmap);
+		     
+
 			var cexmarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
 				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';	
