@@ -67,14 +67,18 @@
 						<td class="thead cex_country">Your distribution</td>
 						<td class="thead cex_percentage">%</td>
 					</tr>
-				<% _.each(citizenship, function(country) { %>
+				<% var i = 0; var extras = 0; _.each(citizenship, function(country) { if (i<12) { %>
 					<tr>
 						<td class="cex_country"><%= cxPanel.convertCountryCode(country.code) %></td>
 						<td class="cex_percentage"><%= country.percentage %></td>
 					</tr>
-				<% }); %>
+				<% i++; } else { extras++; } }); if (extras > 0 ) { %>
+					<tr>
+						<td class="cex_country"><a href="#" class="cex_more" target="_blank">+<%= extras %> more...</a></td>
+						<td class="cex_percentage"></td>
+					</tr>					
+				<% } %>
 				</table>
-
 			</div><!-- cex_data_column -->
 
 			<script type="text/javascript">

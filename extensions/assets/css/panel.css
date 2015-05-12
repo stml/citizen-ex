@@ -240,6 +240,22 @@
 	border: none !important;
 	display: table-cell !important;
 	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td a {
+	font-family: "Helvetica Neue", Arial, sans-serif !important;
+	color: #fff !important;
+	font-size: 14px !important;
+	padding: 6px 0 !important;
+	border: none !important;
+	text-decoration: none;
+	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td a:hover {
+	font-family: "Helvetica Neue", Arial, sans-serif !important;
+	color: #fff000 !important;
+	font-size: 14px !important;
+	padding: 6px 0 !important;
+	border: none !important;
+	text-decoration: none;
+	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column table#distribution_table td.cex_country {
 	text-align: left !important;
 	}
