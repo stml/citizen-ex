@@ -742,7 +742,7 @@ var CxExtension = Backbone.Model.extend({
     _.each(data, function(item) {
       var percentage = (item.count / sum) * 100;
       percentage = percentage.toFixed(2);
-      result.push({ code: item.countryCode, percentage: percentage, domain: item.domain });
+      result.push({ code: item.countryCode, percentage: parseFloat(percentage), domain: item.domain });
     });
     result = _.sortBy(result, 'percentage');
 
