@@ -93,7 +93,6 @@
                         	img.src = chrome.extension.getURL('flags/'+country+'.svg');
                         	}
                       } else if (safari) {
-                      	console.log(country);
                        	if (country.length == 0) {
                       		img.src = safari.extension.baseURI + 'flags/Unknown.png';
                       	} else {
@@ -163,20 +162,17 @@
 			cexmap.attributionControl.setPrefix("");
 			var cexmarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
-				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';
+				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';	
+				console.log(isocode);
 				var cex_outline = window['cex_country_'+isocode];
-	            var geojsonLayer = L.mapbox.featureLayer()
-	                .setGeoJSON(cex_outline)
-	                .bindPopup('<%= cxPage.convertCountryCode(country.code) %> (<%= country.percentage %>%)')
-	                .setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":<%= country.percentage/200 %>})
-	                .addTo(cexmap);
-	            geojsonLayer.on('mouseover', function(e) {
-				    e.layer.openPopup();
-					});
-				geojsonLayer.on('mouseout', function(e) {
-				    e.layer.closePopup();
-					});
-				cexmarkergroup.addLayer(geojsonLayer);
+				if (typeof(cex_outline) != "undefined") {
+		            var geojsonLayer = L.mapbox.featureLayer()
+		                .setGeoJSON(cex_outline)
+		                .bindPopup('<%= cxPage.convertCountryCode(country.code) %> (<%= country.percentage %>%)')
+		                .setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":<%= country.percentage/200 %>})
+		                .addTo(cexmap);
+					cexmarkergroup.addLayer(geojsonLayer);
+					}
 			<% }); %>
             cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
 
