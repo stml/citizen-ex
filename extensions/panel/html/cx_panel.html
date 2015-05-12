@@ -122,7 +122,7 @@
 					var badgeImg = new Image();
 					badgeImg.crossOrigin = "anonymous";
 					badgeImg.onload = function() {
-						var badgeCanvas = document.createElement("canvas");
+						var badgeCanvas = document.body.appendChild(document.createElement('canvas'));
 					    badgeCanvas.width = 600;
 						badgeCanvas.height = 350;
 					    var badgeContext = badgeCanvas.getContext("2d");
@@ -148,7 +148,7 @@
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
-						var svgCanvas = document.createElement("canvas");
+						var svgCanvas = document.body.appendChild(document.createElement('canvas'));
 				    	svgCanvas.height = flagscaledheight;
 				    	svgCanvas.width = flagscaledwidth;
 				    	var svgCtx = svgCanvas.getContext("2d");
@@ -330,7 +330,7 @@
 					      	<p>&nbsp;</p>
 					      <% } %>
 					    <% } else { %>
-					      <p><strong>Remote location is unknown</strong></p>
+					      <p><strong>Tracing remote location...</strong></p>
 					      <p>&nbsp;</p>
 					      <p>&nbsp;</p>
 					    <% }; %>
@@ -346,7 +346,7 @@
 					      	<p>&nbsp;</p>
 					      <% } %>
 					    <% } else { %>
-					      <p><strong>Your location is unknown</strong></p>
+					      <p><strong>Tracing your location...</strong></p>
 					      <p>&nbsp;</p>
 					      <p>&nbsp;</p>
 					    <% }; %>
