@@ -61,18 +61,24 @@ var CxPage = CxExtension.extend({
   },
 
   resetValues: function() {
+    if (this.timeframes) {
+      this.toggleTimeframe(this.timeframes[0].name);
+    }
+
     this.set({
       timeframeCitizenship: [],
       timeframeEntries: [],
-      timeframeDomains: [],
-      timeframe: null
+      timeframeDomains: []
     });
+
 
     CxExtension.prototype.resetValues.call(this);
   },
 
   eraseData: function() {
     this.resetValues();
+
+    CxExtension.prototype.eraseData.call(this);
   }
 
 });

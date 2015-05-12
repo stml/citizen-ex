@@ -73,7 +73,7 @@ var CxExtension = Backbone.Model.extend({
         last = { 'unknown': key, percentage: percentage };
         return;
       }
-      result.push({ code: key, percentage: percentage });
+      result.push({ code: key, percentage: parseFloat(percentage) });
     });
     result = _.sortBy(result, 'percentage');
     result = result.reverse();
@@ -91,7 +91,7 @@ var CxExtension = Backbone.Model.extend({
     _.each(data, function(item) {
       var percentage = (item.count / sum) * 100;
       percentage = percentage.toFixed(2);
-      result.push({ code: item.countryCode, percentage: percentage, domain: item.domain });
+      result.push({ code: item.countryCode, percentage: parseFloat(percentage), domain: item.domain });
     });
     result = _.sortBy(result, 'percentage');
 
@@ -151,7 +151,7 @@ var CxExtension = Backbone.Model.extend({
     this.set({ open: false });
 
     this.unset('logEntries');
-    this.unset('shareData');
+    this.set({ shareData: [] });
     this.set({ citizenship: [] });
     this.set({ ownGeoData: '' });
   },

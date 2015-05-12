@@ -180,6 +180,8 @@ body#cex_page #map #cex_map {
 	height: 550px;
 	border: 5px solid #fff;
 	box-sizing: border-box;
+	background: #000;
+	text-align: center;
 	}
 body#cex_page #map #cex_map .leaflet-control-attribution {
 	background: rgba(0, 0, 0, 0.701961) !important;
@@ -226,7 +228,11 @@ body#cex_page #map #cex_map img.leaflet-tile {
     filter: gray !important; /* IE6-9 */
     filter: grayscale(1) !important; /* W3C */
   	}
-
+body#cex_page #map #cex_map #cex_map_loading {
+	width: 400px !important;
+	height: 300px !important;
+	margin: 125px auto 0 !important;
+	}
 
 
 

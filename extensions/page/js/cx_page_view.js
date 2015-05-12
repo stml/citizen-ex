@@ -44,11 +44,13 @@ var CxPageView = Backbone.View.extend({
 
   toggleAllTime: function(event) {
     event.preventDefault();
-    this.model.toggleTimeframe('all-time');
+    this.model.toggleTimeframe(this.model.timeframes[0].name);
   },
 
   triggerTimeframe: function() {
-    this.model.toggleTimeframe(this.model.get('timeframe').name);
+    if (this.model.get('timeframe') && this.model.get('timeframe').name) {
+      this.model.toggleTimeframe(this.model.get('timeframe').name);
+    }
   },
 
   close: function(event) {
@@ -60,7 +62,6 @@ var CxPageView = Backbone.View.extend({
     event.preventDefault();
     this.model.eraseData();
   }
-
 });
 
 
