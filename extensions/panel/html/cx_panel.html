@@ -5,11 +5,13 @@
         <a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>
 		<script type="text/javascript">
             if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
+              <% self.options = { baseURI: '' } %>
               $('#cex_header #cex_logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
               $('#cex_header #cex_close').attr('src',chrome.extension.getURL('images/close.png'));
               $('.cex_more').attr('href',chrome.extension.getURL('page/page.html'));
 
             } else if (typeof safari !== 'undefined') {
+              <% self.options = { baseURI: '' } %>
               $('#cex_header #cex_logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('#cex_header #cex_close').attr('src',safari.extension.baseURI + 'images/close.png');
               $('#cex_header .cex_close').attr('href',safari.extension.baseURI + 'page/page.html');
