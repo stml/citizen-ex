@@ -6,6 +6,11 @@ var CxPanel = CxExtension.extend({
 
     this.requestActiveTab();
     this.requestOpenTabs();
+    this.on('change:logEntries', this.updateState, this);
+  },
+
+  updateState: function() {
+    this.requestActiveTab();
   },
 
   requestActiveTab: function() {
