@@ -61,6 +61,7 @@ var coreSources = [
   './extensions/shared/js/overwrite_warning.js',
   './extensions/core/js/browser.js',
   './extensions/core/js/storage.js',
+  './extensions/core/js/icon.js',
   './extensions/core/js/utils.js',
   './extensions/core/js/log_entry.js',
   './extensions/core/js/geo_cache.js',

@@ -243,6 +243,20 @@ CxStorage.prototype.clear = function() {
   }
 };
 
+var CxIcon = function(browser, blank, local, remote, full) {
+  this.browser = browser;
+  this.blank = blank;
+  this.local = local;
+  this.remote = remote;
+  this.full = full;
+};
+
+CxIcon.prototype.setIcon = function(iconType) {
+  if (this.browser.chrome()) {
+    chrome.browserAction.setIcon({ path: this[iconType] });
+  }
+};
+
 // Define and set up utilities
 
 var Utils = function(browser) {
@@ -362,6 +376,7 @@ var LogEntry = function(url, timestamp) {
     this.url = url;
     this.domain = utils.trimUrl(url);
     this.timestamps = [timestamp.toISOString()];
+    icon.setIcon('blank');
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -419,6 +434,11 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownLat = ownLocation.ownLat;
     this.ownLng = ownLocation.ownLng;
     this.storeEntries(logEntries);
+    if (this.ip) {
+      icon.setIcon('full');
+    } else {
+      icon.setIcon('local');
+    }
 
   } else {
     console.log('No own geo data available yet');
@@ -445,6 +465,11 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     this.lat = cachedEntry.lat;
     this.lng = cachedEntry.lng;
     countryLog.addVisit(this.countryCode);
+    if (this.ownIp) {
+      icon.setIcon('full');
+    } else {
+      icon.setIcon('remote');
+    }
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
   } else {
@@ -460,6 +485,11 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       this.city = json.city;
       this.lat = json.latitude;
       this.lng = json.longitude;
+      if (this.ownIp) {
+        icon.setIcon('full');
+      } else {
+        icon.setIcon('remote');
+      }
       console.log('Got remote geo, updating the relevant LogEntry');
       geoCache.removeEntry(cachedEntry);
       geoCache.addEntry(this);
@@ -629,6 +659,7 @@ CountryLog.prototype.recoverFromStorage = function() {
 
 var browser = new CxBrowser();
 var storage = new CxStorage(browser);
+var icon = new CxIcon(browser, 'icon16-blank.png', 'icon16-local.png', 'icon16-remote.png', 'icon16.png');
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);
 var countryLog = new CountryLog(browser);

@@ -30,7 +30,8 @@
     "flags/*.svg",
     "images/*",
     "page/page.html",
-    "panel/*"
+    "panel/*",
+    "*.png"
   	],
   "content_scripts": [
     {
