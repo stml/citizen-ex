@@ -254,6 +254,9 @@ var CxIcon = function(browser, blank, local, remote, full) {
 CxIcon.prototype.setIcon = function(iconType) {
   if (this.browser.chrome()) {
     chrome.browserAction.setIcon({ path: this[iconType] });
+  } else if (this.browser.safari()) {
+    var iconUri = safari.extension.baseURI + this[iconType];
+    safari.extension.toolbarItems[0].image = iconUri;
   }
 };
 
