@@ -724,7 +724,7 @@ var CxExtension = Backbone.Model.extend({
         last = { 'unknown': key, percentage: percentage };
         return;
       }
-      result.push({ code: key, percentage: percentage });
+      result.push({ code: key, percentage: parseFloat(percentage) });
     });
     result = _.sortBy(result, 'percentage');
     result = result.reverse();
