@@ -47,6 +47,12 @@ tabs.on('ready', function(tab) {
   });
   globalWorker = worker;
 
+  utils.createLogEntry(tab.url);
+
+  tab.on('activate', function(tab) {
+    utils.updateLogEntry(tab.utl);
+  });
+
   worker.port.on('ownGeoData', function() {
     sendOwnGeoData(worker);
   });
