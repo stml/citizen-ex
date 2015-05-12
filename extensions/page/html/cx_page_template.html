@@ -86,13 +86,19 @@
 						badge.stroke();
 						badge.fill();
 				      	};
-                      if (country === '') {
-                        return;
-                      }
                       if (!_.isUndefined(window.chrome)) {
-                        img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                      	if (country.length == 0) {
+                      		img.src = chrome.extension.getURL('flags/Unknown.svg');
+                      	} else {
+                        	img.src = chrome.extension.getURL('flags/'+country+'.svg');
+                        	}
                       } else if (safari) {
-                        img.src = safari.extension.baseURI + 'flags/'+country+'.png';
+                      	console.log(country);
+                       	if (country.length == 0) {
+                      		img.src = safari.extension.baseURI + 'flags/Unknown.png';
+                      	} else {
+                        	img.src = safari.extension.baseURI + 'flags/'+country+'.png';
+                        	}
                       }
 					}
 
