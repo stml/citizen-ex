@@ -236,7 +236,7 @@
 */
 
 			// if we have location data
-			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
+			<% if (ownGeoData && ownGeoData.ownLat || currentEntry.lat) { %>
 
 				var cexmarkergroup = new L.featureGroup();
 
