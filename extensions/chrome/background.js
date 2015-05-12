@@ -110,6 +110,10 @@ CxIcon.prototype.setIcon = function(iconType) {
   } else if (this.browser.safari()) {
     var iconUri = safari.extension.baseURI + this[iconType];
     safari.extension.toolbarItems[0].image = iconUri;
+  } else if (this.browser.firefox()) {
+    button.icon = {
+      '16': self.data.url(this[iconType])
+    }
   }
 };
 
