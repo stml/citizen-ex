@@ -112,9 +112,12 @@
 						};
 					if (!_.isUndefined(window.chrome)) {
 						badgeImg.src = chrome.extension.getURL('images/share-card.png');
-					} else if (safari) {
+                    } else if (typeof safari !== 'undefined') {
 						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
-						}
+                    } else {
+                      badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
+                    }
+
 					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {

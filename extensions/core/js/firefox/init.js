@@ -80,7 +80,6 @@ var sendActiveTab = function(worker, url) {
 
 var sendAllTabs = function(worker) {
   var urls = _.pluck(tabs, 'url');
-
   worker.port.emit('allTabs', urls);
 };
 
