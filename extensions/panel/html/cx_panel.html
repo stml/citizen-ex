@@ -237,7 +237,11 @@
 				iconSize:     [9,9], // size of the icon
 				iconAnchor:   [5,5], // point of the icon which will correspond to marker's location
 				});
-
+			
+			var cableLayer = L.mapbox.featureLayer()
+		         .setGeoJSON(cables)
+		         .setStyle({"color": "#ffffff","weight": 1,"opacity": 0.25})
+		         .addTo(cexmap);
 
 			// if we have location data
 			<% if (ownGeoData.ownLat || currentEntry.lat) { %>
