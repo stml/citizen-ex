@@ -662,6 +662,7 @@ var baseURI = self.data.url('./');
 var button = buttons.ActionButton({
   id: 'openCxPanel',
   label: 'Citizen Ex',
+  disabled: true,
   icon: {
     '16': './icon16.png'
   },
@@ -684,6 +685,8 @@ pageMod.PageMod({
 });
 
 tabs.on('ready', function(tab) {
+  button.disabled = false;
+
   var worker = tab.attach({
     contentScriptFile: [
       self.data.url('./lib/underscore.js'),
