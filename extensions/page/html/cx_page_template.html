@@ -169,7 +169,6 @@
 			var cexmarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
 				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';	
-				console.log(isocode);
 				var cex_outline = window['cex_country_'+isocode];
 				if (typeof(cex_outline) != "undefined") {
 		            var geojsonLayer = L.mapbox.featureLayer()
