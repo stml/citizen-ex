@@ -316,8 +316,12 @@ var CxExtension = Backbone.Model.extend({
       shareableEntries = [];
       _.each(logEntries, _.bind(function(entry) {
         var obj = {};
-        var lat = this.trimGeo(entry.lat);
-        var lng = this.trimGeo(entry.lng);
+        var lat = entry.lat;
+        var lng = entry.lng;
+        if (entry.lat && entry.lng) {
+          lat = this.trimGeo(entry.lat);
+          lng = this.trimGeo(entry.lng);
+        }
         shareableEntries.push({ lat: lat, lng: lng, timestamps: entry.timestamps, countryCode: entry.countryCode, countryName: entry.countryName, city: entry.city });
       }, this));
       return shareableEntries;
