@@ -118,7 +118,7 @@
 				<td class="thead first">Your Distribution</td>
 				<td class="thead second">%</td>
 			</tr>
-			<% _.each(timeframeCitizenship, function(country) { %>
+			<% var counter = 0; _.each(timeframeCitizenship, function(country) { counter++;%>
 				<tr>
 					<td class="first"><%= cxPage.convertCountryCode(country.code) %></td>
 					<td class="second"><%= country.percentage %></td>
@@ -134,7 +134,7 @@
 					<td class="thead first">Most Visited Sites</td>
 					<td class="thead second">Country</td>
 				</tr>
-				<% _.each(timeframeDomains.slice(0,10), function(entry) { %>
+				<% if (counter < 10) { counter = 10; } _.each(timeframeDomains.slice(0,counter), function(entry) { %>
 					<tr>
 						<td class="first"><%= entry.domain %></td>
 						<td class="second"><%= cxPage.convertCountryCode(entry.code) %></td>
