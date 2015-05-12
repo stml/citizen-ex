@@ -934,7 +934,7 @@ var CxPageView = Backbone.View.extend({
   events: {
     'click .cex_erase': 'eraseData',
     'click .cex_close': 'close',
-    'click .cex_toggle': 'toggleTimeframe'
+    'click .cex_toggle': 'toggleTimeframe',
     'click .cex_sharedata': 'toggleAllTime'
   },
 
