@@ -1,7 +1,6 @@
 // page/js/init_safari.js
 
 safari.self.addEventListener('message', function(message) {
-
   if (message.name === 'tabs') {
     cxPage.receiveOpenTabs(message.message.tabs);
   } else if (message.name === 'activeTab') {
@@ -13,8 +12,6 @@ safari.self.addEventListener('message', function(message) {
   } else if (message.name === 'ownGeoData') {
     cxPage.receiveOwnGeoData(message.message.ownGeoData);
   }
-
-
 }, false);
 
-cxPage.requestOpenTabs();
+cxPage.open();

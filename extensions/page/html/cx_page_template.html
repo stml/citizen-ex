@@ -5,10 +5,12 @@
 		<p class="homepage">go to: <a href="http://citizen-ex.com">citizen-ex.com</a></p>
 		<script type="text/javascript">
             if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
+              <% self.options = { baseURI: '' } %>
               $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
 			  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
 
             } else if (typeof safari !== 'undefined') {
+              <% self.options = { baseURI: '' } %>
               $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             } else {
@@ -18,9 +20,9 @@
 		</script>
 	</div><!-- header -->
 
-  
+
   <% if (timeframeCitizenship && timeframeCitizenship.length > 0) { %>
-  
+
 	<div id="badge" class="section">
 
 		<div id="toggles">
@@ -90,13 +92,13 @@
 						badge.stroke();
 						badge.fill();
 				      	};
-                      if (!_.isUndefined(window.chrome)) {
+                      if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
                       	if (country.length == 0) {
                       		img.src = chrome.extension.getURL('flags/Unknown.svg');
                       	} else {
                         	img.src = chrome.extension.getURL('flags/'+country+'.svg');
                         	}
-                      } else if (safari) {
+                      } else if (typeof safari !== 'undefined') {
                        	if (country.length == 0) {
                       		img.src = safari.extension.baseURI + 'flags/Unknown.png';
                       	} else {
@@ -172,7 +174,7 @@
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
 	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 2, maxBounds: [[-90,-180],[90,180]] });
 			cexmap.attributionControl.setPrefix("Cable Data: Telegeography");
-			
+
 			var cableLayer = L.mapbox.featureLayer()
 		         .setGeoJSON(cables)
 		         .setStyle({"color": "#ffffff","weight": 1,"opacity": 0.25})
@@ -180,7 +182,7 @@
 
 			var cexmarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
-				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';	
+				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';
 				var cex_outline = window['cex_country_'+isocode];
 				if (typeof(cex_outline) != "undefined") {
 		            var geojsonLayer = L.mapbox.featureLayer()
@@ -199,8 +201,8 @@
 	  	</script>
 
 	</div><!-- map -->
-	
-	<% if (shareData.length > 20) { %> 
+
+	<% if (shareData.length > 20) { %>
 
 	<div id="share" class="section">
 		<p class="info">Citizen Ex is collecting people's citizenship patterns for visualisation and educational purposes. Clicking this button will send a list of the locations you have visited to the Citizen Ex website. It will not send any information about you, or the names of the websites you visit, only their geographical locations. We appreciate you sharing this data, but don't feel you have to.</strong></p>
@@ -219,7 +221,7 @@
 			});
 		$('body').on('click', '.cex_sharedata_2', function(event) {
             event.stopPropagation();
-            event.preventDefault();		  
+            event.preventDefault();
         	$('.cex_sharedata').html('Sharing<br />Data...');
 			var sharedatajson = <%= JSON.stringify(shareData) %>;
 			$.post('http://citizen-ex.com/api/savedata.php', { data: sharedatajson})
@@ -230,28 +232,28 @@
 						$('.sharelink a').removeClass('cex_sharedata_2').removeClass('cex_sharedata');
 						$('#share .info').html("Thanks! You have shared your data. You can share as many times as you like, but wait until you've visited some more places!");
 						}
-					else {		
+					else {
 						$('.cex_sharedata').html('Data<br />Not Shared');
 						$('#share .info').html('Sorry! There was a problem sharing your data. If you want to, you can email <strong>iamcitizenex@gmail.com</strong> with the following message, and we will try to fix it: "'+data.result+'"')
 						}
 					});
 			return false;
 			});
-    			
+
 	</script>
-	
+
 	 <% } %>
 
 	 <% } else { %><!-- end if have citizenship data  -->
-	 
+
 	 	<div id="citizenship" class="section">
 		<div id="citizenship-wrapper">
 			<h2>Your Data</h2>
 			<p>You haven't done enough browsing to generate citizenship data yet. Come back here soon, when you've done some more browsing!</p>
 		</div>
 	</div><!-- citizenship -->
-	 
-	 <% } %> 
+
+	 <% } %>
 
 
 	<div id="citizenship" class="section">

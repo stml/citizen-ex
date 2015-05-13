@@ -36,3 +36,6 @@ safari.application.addEventListener('message', function(message) {
   }
 }, false);
 
+safari.application.addEventListener('storage', function(event) {
+  console.log(event);
+})
