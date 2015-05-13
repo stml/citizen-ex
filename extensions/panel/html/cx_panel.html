@@ -188,8 +188,7 @@
                         	img.src = safari.extension.baseURI + 'flags/'+country+'.png';
                         	}
                       } else {
-                      	console.log('THIS IS FIREFOX - BUT WHAT IS THE IMAGE URL?');
-                      	// should be something like self.data.url('flags/'+country+'.png'));
+                            img.src = '<%= self.options.baseURI %>flags/'+country+'.svg';
                       }
 					}
 
