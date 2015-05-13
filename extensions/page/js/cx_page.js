@@ -8,7 +8,9 @@ var CxPage = CxExtension.extend({
 
     this.set({ timeframe: this.timeframes[0] });
     this.toggleTimeframe(this.timeframes[0].name);
-    this.open();
+    if (!this.browser.firefox()) {
+      this.open();
+    }
   },
 
   getCitizenshipForDays: function(n) {
@@ -42,6 +44,7 @@ var CxPage = CxExtension.extend({
     var latestEntries = _.filter(entries, function(entry) {
       return entry.latestTimestamp() >= cutOffDate;
     });
+    console.log(latestEntries)
     return latestEntries;
   },
 
