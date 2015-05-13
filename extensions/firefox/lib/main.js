@@ -261,7 +261,9 @@ CxMessage.prototype.send = function(message) {
   } else if (this.browser.safari()) {
     safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(key, message);
   } else if (this.browser.firefox()) {
-    globalWorker.port.emit(key, message);
+    if (globalWorker) {
+      globalWorker.port.emit(key, message);
+    }
   } else {
     throw 'Unknown browser';
   }
@@ -772,7 +774,7 @@ tabs.on('ready', function(tab) {
   utils.createLogEntry(tab.url);
 
   tab.on('activate', function(tab) {
-    utils.updateLogEntry(tab.utl);
+    utils.updateLogEntry(tab.url);
   });
 
   worker.port.on('ownGeoData', function() {

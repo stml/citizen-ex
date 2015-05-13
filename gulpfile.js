@@ -16,7 +16,7 @@ var pageSources = [
   './extensions/shared/js/overwrite_warning.js',
   './extensions/core/js/browser.js',
   './extensions/core/js/storage.js',
-  './extensions/core/js/message.js',
+  './extensions/shared/js/message.js',
   './extensions/shared/js/log_entry.js',
   './extensions/shared/js/countries.js',
   './extensions/shared/js/cx_extension.js',

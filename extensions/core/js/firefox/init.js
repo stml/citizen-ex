@@ -53,7 +53,7 @@ tabs.on('ready', function(tab) {
   utils.createLogEntry(tab.url);
 
   tab.on('activate', function(tab) {
-    utils.updateLogEntry(tab.utl);
+    utils.updateLogEntry(tab.url);
   });
 
   worker.port.on('ownGeoData', function() {

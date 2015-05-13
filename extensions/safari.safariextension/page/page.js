@@ -112,9 +112,9 @@ CxMessage.prototype.send = function(message) {
   if (this.browser.chrome()) {
     chrome.runtime.sendMessage(message);
   } else if (this.browser.safari()) {
-    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(key, message);
+    safari.self.tab.dispatchMessage(key, message, false);
   } else if (this.browser.firefox()) {
-    globalWorker.port.emit(key, message);
+    self.port.emit(key, message);
   } else {
     throw 'Unknown browser';
   }

@@ -112,11 +112,8 @@ CxMessage.prototype.send = function(message) {
   if (this.browser.chrome()) {
     chrome.runtime.sendMessage(message);
   } else if (this.browser.safari()) {
-
     safari.self.tab.dispatchMessage(key, message, false);
-
   } else if (this.browser.firefox()) {
-    console.log('sending ', key, message)
     self.port.emit(key, message);
   } else {
     throw 'Unknown browser';
@@ -1408,6 +1405,15 @@ var CxPanel = CxExtension.extend({
   },
 
   receiveActiveTab: function(url) {
+    // deal with Firefox
+    if (_.has(url, 'activeTab')) {
+      url = this.get('currentEntry').url;
+      this.requestLogEntries();
+      this.requestActiveTab();
+      this.requestCitizenship();
+      return;
+    }
+
     var entry = this.getLogEntryForUrl(url);
 
     if (!entry) {

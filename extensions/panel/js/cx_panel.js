@@ -30,6 +30,15 @@ var CxPanel = CxExtension.extend({
   },
 
   receiveActiveTab: function(url) {
+    // deal with Firefox
+    if (_.has(url, 'activeTab')) {
+      url = this.get('currentEntry').url;
+      this.requestLogEntries();
+      this.requestActiveTab();
+      this.requestCitizenship();
+      return;
+    }
+
     var entry = this.getLogEntryForUrl(url);
 
     if (!entry) {

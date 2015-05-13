@@ -16,7 +16,9 @@ CxMessage.prototype.send = function(message) {
   } else if (this.browser.safari()) {
     safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(key, message);
   } else if (this.browser.firefox()) {
-    globalWorker.port.emit(key, message);
+    if (globalWorker) {
+      globalWorker.port.emit(key, message);
+    }
   } else {
     throw 'Unknown browser';
   }
