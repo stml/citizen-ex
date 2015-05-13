@@ -31,12 +31,15 @@ chrome.storage.onChanged.addListener(function(data) {
   }
 });
 
-// we have to use Chrome’s messaging system because the page can’t find out its own tabId
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var senderObject = sender;
   if (_.has(request, 'activeTab')) {
     chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
-      chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
+      if (_.has(senderObject, 'tab')) {
+        chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
+      } else {
+        chrome.tabs.sendMessage(tabs[0].id, { activeTab: tabs[0].url });
+      }
     });
 
   } else if (_.has(request, 'allTabs')) {
@@ -52,6 +55,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   } else if (_.has(request, 'countryLog')) {
     chrome.tabs.sendMessage(senderObject.tab.id, { countryLog: countryLog });
   } else if (_.has(request, 'ownGeoData')) {
-    chrome.tabs.sendMessage(senderObject.tab.id, { ownGeoData: geoCache.getOwnLocation() });
+    if (_.has(senderObject, 'tab')) {
+      chrome.tabs.sendMessage(senderObject.tab.id, { ownGeoData: geoCache.getOwnLocation() });
+    } else {
+      chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { ownGeoData: geoCache.getOwnLocation() });
+      });
+    }
   }
 });

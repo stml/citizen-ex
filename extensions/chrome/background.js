@@ -96,6 +96,34 @@ CxStorage.prototype.clear = function() {
   }
 };
 
+var CxMessage = function(browser) {
+  this.browser = browser;
+};
+
+CxMessage.prototype.send = function(message) {
+  var key;
+
+  _.each(message, function (v, k) {
+    if (v) {
+      key = k;
+    }
+  });
+
+  if (this.browser.chrome()) {
+    chrome.runtime.sendMessage(message);
+  } else if (this.browser.safari()) {
+
+    safari.self.tab.dispatchMessage(key, message, false);
+
+  } else if (this.browser.firefox()) {
+    console.log('sending ', key, message)
+    globalWorker.port.emit(key, message);
+  } else {
+    throw 'Unknown browser';
+  }
+};
+
+
 var CxIcon = function(browser, blank, local, remote, full) {
   this.browser = browser;
   this.blank = blank;
@@ -299,7 +327,7 @@ LogEntry.prototype.getOwnGeo = function() {
     } else {
       icon.setIcon('local');
     }
-
+    message.send({ ownGeoData: true });
   } else {
     console.log('No own geo data available yet');
   }
@@ -332,6 +360,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     }
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
+    message.send({ activeTab: true });
   } else {
     utils.get('https://freegeoip.net/json/' + domain, _.bind(function(response) {
       var json = JSON.parse(response);
@@ -355,6 +384,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       geoCache.addEntry(this);
       countryLog.addVisit(this.countryCode);
       this.storeEntries(logEntries);
+      message.send({ activeTab: true });
     }, this));
   }
 };
@@ -519,6 +549,7 @@ CountryLog.prototype.recoverFromStorage = function() {
 
 var browser = new CxBrowser();
 var storage = new CxStorage(browser);
+var message = new CxMessage(browser);
 var icon = new CxIcon(browser, 'icon16-blank.png', 'icon16-local.png', 'icon16-remote.png', 'icon16.png');
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);
@@ -585,12 +616,15 @@ chrome.storage.onChanged.addListener(function(data) {
   }
 });
 
-// we have to use Chrome’s messaging system because the page can’t find out its own tabId
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var senderObject = sender;
   if (_.has(request, 'activeTab')) {
     chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
-      chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
+      if (_.has(senderObject, 'tab')) {
+        chrome.tabs.sendMessage(senderObject.tab.id, { activeTab: tabs[0].url });
+      } else {
+        chrome.tabs.sendMessage(tabs[0].id, { activeTab: tabs[0].url });
+      }
     });
 
   } else if (_.has(request, 'allTabs')) {
@@ -606,6 +640,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   } else if (_.has(request, 'countryLog')) {
     chrome.tabs.sendMessage(senderObject.tab.id, { countryLog: countryLog });
   } else if (_.has(request, 'ownGeoData')) {
-    chrome.tabs.sendMessage(senderObject.tab.id, { ownGeoData: geoCache.getOwnLocation() });
+    if (_.has(senderObject, 'tab')) {
+      chrome.tabs.sendMessage(senderObject.tab.id, { ownGeoData: geoCache.getOwnLocation() });
+    } else {
+      chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { ownGeoData: geoCache.getOwnLocation() });
+      });
+    }
   }
 });

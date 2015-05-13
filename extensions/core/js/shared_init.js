@@ -1,5 +1,6 @@
 var browser = new CxBrowser();
 var storage = new CxStorage(browser);
+var message = new CxMessage(browser);
 var icon = new CxIcon(browser, 'icon16-blank.png', 'icon16-local.png', 'icon16-remote.png', 'icon16.png');
 var utils = new Utils(browser);
 var geoCache = new GeoCache(browser);

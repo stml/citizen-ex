@@ -68,7 +68,7 @@ LogEntry.prototype.getOwnGeo = function() {
     } else {
       icon.setIcon('local');
     }
-
+    message.send({ ownGeoData: true });
   } else {
     console.log('No own geo data available yet');
   }
@@ -101,6 +101,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     }
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
+    message.send({ activeTab: true });
   } else {
     utils.get('https://freegeoip.net/json/' + domain, _.bind(function(response) {
       var json = JSON.parse(response);
@@ -124,6 +125,7 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       geoCache.addEntry(this);
       countryLog.addVisit(this.countryCode);
       this.storeEntries(logEntries);
+      message.send({ activeTab: true });
     }, this));
   }
 };
