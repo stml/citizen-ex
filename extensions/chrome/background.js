@@ -116,7 +116,6 @@ CxMessage.prototype.send = function(message) {
     safari.self.tab.dispatchMessage(key, message, false);
 
   } else if (this.browser.firefox()) {
-    console.log('sending ', key, message)
     globalWorker.port.emit(key, message);
   } else {
     throw 'Unknown browser';
