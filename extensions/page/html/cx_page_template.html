@@ -296,8 +296,7 @@
 			return false;
 			});
 		$('body').on('click', '.cex_erase', function(event) {
-            event.stopPropagation();
-            event.preventDefault();
+            $('#map, #badge, #tables').remove();
 	    	$('#delete .info').html("All your data has been deleted. You can uninstall the extension, or continue browsing to generate more.");
 	    	return false;
 			});

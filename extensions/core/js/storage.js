@@ -52,6 +52,10 @@ CxStorage.prototype.clear = function() {
     chrome.storage.local.clear();
   } else if (this.browser.safari()) {
     localStorage.clear();
+    message.send({ eraseData: true });
+  } else if (this.browser.firefox()) {
+    // clear storage
+    message.send({ eraseData: true });
   } else {
     throw 'Unknown browser';
   }

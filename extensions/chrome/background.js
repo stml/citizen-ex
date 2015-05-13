@@ -91,6 +91,10 @@ CxStorage.prototype.clear = function() {
     chrome.storage.local.clear();
   } else if (this.browser.safari()) {
     localStorage.clear();
+    message.send({ eraseData: true });
+  } else if (this.browser.firefox()) {
+    // clear storage
+    message.send({ eraseData: true });
   } else {
     throw 'Unknown browser';
   }
@@ -517,6 +521,7 @@ GeoCache.prototype.updateStorage = function() {
 var CountryLog = function() {
   console.log('Creating a new CountryLog');
   this.reset();
+  this.recoverFromStorage();
 };
 
 CountryLog.prototype.addVisit = function(country) {
@@ -530,7 +535,6 @@ CountryLog.prototype.addVisit = function(country) {
 
 CountryLog.prototype.reset = function() {
   this.visits = {};
-  this.recoverFromStorage();
 };
 
 CountryLog.prototype.updateStorage = function() {

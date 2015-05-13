@@ -3,6 +3,7 @@
 var CountryLog = function() {
   console.log('Creating a new CountryLog');
   this.reset();
+  this.recoverFromStorage();
 };
 
 CountryLog.prototype.addVisit = function(country) {
@@ -16,7 +17,6 @@ CountryLog.prototype.addVisit = function(country) {
 
 CountryLog.prototype.reset = function() {
   this.visits = {};
-  this.recoverFromStorage();
 };
 
 CountryLog.prototype.updateStorage = function() {

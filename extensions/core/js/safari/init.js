@@ -33,9 +33,9 @@ safari.application.addEventListener('message', function(message) {
     message.target.page.dispatchMessage(name, { countryLog: countryLog }, false)
   } else if (name === 'ownGeoData') {
     message.target.page.dispatchMessage(name, { ownGeoData: geoCache.getOwnLocation() }, false)
+  } else if (name === 'eraseData') {
+    console.log('attempting to erase data')
+    utils.reset();
   }
 }, false);
 
-safari.application.addEventListener('storage', function(event) {
-  console.log(event);
-})
