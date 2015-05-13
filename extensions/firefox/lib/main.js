@@ -259,9 +259,7 @@ CxMessage.prototype.send = function(message) {
   if (this.browser.chrome()) {
     chrome.runtime.sendMessage(message);
   } else if (this.browser.safari()) {
-
-    safari.self.tab.dispatchMessage(key, message, false);
-
+    safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(key, message);
   } else if (this.browser.firefox()) {
     globalWorker.port.emit(key, message);
   } else {
