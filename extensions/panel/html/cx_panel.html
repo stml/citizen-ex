@@ -138,17 +138,15 @@
                     } else if (typeof safari !== 'undefined') {
 						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
                     } else {
-                      badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
+                      	badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
                     }
 
 					});
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
-					console.log('flag image loading '+country);
 					var img = new Image();
 					//img.crossOrigin = "anonymous";
 					img.onload = function() {
-						console.log('flag image loaded '+country);
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
@@ -188,7 +186,11 @@
                         	img.src = safari.extension.baseURI + 'flags/'+country+'.png';
                         	}
                       } else {
-                            img.src = '<%= self.options.baseURI %>flags/'+country+'.svg';
+                      	if (country.length == 0) {
+                      		img.src = '<%= self.options.baseURI %>flags/Unknown.svg';
+                      	} else {
+                        	img.src = '<%= self.options.baseURI %>flags/'+country+'.svg';
+                        	}
                       }
 					}
 

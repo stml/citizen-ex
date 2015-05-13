@@ -102,6 +102,12 @@
                       	} else {
                         	img.src = safari.extension.baseURI + 'flags/'+country+'.png';
                         	}
+                      } else {
+                      	if (country.length == 0) {
+                      		img.src = '<%= self.options.baseURI %>flags/Unknown.svg';
+                      	} else {
+                        	img.src = '<%= self.options.baseURI %>flags/'+country+'.svg';
+                        	}
                       }
 					}
 
