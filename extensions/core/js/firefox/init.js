@@ -71,6 +71,9 @@ tabs.on('ready', function(tab) {
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
   });
+  worker.port.on('eraseData', function() {
+    eraseData(worker);
+  });
 });
 
 var sendOwnGeoData = function(worker) {
@@ -92,6 +95,13 @@ var sendCountryLog = function(worker) {
 
 var sendAllLogEntries = function(worker) {
   worker.port.emit('allLogEntries', logEntries);
+};
+
+var eraseData = function(worker) {
+  _.each(ss.storage, function(value, key) {
+    delete ss.storage[key];
+  });
+  utils.reset();
 };
 
 

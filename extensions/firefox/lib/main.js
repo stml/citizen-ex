@@ -201,7 +201,7 @@ CxStorage.prototype.set = function(property, value) {
   } else if (this.browser.safari()) {
     localStorage[property] = json;
   } else if (this.browser.firefox()) {
-    ss[property] = json;
+    ss.storage[property] = json;
   } else {
     throw 'Unknown browser';
   }
@@ -225,7 +225,7 @@ CxStorage.prototype.get = function(property, callback) {
   } else if (this.browser.firefox()) {
     var data = undefined;
     if (ss[property]) {
-      var data = JSON.parse(ss[property]);
+      var data = JSON.parse(ss.storage[property]);
     }
     callback(data);
   } else {
@@ -796,6 +796,9 @@ tabs.on('ready', function(tab) {
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
   });
+  worker.port.on('eraseData', function() {
+    eraseData(worker);
+  });
 });
 
 var sendOwnGeoData = function(worker) {
@@ -817,6 +820,13 @@ var sendCountryLog = function(worker) {
 
 var sendAllLogEntries = function(worker) {
   worker.port.emit('allLogEntries', logEntries);
+};
+
+var eraseData = function(worker) {
+  _.each(ss.storage, function(value, key) {
+    delete ss.storage[key];
+  });
+  utils.reset();
 };
 
 
