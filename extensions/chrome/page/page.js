@@ -1389,6 +1389,7 @@ var CxPage = CxExtension.extend({
 
     this.set({ timeframe: this.timeframes[0] });
     this.toggleTimeframe(this.timeframes[0].name);
+    this.open();
   },
 
   getCitizenshipForDays: function(n) {
