@@ -47,11 +47,9 @@
 					<a href="" target="_blank" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
 					<a href="" target="_blank" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
 				</p>
-<!--
 				<p id="cex_sharebuttons">
 					<a href="#" class="cex_share_badge">Save your badge for sharing</a>&nbsp;&nbsp;&nbsp;
 				</p>
--->
 
 				<script>
 					var tweetstring = '';
@@ -147,7 +145,7 @@
 
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
-					//img.crossOrigin = "anonymous";
+					img.crossOrigin = "anonymous";
 					img.onload = function() {
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
