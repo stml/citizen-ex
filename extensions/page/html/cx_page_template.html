@@ -1,4 +1,4 @@
-<div id="container">
+<div id="cex_page_container">
 
 	<div id="header" class="section">
 		<img id="logo" src="" width="107" height="24" />
@@ -6,16 +6,16 @@
 		<script type="text/javascript">
             if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
               <% self.options = { baseURI: '' } %>
-              $('body#cex_page #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
-			  $('body#cex_page #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
+              $('#cex_page_container #header #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
+			  $('#cex_page_container #footer #logo').attr('src',chrome.extension.getURL('images/logo-small-white.svg'));
 
             } else if (typeof safari !== 'undefined') {
               <% self.options = { baseURI: '' } %>
-              $('body#cex_page #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
-              $('body#cex_page #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
+              $('#cex_page_container #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
+              $('#cex_page_container #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             } else {
-              $('body#cex_page #header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
-              $('body#cex_page #footer #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
+              $('#cex_page_container #header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
+              $('#cex_page_container #footer #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
             }
 		</script>
 	</div><!-- header -->
