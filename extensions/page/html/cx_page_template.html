@@ -35,20 +35,20 @@
 	        </ul>
 		</div><!-- toggles -->
 
-		<canvas id="cex_badge_canvas"></canvas>
+		<canvas id="cex_page_badge_canvas"></canvas>
 
 		<script type="text/javascript">
 				var percents = [<% _.each(timeframeCitizenship, function(country) { %>["<%= country.code %>","<%= country.percentage %>"],<% }); %>];
 					// set canvas to css heights
-				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
-				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
+				$('#cex_page_badge_canvas').attr('width', parseInt($('#cex_page_badge_canvas').css('width')));
+				$('#cex_page_badge_canvas').attr('height', parseInt($('#cex_page_badge_canvas').css('height')));
 
-				var badge = $("#cex_badge_canvas").get(0).getContext("2d");
+				var badge = $("#cex_page_badge_canvas").get(0).getContext("2d");
 
 				// circle centre and radius
-				var x0 = $('#cex_badge_canvas').attr('width')/2;
-				var y0 = $('#cex_badge_canvas').attr('height')/2;
-				var r = Math.min($('#cex_badge_canvas').attr('height')/2,$('#cex_badge_canvas').attr('width')/2);
+				var x0 = $('#cex_page_badge_canvas').attr('width')/2;
+				var y0 = $('#cex_page_badge_canvas').attr('height')/2;
+				var r = Math.min($('#cex_page_badge_canvas').attr('height')/2,$('#cex_page_badge_canvas').attr('width')/2);
 
 				var circlepointer = 0;
 
@@ -157,30 +157,31 @@
 
 	<div id="map" class="section">
 		<h2>Your Map</h2>
-		<div id="cex_map">
-			<img id="cex_map_loading" src="" alt="Loading"/>
+		<div id="cex_page_map">
+			<img id="cex_page_map_loading" src="" alt="Loading"/>
   		</div>
 
 	  	<script type="text/javascript">
         if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
-          $('img#cex_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
+          $('img#cex_page_map_loading').attr('src',chrome.extension.getURL('images/loading.gif'));
         } else if (typeof safari !== 'undefined') {
-          $('img#cex_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
+          $('img#cex_page_map_loading').attr('src',safari.extension.baseURI + 'images/loading.gif');
         } else {
-          $('img#cex_map_loading').attr('src', '<%= self.options.baseURI %>images/loading.gif');
+          $('img#cex_page_map_loading').attr('src', '<%= self.options.baseURI %>images/loading.gif');
         }
 	  	setTimeout(function(){ cex_drawMap(); }, 1000);
 	  	function cex_drawMap() {
 			L.mapbox.accessToken = 'pk.eyJ1Ijoic3RtbCIsImEiOiJDQ1FDcFNVIn0.C7ThVrFnQ7a7COlJe8tARw';
-	  		var cexmap = L.mapbox.map('cex_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 2, maxBounds: [[-90,-180],[90,180]] });
-			cexmap.attributionControl.setPrefix("Cable Data: Telegeography");
+	  		var cexpagemap = L.mapbox.map('cex_page_map', 'stml.l6086pbg', { zoomControl:false, maxZoom: 12, minZoom: 2, maxBounds: [[-90,-180],[90,180]] });
+			cexpagemap.attributionControl.setPrefix("Cable Data: Telegeography");
+			cexpagemap.scrollWheelZoom.disable();
 
 			var cableLayer = L.mapbox.featureLayer()
 		         .setGeoJSON(cables)
 		         .setStyle({"color": "#ffffff","weight": 1,"opacity": 0.25})
-		         .addTo(cexmap);
+		         .addTo(cexpagemap);
 
-			var cexmarkergroup = L.mapbox.featureLayer();
+			var cexpagemarkergroup = L.mapbox.featureLayer();
 			<% _.each(timeframeCitizenship, function(country) { %>
 				var isocode = '<%= cxPage.convertIsoCode(country.code) %>';
 				var cex_outline = window['cex_country_'+isocode];
@@ -189,14 +190,14 @@
 		                .setGeoJSON(cex_outline)
 		                .bindPopup('<%= cxPage.convertCountryCode(country.code) %> (<%= country.percentage %>%)')
 		                .setStyle({"color": "#fff000","weight": 1,"opacity": 1,"fillColor":"#fff000","fillOpacity":<%= country.percentage/200 %>})
-		                .addTo(cexmap);
-					cexmarkergroup.addLayer(geojsonLayer);
+		                .addTo(cexpagemap);
+					cexpagemarkergroup.addLayer(geojsonLayer);
 					}
 			<% }); %>
-            cexmap.fitBounds(cexmarkergroup.getBounds(), {padding: [50,50]});
+            cexpagemap.fitBounds(cexpagemarkergroup.getBounds(), {padding: [50,50]});
 
 		    // kill loading circle
-		    $('img#cex_map_loading').hide();
+		    $('img#cex_page_map_loading').hide();
 		    }
 	  	</script>
 
