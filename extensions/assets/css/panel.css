@@ -313,19 +313,19 @@
 	}
 .citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_dest_column {
 	width: 50% !important;
+	float: right !important;
+	background: #03c9c8 !important;
+	padding: 15px 0 !important;
+	min-height: 100% !important;
+	}
+.citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_orig_column {
+	width: 50% !important;
 	float: left !important;
 	background: #e8db03 !important;
 	box-sizing:border-box !important;
   	-moz-box-sizing:border-box !important;
   	-webkit-box-sizing:border-box !important;
 	border-right: 2px solid #000 !important;
-	padding: 15px 0 !important;
-	min-height: 100% !important;
-	}
-.citizen-ex__pane #cex_hud #cex_map #cex_mapdata #cex_orig_column {
-	width: 50% !important;
-	float: right !important;
-	background: #03c9c8 !important;
 	padding: 15px 0 !important;
 	min-height: 100% !important;
 	}

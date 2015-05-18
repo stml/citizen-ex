@@ -345,7 +345,22 @@
 	  	</script>
 
 	    		<div id="cex_mapdata">
-
+					<div id="cex_orig_column">
+	    				<h3>Your tracked location</h3>
+					    <% if (ownGeoData && ownGeoData.ownIp) { %>
+					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= cxPanel.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
+					      <p>IP Address: <%= ownGeoData.ownIp %></p>
+					      <% if (ownGeoData.ownCity.length > 0) { %>
+							<p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
+					      <% } else { %>
+					      	<p>&nbsp;</p>
+					      <% } %>
+					    <% } else { %>
+					      <p><strong>Tracing your location...</strong></p>
+					      <p>&nbsp;</p>
+					      <p>&nbsp;</p>
+					    <% }; %>
+				    </div><!-- cex_orig_column -->
 	    			<div id="cex_dest_column">
 	    				<h3>Current remote location</h3>
 					    <% if (currentEntry.ip) { %>
@@ -362,22 +377,6 @@
 					      <p>&nbsp;</p>
 					    <% }; %>
 				    </div><!-- cex_dest_column -->
-				    <div id="cex_orig_column">
-	    				<h3>Your tracked location</h3>
-					    <% if (ownGeoData && ownGeoData.ownIp) { %>
-					      <p><strong><% if (ownGeoData.ownCity.length > 0) { %><%= ownGeoData.ownCity %>, <% } %><%= cxPanel.convertCountryCode(ownGeoData.ownCountryCode) %></strong></p>
-					      <p>IP Address: <%= ownGeoData.ownIp %></p>
-					      <% if (ownGeoData.ownCity.length > 0) { %>
-							<p>Lat: <%= ownGeoData.ownLat %> / Lon: <%= ownGeoData.ownLng %></p>
-					      <% } else { %>
-					      	<p>&nbsp;</p>
-					      <% } %>
-					    <% } else { %>
-					      <p><strong>Tracing your location...</strong></p>
-					      <p>&nbsp;</p>
-					      <p>&nbsp;</p>
-					    <% }; %>
-				    </div><!-- cex_orig_column -->
 				</div><!-- cex_mapdata -->
 
 	    </div><!-- cex_map -->
