@@ -169,6 +169,12 @@
 	height: 250px !important;
 	margin-bottom: 25px !important;
 	}
+.citizen-ex__pane #cex_hud #cex_badge #cex_badge_column #cex_badge_image {
+	width: 250px !important;
+	height: 250px !important;
+	margin-bottom: 25px !important;
+	display: none;
+	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_whatmeans {
 	margin-bottom: 12px !important;
 	}
@@ -204,7 +210,8 @@
 	}
 .citizen-ex__pane #cex_hud #cex_badge #cex_badge_column p#cex_sharebuttons a:hover {
 	border-bottom: 2px solid #fff !important;
-	}
+	}	
+	
 .citizen-ex__pane #cex_hud #cex_badge #cex_data_column {
 	float: right !important;
 	width: 250px !important;

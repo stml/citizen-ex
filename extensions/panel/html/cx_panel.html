@@ -35,10 +35,10 @@
 				<% if (citizenship.length > 0) { %>
 
 				<h2>This is your Algorithmic Citizenship</h2>
+				
+				<img id="cex_badge_image" src="" />
 
 				<canvas id="cex_badge_canvas"></canvas>
-				<canvas id="cex_temp_canvas" style="display:none"></canvas>
-				<canvas id="cex_share_canvas" style="display:none"></canvas>
 
 				<p id="cex_whatmeans"><a href="http://citizen-ex.com/citizenship/" target="_blank">What does this mean?</a></p>
 				<p id="cex_sharebuttons">Share Via:<p>
@@ -47,9 +47,11 @@
 					<a href="" target="_blank" class="cex_share_twitter">Twitter</a>&nbsp;&nbsp;&nbsp;
 					<a href="" target="_blank" class="cex_share_email">Email</a>&nbsp;&nbsp;&nbsp;
 				</p>
+<!--
 				<p id="cex_sharebuttons">
 					<a href="#" class="cex_share_badge">Save your badge for sharing</a>&nbsp;&nbsp;&nbsp;
 				</p>
+-->
 
 				<script>
 					var tweetstring = '';
@@ -97,8 +99,16 @@
 					// set canvas to css heights
 				$('#cex_badge_canvas').attr('width', parseInt($('#cex_badge_canvas').css('width')));
 				$('#cex_badge_canvas').attr('height', parseInt($('#cex_badge_canvas').css('height')));
+				
+				var countries = percents.length;
+				var countries_count = 0;
 
-				var cex_canvas = $("#cex_badge_canvas").get(0);
+/*
+				var cex_canvas = document.createElement("canvas");
+				cex_canvas.height = parseInt($('#cex_badge_canvas').css('width'));
+				cex_canvas.width = parseInt($('#cex_badge_canvas').css('height'));
+*/
+				var cex_canvas = $('#cex_badge_canvas').get(0);
 				var badge = cex_canvas.getContext("2d");
 
 				// circle centre and radius
@@ -120,41 +130,18 @@
 				var summary = encodeURIComponent("This is my Algorithmic Citizenship. What's yours?");
 				var url = encodeURIComponent('http://citizen-ex.com');
 
-				$('.cex_share_badge').click(function () {
-					var badgeImg = new Image();
-					badgeImg.crossOrigin = "anonymous";
-					badgeImg.onload = function() {
-						var badgeCanvas = $("#cex_share_canvas").get(0);
-					    badgeCanvas.width = 600;
-						badgeCanvas.height = 350;
-					    var badgeContext = badgeCanvas.getContext("2d");
-	  					badgeContext.drawImage(badgeImg, 0, 0);
-	  					badgeContext.drawImage(cex_canvas, 285, 35, 280, 280);
-						var badgeImage = badgeCanvas.toDataURL();
-						window.open(badgeImage);
-						};
-					if (!_.isUndefined(window.chrome)) {
-						badgeImg.src = chrome.extension.getURL('images/share-card.png');
-                    } else if (typeof safari !== 'undefined') {
-						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
-                    } else {
-                      	badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
-                    }
-
-					});
-
 				function drawSegment(badge,x0,y0,r,circlepointer,country,degrees) {
 					var img = new Image();
-					//img.crossOrigin = "anonymous";
+					//img.crossOrigin = "Anonymous";
 					img.onload = function() {
 						var flagscaledheight = badge.canvas.clientHeight;
 						var flagscaledwidth = flagscaledheight*(img.width/img.height);
 						var flagmargin = (flagscaledwidth - badge.canvas.clientWidth) / 2;
-						var svgCanvas = $("#cex_temp_canvas").get(0);
+						var svgCanvas = document.createElement("canvas");
 				    	svgCanvas.height = flagscaledheight;
 				    	svgCanvas.width = flagscaledwidth;
 				    	var svgCtx = svgCanvas.getContext("2d");
-				    	svgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight);
+				    	svgCtx.drawImage(img, -flagmargin, 0, flagscaledwidth, flagscaledheight); 
 				    	var pattern = badge.createPattern(svgCanvas, 'repeat');
 				    	badge.fillStyle = pattern;
 						badge.beginPath();
@@ -172,6 +159,15 @@
 						badge.strokeStyle="#888";
 						badge.stroke();
 						badge.fill();
+						countries_count++;
+/*
+						if (countries == countries_count) {
+							badgeImage = cex_canvas.toDataURL();
+							$('#cex_badge_image').attr('src',badgeImage);
+							$('#cex_badge_canvas').hide();
+							$('#cex_badge_image').show();
+							};
+*/
 				      	};
                       if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
                       	if (country.length == 0) {
@@ -199,6 +195,29 @@
 					var y = y0 + r * Math.sin(theta * Math.PI / 180);
 					return [x,y];
 					}
+					
+				$('.cex_share_badge').click(function () {
+					var badgeImg = new Image();
+					badgeImg.crossOrigin = "anonymous";
+					badgeImg.onload = function() {
+						var badgeCanvas = document.createElement("canvas");
+					    badgeCanvas.width = 600;
+						badgeCanvas.height = 350;
+					    var badgeContext = badgeCanvas.getContext("2d");
+	  					badgeContext.drawImage(badgeImg, 0, 0);
+	  					badgeContext.drawImage(cex_canvas, 285, 35, 280, 280);
+						var badgeImage = badgeCanvas.toDataURL();
+						window.open(badgeImage);
+						};
+					if (!_.isUndefined(window.chrome)) {
+						badgeImg.src = chrome.extension.getURL('images/share-card.png');
+                    } else if (typeof safari !== 'undefined') {
+						badgeImg.src = safari.extension.baseURI + 'images/share-card.png';
+                    } else {
+                      	badgeImg.src = '<%= self.options.baseURI %>images/share-card.png';
+                    }
+
+					});
 
 			</script>
 
