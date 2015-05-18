@@ -88,6 +88,9 @@
 	position: relative !important;
 	background: #000 !important;
 	}
+.citizen-ex__pane #cex_hud #cex_header #cex_header_i {	
+	display: inline;
+	}
 .citizen-ex__pane #cex_hud #cex_header #cex_logo {
 	margin: 0 30px 0 0 !important;
 	padding: 0 !important;
@@ -97,12 +100,13 @@
 	font-weight: bold !important;
 	display: inline-block !important;
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
-	width: 107px !important;
+	width: 134px !important;
 	height: 24px !important;
-	min-width: 107px !important;
+	min-width: 134px !important;
 	min-height: 24px !important;
-	max-width: 107px !important;
+	max-width: 134px !important;
 	max-height: 24px !important;
+	vertical-align: middle !important;
 	}
 .citizen-ex__pane #cex_hud #cex_header a {
 	color: #fff !important;
@@ -114,6 +118,7 @@
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
 	font-weight: bold !important;
 	border-bottom: 1px solid #000 !important;
+	vertical-align: middle !important;
 	}
 .citizen-ex__pane #cex_hud #cex_header a.cex_more {
 	line-height: 1 !important;
