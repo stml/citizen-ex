@@ -36,11 +36,16 @@ body#cex_page {
 #cex_page_container h2 {
 	text-transform: uppercase !important;
 	font-weight: normal !important;
-	font-size: 1em !important;
+	font-size: 16px !important;
 	letter-spacing: 0.25em !important;
+	padding: 12px 0 !important;
+	color: #fff !important;
 	}
 
-
+/*
+FIREFOX REQUIRES EXPLICIT FONT SETTINGS ON EVERY ELEMENT: PX NOT EM
+This might affect scaling styles
+*/
 
 
 /* The Page Header
@@ -149,9 +154,11 @@ body#cex_page {
 	/* font-weight: bold; */
 	text-transform: uppercase !important;
 	letter-spacing: 0.3rem !important;
+	font-size: 16px !important;
 	}
 #cex_page_container #tables table tr {
 	border-top: 1px solid #888 !important;
+	font-size: 16px !important;
 	}
 #cex_page_container #tables table tr:first-child {
 	border-top: none !important;
@@ -159,6 +166,7 @@ body#cex_page {
 	}
 #cex_page_container #tables table tr:first-child td {
 	padding: 0 0 6px !important;
+	font-size: 16px !important;
 	}
 #cex_page_container #tables table td {
 	font-family: "Helvetica Neue", Arial, sans-serif !important;
@@ -166,6 +174,7 @@ body#cex_page {
 	font-size: 1em !important;
 	padding: 6px 0 9px 0 !important;
 	border: none !important;
+	font-size: 16px !important;
 	}
 .#cex_page_container #tables table td.first {
 	text-align: left !important;
@@ -205,6 +214,16 @@ body#cex_page {
 	font-size: 12px !important;
 	line-height: 18px !important;
 	}
+#cex_page_container #map #cex_page_map .leaflet-popup-content {
+	background: rgba(0,0,0,0.75) !important;
+	color: #fff !important;
+	font-size: 12px !important;
+	line-height: 18px !important;
+	padding-bottom: 15px !important;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
+	padding-top: 15px !important;
+	}
 #cex_page_container #map #cex_page_map .leaflet-popup-tip-container {
 	width:15px !important;
 	height:15px !important;
@@ -240,7 +259,7 @@ body#cex_page {
 	margin: 0 auto 0 auto !important;
 	position: relative !important;
 	display: block !important;
-	font-size: 1.5em !important;
+	font-size: 24px !important;
 	line-height: 1.5em !important;
 	height: 325px !important;
 	width: 325px !important;
@@ -261,6 +280,7 @@ body#cex_page {
 #cex_page_container #share p.sharelink a:hover {
 	background: #fff000 !important;
 	color: #000 !important;
+	font-size: 24px !important;
 	}
 #cex_page_container #delete p.deletelink a:hover {
 	background: #ff0033 !important;
@@ -268,6 +288,7 @@ body#cex_page {
 	}
 #cex_page_container #share p.info,
 #cex_page_container #delete p.info {
+	color: #fff !important;
 	margin: 7px 0 0 0 !important;
 	width: 25% !important;
 	float: left !important;
@@ -285,33 +306,37 @@ body#cex_page {
 #cex_page_container #citizenship {
 	background: #00dcdc !important;
 	padding-bottom: 25px !important;
+	font-size: 24px !important;
 	}
 #cex_page_container #citizenship-wrapper {
 	width: 80% !important;
 	max-width: 850px !important;
-	}
-#cex_page_container #citizenship h2,
-#cex_page_container #citizenship p {
-	color: #000 !important;
+	font-size: 24px !important;
 	}
 #cex_page_container #citizenship h2 {
+	color: #000 !important;
+	font-size: 24px !important;
 	text-transform: uppercase !important;
 	font-weight: normal !important;
-	font-size: 1.5em !important;
 	letter-spacing: 0.3em !important;
+	padding: 12px 0;
 	}
 #cex_page_container #citizenship p {
-	font-size: 1.5em !important;
+	color: #000 !important;
+	font-size: 24px !important;
 	line-height: 1.3em !important;
+	margin: 12px 0;
 	}
 #cex_page_container #citizenship a {
 	color: #000 !important;
 	border-bottom: 3px solid #fff !important;
 	text-decoration: none !important;
+	font-size: 24px !important;
 	}
 #cex_page_container #citizenship a:hover {
 	color: #fff !important;
 	border-bottom: 3px solid #fff !important;
+	font-size: 24px !important;
 	}
 
 
@@ -325,11 +350,20 @@ body#cex_page {
 #cex_page_container #about h2,
 #cex_page_container #about p {
 	color: #000 !important;
+	font-size: 16px !important;
+	margin-bottom: 16px !important;
 	}
 #cex_page_container #about p {
-	font-size: 1em !important;
 	letter-spacing: 0.03em !important;
 	line-height: 1.4em !important;
+	font-size: 16px !important;
+	margin-bottom: 16px !important;
+	}
+#cex_page_container #about p em {
+	letter-spacing: 0.03em !important;
+	line-height: 1.4em !important;
+	font-size: 16px !important;
+	font-weight: italic;
 	}
 #cex_page_container #about #left {
 	width: 48.5% !important;
@@ -343,6 +377,7 @@ body#cex_page {
 	text-decoration: none !important;
 	color: #000 !important;
 	border-bottom: 2px solid #00dcdc !important;
+	font-size: 16px !important;
 	}
 #cex_page_container #about a:hover {
 	color: #00dcdc !important;
@@ -358,46 +393,52 @@ body#cex_page {
 	background: #000 !important;
 	padding-top: 50px !important;
 	padding-bottom: 50px !important;
+	color: #fff !important;
+	font-size: 16px !important;
+	line-height: 1.5 !important;
 	}
 #footer .credits {
 	float: left !important;
+	color: #fff !important;
+	font-size: 16px !important;
+	line-height: 1.5 !important;
 	}
-#footer .nav {
-	float: right !important;
-	}
-#footer .nav ul {
-	list-style: none !important;
-	text-align: right !important;
-	}
-#footer .nav ul li {
-	display: inline !important;
-	font-size: 0.75em !important;
-	margin-left: 20px !important;
-	text-transform: uppercase !important;
-	}
-#footer h3.logo {
-	text-indent: -9999999px !important;
-	background: transparent url(../i/logo-small-white.svg) 0 0 no-repeat !important;
-	width: 433px !important;
-	height: 32px !important;
-	background-size: auto 32px !important;
-	margin-bottom: 200px !important;
+#footer #logo {
+	width: 134px !important;
+	height: 24px !important;
+	min-width: 134px !important;
+	min-height: 24px !important;
+	max-width: 134px !important;
+	max-height: 24px !important;
 	}
 #footer .additional-credit {
 	margin-top: 75px !important;
+	color: #fff !important;
+	font-size: 16px !important;
+	line-height: 1.5 !important;
 	}
 #footer p.subhead {
 	margin: 25px 0 0 0 !important;
+	color: #fff !important;
+	font-size: 16px !important;
+	line-height: 1.5 !important;
+	}
+#footer p.subhead strong {
+	color: #fff !important;
+	font-size: 16px !important;
+	font-weight: bold !important;
 	}
 #footer p {
-	font-size: 1em !important;
 	margin: 0 !important;
-	line-height: 1.5em !important;
+	line-height: 1.5 !important;
+	color: #fff !important;
+	font-size: 16px !important;
 	}
 #footer a {
 	color: #fff !important;
 	text-decoration: none !important;
 	border-bottom: 2px solid transparent !important;
+	font-size: 16px !important;
 	}
 #footer a:hover {
 	color: #fff000 !important;
