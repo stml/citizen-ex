@@ -319,3 +319,14 @@
 
 
 </div><!-- container -->
+
+<!-- FIREFOX ONLY STYLES -->
+<script type="text/javascript">
+    if (typeof window !== 'undefined' && !_.isUndefined(window.chrome)) {
+    } else if (typeof safari !== 'undefined') {
+    } else {
+      $('#cex_hud').hide();
+      $('body').css("overflow","hidden");
+      $('#cex_page_container').css({"position":"fixed","overflow-y":"scroll","top":0,"right":0,"left":0,"bottom":0});
+    }
+</script>

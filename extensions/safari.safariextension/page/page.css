@@ -65,17 +65,20 @@ body#cex_page {
 #cex_page_container #header p.homepage {
 	float: right !important;
 	margin: 0 !important;
-	font-size: 0.75em !important;
 	letter-spacing: 0.3em !important;
 	line-height: 1em !important;
 	text-transform: uppercase !important;
 	color: #fff !important;
+	font-size: 16px !important;
 	}
 #cex_page_container #header p.homepage a {
 	text-decoration: none !important;
 	border-bottom: 3px solid transparent !important;
 	color: #fff !important;
 	padding-bottom: 8px !important;
+	text-transform: uppercase !important;
+	font-size: 16px !important;
+	letter-spacing: 0.3em !important;
 	}
 #cex_page_container #header p.homepage a:hover {
 	color: #fff000 !important;
@@ -92,10 +95,11 @@ body#cex_page {
 	float: left !important;
 	/*max-width: 300px;*/
 	position: absolute !important;
-	font-size: 1.5em !important;
+	font-size: 24px !important;
 	line-height: 1.3em !important;
 	}
 #cex_page_container #toggles p {
+	font-size: 24px !important;
 	margin-bottom: 20px !important;
 	color: #fff !important;
 	}
@@ -104,9 +108,11 @@ body#cex_page {
 	padding: 0 !important;
 	}
 #cex_page_container #toggles ul li {
+	font-size: 24px !important;
 	/*line-height: 1.33;*/
 	}
 #cex_page_container #toggles ul li a {
+	font-size: 24px !important;
 	color: #b3b3b3 !important;
 	text-decoration: none !important;
 	}

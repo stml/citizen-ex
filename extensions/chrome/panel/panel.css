@@ -72,7 +72,7 @@
 	display: none;
 	z-index: 999999999999999 !important;
 	color: #000 !important;
-	opacity: 0.95 !important;
+	opacity: 1 !important;
 	}
 
 .citizen-ex__pane.open {
@@ -88,6 +88,7 @@
 	border-bottom: 14px solid #000 !important;
 	overflow: hidden !important;
 	position: relative !important;
+	opacity: 0.95 !important;
 	}
 
 .citizen-ex__pane #cex_hud #cex_header {
