@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Citizen Ex",
-  "version": "1.0",
+  "short_name": "Citizen Ex",
+  "version": "1.2",
   "permissions": [
     "tabs",
     "activeTab",
