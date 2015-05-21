@@ -1401,6 +1401,7 @@ var CxPanel = CxExtension.extend({
   requestPage: function() {
     if (this.browser.firefox()) {
       cxPage.open();
+      this.close();
     } else {
       message.send({ page: true });
     }
