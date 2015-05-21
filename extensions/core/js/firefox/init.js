@@ -32,7 +32,13 @@ pageMod.PageMod({
 });
 
 tabs.on('ready', function(tab) {
-  button.disabled = false;
+  // each tab needs its own icon object
+  var icon = new CxIcon(browser);
+  icon.addTabData(tab);
+
+  button.state(tab, {
+    disabled: false
+  });
 
   var worker = tab.attach({
     contentScriptFile: [
@@ -52,7 +58,16 @@ tabs.on('ready', function(tab) {
 
   utils.createLogEntry(tab.url);
 
+  tab.on('ready', function(tab) {
+    button.state(tab, {
+      disabled: false
+    });
+  });
+
   tab.on('activate', function(tab) {
+    button.state(tab, {
+      disabled: false
+    });
     utils.updateLogEntry(tab.url);
   });
 
