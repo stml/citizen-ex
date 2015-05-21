@@ -682,6 +682,7 @@ CountryLog.prototype.addVisit = function(country) {
 
 CountryLog.prototype.reset = function() {
   this.visits = {};
+  this.updateStorage();
 };
 
 CountryLog.prototype.updateStorage = function() {
