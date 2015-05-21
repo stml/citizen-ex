@@ -44,7 +44,6 @@ var CxPage = CxExtension.extend({
     var latestEntries = _.filter(entries, function(entry) {
       return entry.latestTimestamp() >= cutOffDate;
     });
-    console.log(latestEntries)
     return latestEntries;
   },
 
