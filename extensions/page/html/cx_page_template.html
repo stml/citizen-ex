@@ -14,6 +14,8 @@
               $('#cex_page_container #header #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
               $('#cex_page_container #footer #logo').attr('src',safari.extension.baseURI + 'images/logo-small-white.png');
             } else {
+              $('#header').append('<a href="#" class="cex_close"><img id="cex_close" src="" width="24" height="24" /></a>')
+              $('#header #cex_close').attr('src', '<%= self.options.baseURI %>images/close.png');
               $('#cex_page_container #header #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
               $('#cex_page_container #footer #logo').attr('src', '<%= self.options.baseURI %>images/logo-small-white.svg');
             }
