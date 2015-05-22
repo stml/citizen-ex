@@ -224,7 +224,7 @@ CxStorage.prototype.get = function(property, callback) {
     callback(data);
   } else if (this.browser.firefox()) {
     var data = undefined;
-    if (ss[property]) {
+    if (ss.storage[property]) {
       var data = JSON.parse(ss.storage[property]);
     }
     callback(data);
