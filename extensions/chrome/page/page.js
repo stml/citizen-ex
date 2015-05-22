@@ -820,8 +820,14 @@ var CxExtension = Backbone.Model.extend({
     return structuredData;
   },
 
-  open: function() {
-    this.set({ open: true });
+  open: function(tabId) {
+    if (this.browser.firefox()) {
+      if (tabId === this.get('tabId')) {
+        this.set({ open: true });
+      }
+    } else {
+      this.set({ open: true });
+    }
   },
 
   close: function() {
@@ -832,13 +838,7 @@ var CxExtension = Backbone.Model.extend({
     if (this.get('open')) {
       this.close();
     } else {
-      if (this.browser.firefox()) {
-        if (tabId === this.get('tabId')) {
-          this.open();
-        }
-      } else {
-        this.open();
-      }
+      this.open();
     }
   },
 

@@ -28,5 +28,5 @@ self.port.on('tabId', function(message) {
 });
 
 self.port.on('openCxPanel', function(message) {
-  cxPanel.toggle(message);
+  cxPanel.open(message);
 });
