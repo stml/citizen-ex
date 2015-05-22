@@ -854,6 +854,7 @@ var CxExtension = Backbone.Model.extend({
   eraseData: function() {
     this.resetValues();
     storage.clear();
+    this.set({ open: true });
   },
 
   saveShareData: function() {
