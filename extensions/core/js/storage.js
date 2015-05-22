@@ -54,7 +54,6 @@ CxStorage.prototype.clear = function() {
     localStorage.clear();
     message.send({ eraseData: true });
   } else if (this.browser.firefox()) {
-    // clear storage
     message.send({ eraseData: true });
   } else {
     throw 'Unknown browser';
