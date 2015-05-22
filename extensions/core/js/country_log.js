@@ -2,7 +2,7 @@
 
 var CountryLog = function() {
   console.log('Creating a new CountryLog');
-  this.reset();
+  this.visits = {};
   this.recoverFromStorage();
 };
 
