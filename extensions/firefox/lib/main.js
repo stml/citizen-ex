@@ -781,10 +781,6 @@ tabs.on('ready', function(tab) {
   globalWorker[tab.id] = worker;
   var message = new CxMessage(browser, worker);
 
-  button.state(tab, {
-    disabled: false
-  });
-
   button.on('click', function(state) {
     var tabId = tab.id;
     var worker = tabs.activeTab.attach({
