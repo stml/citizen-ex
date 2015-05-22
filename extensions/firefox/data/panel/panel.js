@@ -1485,6 +1485,7 @@ var CxPanel = CxExtension.extend({
 
   resetValues: function() {
     this.set({ currentEntry: '' });
+    this.set({ openTabs: [] });
     this.set({ openTabEntries: [] });
     this.set({ openTabsCitizenship: [] });
 
