@@ -23,6 +23,10 @@ self.port.on('ownGeoData', function(message) {
   cxPanel.receiveOwnGeoData(message);
 });
 
+self.port.on('tabId', function(message) {
+  cxPanel.receiveTabId(message);
+});
+
 self.port.on('openCxPanel', function(message) {
-  cxPanel.toggle();
+  cxPanel.toggle(message);
 });

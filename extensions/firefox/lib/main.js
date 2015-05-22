@@ -265,8 +265,8 @@ CxMessage.prototype.send = function(message) {
   } else if (this.browser.safari()) {
     safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(key, message);
   } else if (this.browser.firefox()) {
-    if (globalWorker) {
-      globalWorker.port.emit(key, message);
+    if (messagingWorker) {
+      messagingWorker.port.emit(key, message);
     }
   } else {
     throw 'Unknown browser';
@@ -282,31 +282,27 @@ var CxIcon = function(browser, blank, local, remote, full) {
   this.full = full;
 };
 
-CxIcon.prototype.setIcon = function(iconType, tab) {
+CxIcon.prototype.setIcon = function(iconType, tabId) {
   if (this.browser.chrome()) {
     chrome.browserAction.setIcon({ path: this[iconType] });
   } else if (this.browser.safari()) {
     var iconUri = safari.extension.baseURI + this[iconType];
     safari.extension.toolbarItems[0].image = iconUri;
   } else if (this.browser.firefox()) {
-    // should specify the tab
     var iconUrl = self.data.url(this[iconType]);
-    var tab = 'tab';
-    if (typeof this.tabData === 'object') {
-      tab = this.tabData;
-    }
-    button.state(tab, {
-      disabled: false,
-      icon: {
-        '16': iconUrl
+
+    _.each(tabs, function(enumTab) {
+      if (enumTab.id === tabId) {
+        button.state(enumTab, {
+          disabled: false,
+          icon: {
+            '16': iconUrl
+          }
+        });
       }
-    });
+    })
   }
 };
-
-CxIcon.prototype.addTabData = function(tab) {
-  this.tabData = tab;
-}
 
 // Define and set up utilities
 
@@ -355,7 +351,7 @@ Utils.prototype.updateLogEntry = function(url) {
   }
 };
 
-Utils.prototype.createLogEntry = function(url) {
+Utils.prototype.createLogEntry = function(url, tab) {
   if (!url) {
     return;
   }
@@ -367,7 +363,7 @@ Utils.prototype.createLogEntry = function(url) {
   }
 
   var timestamp = new Date();
-  logEntries.push(new LogEntry(url, timestamp));
+  logEntries.push(new LogEntry(url, timestamp, tab));
 
   var logEntry = new LogEntry();
   logEntry.storeEntries(logEntries);
@@ -422,12 +418,13 @@ Utils.prototype.reset = function() {
 
 // Define the LogEntry class
 
-var LogEntry = function(url, timestamp) {
+var LogEntry = function(url, timestamp, tabId) {
   if (url) {
     this.url = url;
     this.domain = utils.trimUrl(url);
     this.timestamps = [timestamp.toISOString()];
-    icon.setIcon('blank');
+    this.tabId = tabId;
+    icon.setIcon('blank', this.tabId);
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -486,9 +483,9 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownLng = ownLocation.ownLng;
     this.storeEntries(logEntries);
     if (this.ip) {
-      icon.setIcon('full');
+      icon.setIcon('full', this.tabId);
     } else {
-      icon.setIcon('local');
+      icon.setIcon('local', this.tabId);
     }
     message.send({ ownGeoData: true });
   } else {
@@ -517,9 +514,9 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     this.lng = cachedEntry.lng;
     countryLog.addVisit(this.countryCode);
     if (this.ownIp) {
-      icon.setIcon('full');
+      icon.setIcon('full', this.tabId);
     } else {
-      icon.setIcon('remote');
+      icon.setIcon('remote', this.tabId);
     }
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
@@ -538,9 +535,9 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       this.lat = json.latitude;
       this.lng = json.longitude;
       if (this.ownIp) {
-        icon.setIcon('full');
+        icon.setIcon('full', this.tabId);
       } else {
-        icon.setIcon('remote');
+        icon.setIcon('remote', this.tabId);
       }
       console.log('Got remote geo, updating the relevant LogEntry');
       geoCache.removeEntry(cachedEntry);
@@ -742,7 +739,8 @@ var tabs = require('sdk/tabs');
 var self = require('sdk/self');
 var pageMod = require('sdk/page-mod');
 
-var globalWorker;
+var globalWorker= {};
+var messagingWorker;
 var baseURI = self.data.url('./');
 
 var button = buttons.ActionButton({
@@ -751,14 +749,6 @@ var button = buttons.ActionButton({
   disabled: true,
   icon: {
     '16': './icon16.png'
-  },
-  onClick: function(state) {
-    var worker = tabs.activeTab.attach({
-      contentScriptFile: self.data.url('./panel/panel_trigger.js'),
-    });
-    worker.port.on('openCxPanel', function() {
-      globalWorker.port.emit('openCxPanel', true);
-    });
   }
 });
 
@@ -771,13 +761,7 @@ pageMod.PageMod({
 });
 
 tabs.on('ready', function(tab) {
-  // each tab needs its own icon object
-  var icon = new CxIcon(browser);
-  icon.addTabData(tab);
-
-  button.state(tab, {
-    disabled: false
-  });
+  var tabId = tab.id;
 
   var worker = tab.attach({
     contentScriptFile: [
@@ -793,9 +777,27 @@ tabs.on('ready', function(tab) {
       'baseURI': baseURI
     }
   });
-  globalWorker = worker;
+  messagingWorker = worker;
+  globalWorker[tab.id] = worker;
+  var message = new CxMessage(browser, worker);
 
-  utils.createLogEntry(tab.url);
+  button.state(tab, {
+    disabled: false
+  });
+
+  button.on('click', function(state) {
+    var tabId = tab.id;
+    var worker = tabs.activeTab.attach({
+      contentScriptFile: self.data.url('./panel/panel_trigger.js'),
+    });
+    worker.port.on('openCxPanel', function() {
+      if (globalWorker[tabId]) {
+        globalWorker[tabId].port.emit('openCxPanel', tabs.activeTab.id);
+      }
+    });
+  })
+
+  utils.createLogEntry(tab.url, tabId);
 
   tab.on('ready', function(tab) {
     button.state(tab, {
@@ -825,6 +827,9 @@ tabs.on('ready', function(tab) {
   worker.port.on('allLogEntries', function() {
     sendAllLogEntries(worker);
   });
+  worker.port.on('requestTabId', function() {
+    sendTabId(worker, tabId);
+  });
   worker.port.on('eraseData', function() {
     eraseData(worker);
   });
@@ -849,6 +854,10 @@ var sendCountryLog = function(worker) {
 
 var sendAllLogEntries = function(worker) {
   worker.port.emit('allLogEntries', logEntries);
+};
+
+var sendTabId = function(worker, tabId) {
+  worker.port.emit('tabId', tabId)
 };
 
 var eraseData = function(worker) {

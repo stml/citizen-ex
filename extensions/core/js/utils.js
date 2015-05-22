@@ -45,7 +45,7 @@ Utils.prototype.updateLogEntry = function(url) {
   }
 };
 
-Utils.prototype.createLogEntry = function(url) {
+Utils.prototype.createLogEntry = function(url, tab) {
   if (!url) {
     return;
   }
@@ -57,7 +57,7 @@ Utils.prototype.createLogEntry = function(url) {
   }
 
   var timestamp = new Date();
-  logEntries.push(new LogEntry(url, timestamp));
+  logEntries.push(new LogEntry(url, timestamp, tab));
 
   var logEntry = new LogEntry();
   logEntry.storeEntries(logEntries);

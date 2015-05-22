@@ -8,6 +8,7 @@ var CxExtension = Backbone.Model.extend({
     this.requestOwnGeoData();
     this.requestLogEntries();
     this.requestCitizenship();
+    this.requestTabId();
   },
 
   requestCitizenship: function() {
@@ -20,6 +21,10 @@ var CxExtension = Backbone.Model.extend({
 
   requestOwnGeoData: function() {
     message.send({ ownGeoData: true });
+  },
+
+  requestTabId: function() {
+    message.send({ requestTabId: true });
   },
 
   receiveCitizenship: function(countryLog) {
@@ -44,6 +49,10 @@ var CxExtension = Backbone.Model.extend({
 
   receiveOwnGeoData: function(ownGeoData) {
     this.set({ ownGeoData: ownGeoData });
+  },
+
+  receiveTabId: function(tabId) {
+    this.set({ tabId: tabId });
   },
 
   getLogEntryForUrl: function(url) {
@@ -139,11 +148,17 @@ var CxExtension = Backbone.Model.extend({
     this.set({ open: false });
   },
 
-  toggle: function() {
+  toggle: function(tabId) {
     if (this.get('open')) {
       this.close();
     } else {
-      this.open();
+      if (this.browser.firefox()) {
+        if (tabId === this.get('tabId')) {
+          this.open();
+        }
+      } else {
+        this.open();
+      }
     }
   },
 

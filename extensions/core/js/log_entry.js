@@ -1,11 +1,12 @@
 // Define the LogEntry class
 
-var LogEntry = function(url, timestamp) {
+var LogEntry = function(url, timestamp, tabId) {
   if (url) {
     this.url = url;
     this.domain = utils.trimUrl(url);
     this.timestamps = [timestamp.toISOString()];
-    icon.setIcon('blank');
+    this.tabId = tabId;
+    icon.setIcon('blank', this.tabId);
     this.getOwnGeo();
     this.getRemoteGeo(this.domain);
   }
@@ -64,9 +65,9 @@ LogEntry.prototype.getOwnGeo = function() {
     this.ownLng = ownLocation.ownLng;
     this.storeEntries(logEntries);
     if (this.ip) {
-      icon.setIcon('full');
+      icon.setIcon('full', this.tabId);
     } else {
-      icon.setIcon('local');
+      icon.setIcon('local', this.tabId);
     }
     message.send({ ownGeoData: true });
   } else {
@@ -95,9 +96,9 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
     this.lng = cachedEntry.lng;
     countryLog.addVisit(this.countryCode);
     if (this.ownIp) {
-      icon.setIcon('full');
+      icon.setIcon('full', this.tabId);
     } else {
-      icon.setIcon('remote');
+      icon.setIcon('remote', this.tabId);
     }
     console.log('Retrieving entry details from cache');
     this.storeEntries(logEntries);
@@ -116,9 +117,9 @@ LogEntry.prototype.getRemoteGeo = function(domain) {
       this.lat = json.latitude;
       this.lng = json.longitude;
       if (this.ownIp) {
-        icon.setIcon('full');
+        icon.setIcon('full', this.tabId);
       } else {
-        icon.setIcon('remote');
+        icon.setIcon('remote', this.tabId);
       }
       console.log('Got remote geo, updating the relevant LogEntry');
       geoCache.removeEntry(cachedEntry);
