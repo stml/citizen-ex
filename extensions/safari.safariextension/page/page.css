@@ -90,7 +90,13 @@ This might affect scaling styles
 	border-bottom: 3px solid #fff000 !important;
 	}
 
-
+/* Firefox Close Button */
+#cex_page_container #header #cex_close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	}
 
 
 /* The Toggles
