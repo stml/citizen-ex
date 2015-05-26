@@ -72,7 +72,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://citizen-ex.com/extensions/citizen-ex.plist</string>
+	<string>http://citizen-ex.com/extensions/citizen-ex-update.plist</string>
 	<key>Website</key>
 	<string>http://citizen-ex.com/</string>
 </dict>
