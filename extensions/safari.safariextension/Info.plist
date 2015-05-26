@@ -5,17 +5,17 @@
 	<key>Author</key>
 	<string>James Bridle</string>
 	<key>Builder Version</key>
-	<string>10600.4.10.7</string>
+	<string>9537.75.14</string>
 	<key>CFBundleDisplayName</key>
 	<string>Citizen Ex</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.booktwo.safari</string>
+	<string>com.booktwo.safari.citizen-ex</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>1.0.0</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Database Quota</key>
@@ -71,6 +71,8 @@
 			<string>All</string>
 		</dict>
 	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://citizen-ex.com/extensions/citizen-ex.plist</string>
 	<key>Website</key>
 	<string>http://citizen-ex.com/</string>
 </dict>
