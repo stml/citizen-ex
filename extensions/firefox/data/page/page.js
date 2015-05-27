@@ -49,7 +49,7 @@ CxStorage.prototype.set = function(property, value) {
   var json = JSON.prune(value);
   if (this.browser.chrome()) {
     var obj = {};
-    obj[property] = json;
+    obj[property] = value;
     chrome.storage.local.set(obj);
   } else if (this.browser.safari()) {
     localStorage[property] = json;
@@ -65,7 +65,7 @@ CxStorage.prototype.get = function(property, callback) {
     chrome.storage.local.get(property, function(result) {
       var data = undefined;
       if (result[property]) {
-        data = JSON.parse(result[property]);
+        data = result[property];
         callback(data);
       }
     });
