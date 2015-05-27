@@ -182,8 +182,13 @@ Utils.prototype.updateLogEntry = function(url) {
   }
 
   // ignore empty tabs and chrome settings pages
+  // and localhost
+  var domain = utils.getUrlDomain(url);
   var protocol = utils.getUrlProtocol(url);
-  if (protocol === 'chrome' || protocol === 'chrome-devtools') {
+  if (domain === 'localhost') {
+    return
+  }
+  if (protocol !== 'http' && protocol !== 'https') {
     return;
   }
 
@@ -209,7 +214,12 @@ Utils.prototype.createLogEntry = function(url, tab) {
   }
 
   // ignore empty tabs and chrome settings pages
+  // and localhost
+  var domain = utils.getUrlDomain(url);
   var protocol = utils.getUrlProtocol(url);
+  if (domain === 'localhost' || domain === 'newtab') {
+    return
+  }
   if (protocol !== 'http' && protocol !== 'https') {
     return;
   }
@@ -232,6 +242,12 @@ Utils.prototype.getUrlProtocol = function(url) {
   var uri = new URI(url);
   var protocol = uri.protocol();
   return protocol;
+};
+
+Utils.prototype.getUrlDomain = function(url) {
+  var uri = new URI(url);
+  var domain = uri.domain();
+  return domain;
 };
 
 Utils.prototype.log = function(thing) {
