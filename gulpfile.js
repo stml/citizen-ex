@@ -236,11 +236,6 @@ gulp.task('firefoxCore', function () {
     .pipe(gulp.dest('./extensions/firefox/lib/'));
 });
 
-gulp.task('firefoxLib', function () {
-  gulp.src(['./extensions/core/lib/*'])
-    .pipe(gulp.dest('./extensions/firefox/lib/lib'));
-});
-
 gulp.task('firefoxPanelCss', function () {
   gulp.src(panelCssSources)
     .pipe(concat('panel.css'))
@@ -318,7 +313,6 @@ gulp.task('watch', function() {
       'safariPage',
 
       'firefoxCore',
-      'firefoxLib',
       'firefoxPanelCss',
       'firefoxPageCss',
       'firefoxImages',
@@ -355,7 +349,6 @@ gulp.task('default',
     'safariPage',
 
     'firefoxCore',
-    'firefoxLib',
     'firefoxPanelCss',
     'firefoxPageCss',
     'firefoxImages',
