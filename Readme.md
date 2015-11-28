@@ -1,6 +1,8 @@
 # Citizen Ex
 
-In Development.
+Citizen Ex is a browser extension for Safari, Firefox, and Chrome, which constantly calculates the user's "algorithmic citizenship" while showing them where the websites they visit are physically located.
+
+Find out more or download and install the completed extension at [http://citizen-ex.com].
 
 ## Install all required packages
 
